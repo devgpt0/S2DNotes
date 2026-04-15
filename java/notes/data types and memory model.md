@@ -596,3 +596,95 @@ You should be able to:
 **Ready for assignments?** Go to `assignement/test` folder!
 
 **Next Level:** Level 2 = Integer caching, string intern(), array mutation traps, wrapper comparison pitfalls
+
+---
+
+## Level 2
+
+### Mental Model
+Type decides representation; representation decides memory behavior. Primitive operations copy bits, reference operations copy addresses.
+
+### Solve Steps
+1. Classify each value as primitive or reference.
+2. Check boxing/unboxing boundaries.
+3. Track String pool and Integer cache scenarios.
+4. Predict equality with == (identity/value by type) vs equals (content).
+
+## Level 3
+
+### Mental Model
+The JVM memory system is optimized for object lifetime patterns. Correctness depends on reference visibility; performance depends on allocation and GC pressure.
+
+### Solve Steps
+1. Estimate allocation frequency in loops and helpers.
+2. Identify long-lived vs short-lived objects.
+3. Reduce temporary object churn when needed.
+4. In concurrent code, reason with visibility and atomicity explicitly.
+
+---
+
+### Level 2 Questions
+1. For `int a=10; int b=a; b=20;`, explain memory behavior line-by-line.
+2. For `Integer x=127; Integer y=127;` vs `Integer x=128; Integer y=128;`, predict `==` results.
+3. Why is `==` unsafe for String value comparison in general?
+
+### Level 3 Questions
+1. How do allocation rate and object lifetime influence GC pressure?
+2. Why is reducing temporary object churn often more useful than micro-optimizing one line?
+3. In concurrent code, which memory questions must be answered before trusting observed output?
+
+---
+
+## 🔷 2. EXECUTION MODEL
+
+Understand how this topic runs in actual program flow:
+
+- Read statement
+- Resolve type/object/reference
+- Execute operation (assignment, mutation, call, return)
+- Update memory state (stack/heap bindings)
+- Re-check final output from updated state
+
+
+---
+
+## 🔷 3. INTERVIEW MENTAL MODEL (STEP-BY-STEP)
+
+When you see ANY question:
+
+---
+
+### 🧠 Step 1: Identify variable type
+
+* Primitive? → value
+* Object? → reference
+
+---
+
+### 🧠 Step 2: Where is it stored?
+
+* Primitive → stack
+* Object → heap (via reference)
+
+---
+
+### 🧠 Step 3: Assignment behavior
+
+* Primitive → copy value
+* Object → copy reference
+
+---
+
+### 🧠 Step 4: Operation type
+
+* Field change → mutation
+* `new` → new object (reassignment)
+
+---
+
+### 🧠 Step 5: Function call
+
+* Always pass-by-value
+* Object → reference copied
+
+---

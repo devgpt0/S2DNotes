@@ -367,3 +367,95 @@ You should be able to:
 **Ready for assignments?** Check the `assignement/test` folder to test your understanding!
 
 **Next Level:** Level 2 covers hidden traps = nested lists, default args, shallow/deep copy, interning edge cases
+
+---
+
+## Level 2
+
+### Mental Model
+Python executes bytecode in frames. Each call creates a frame with local namespace, and control flow moves frame to frame.
+
+### Solve Steps
+1. Trace frame creation for each call.
+2. Track local, global, and built-in lookups.
+3. Follow exception propagation frame-by-frame.
+4. Use this model to debug recursion and state leakage.
+
+## Level 3
+
+### Mental Model
+Concurrency model depends on runtime strategy: threads share memory under GIL, processes isolate memory, asyncio shares one event loop.
+
+### Solve Steps
+1. Choose model first (threads/processes/asyncio).
+2. Predict shared-state hazards only where memory is shared.
+3. Use queues/messages for process communication.
+4. In async code, reason at await boundaries.
+
+---
+
+### Level 2 Questions
+1. What is a Python frame and what does it store?
+2. How are local/global/built-in names resolved during execution?
+3. How does an exception travel through nested calls?
+
+### Level 3 Questions
+1. Before each `await`, what state assumptions must be re-validated?
+2. Why do process-based workers avoid many shared-memory bugs?
+3. When does threading still need locks despite the GIL?
+
+---
+
+## 🔷 2. EXECUTION MODEL
+
+Understand how this topic runs in actual program flow:
+
+- Read statement
+- Resolve type/object/reference
+- Execute operation (assignment, mutation, call, return)
+- Update memory state (stack/heap bindings)
+- Re-check final output from updated state
+
+
+---
+
+## 🔷 3. INTERVIEW MENTAL MODEL (STEP-BY-STEP)
+
+When you see ANY question:
+
+---
+
+### 🧠 Step 1: Identify variable type
+
+* Primitive? → value
+* Object? → reference
+
+---
+
+### 🧠 Step 2: Where is it stored?
+
+* Primitive → stack
+* Object → heap (via reference)
+
+---
+
+### 🧠 Step 3: Assignment behavior
+
+* Primitive → copy value
+* Object → copy reference
+
+---
+
+### 🧠 Step 4: Operation type
+
+* Field change → mutation
+* `new` → new object (reassignment)
+
+---
+
+### 🧠 Step 5: Function call
+
+* Always pass-by-value
+* Object → reference copied
+
+---

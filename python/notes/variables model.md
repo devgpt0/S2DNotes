@@ -466,3 +466,95 @@ By end of Level 1, you should:
 **Ready to test?** Go to `assignement/test` folder!
 
 **Next Level:** Level 2 = nested structures, default arguments, integer caching, string interning, deep copy
+
+---
+
+## Level 2
+
+### Mental Model
+Names bind to objects. Assignment rebinds names; mutation changes objects. Keep these two operations separate in your mind.
+
+### Solve Steps
+1. Draw name -> object bindings after each line.
+2. Mark object as mutable or immutable.
+3. Track aliasing when multiple names point to one object.
+4. For functions, treat arguments as new local names bound to passed objects.
+
+## Level 3
+
+### Mental Model
+Scope and binding time are key: LEGB lookup, closure capture, and default-argument evaluation can preserve unexpected state.
+
+### Solve Steps
+1. Resolve each variable by LEGB.
+2. For closures in loops, test late binding assumptions.
+3. Check whether defaults are evaluated once at function definition.
+4. Fix with explicit rebinding or immutable defaults when needed.
+
+---
+
+### Level 2 Questions
+1. After `a=[1,2]; b=a; b.append(3)`, why does `a` change?
+2. In a function, what differs between `x.append(1)` and `x=[1]`?
+3. Why can two variables have equal values but different identities?
+
+### Level 3 Questions
+1. How does late binding in closures create surprising loop behavior?
+2. Why are mutable default arguments a state-retention trap?
+3. Which LEGB step do you check first when debugging shadowed variables?
+
+---
+
+## 🔷 2. EXECUTION MODEL
+
+Understand how this topic runs in actual program flow:
+
+- Read statement
+- Resolve type/object/reference
+- Execute operation (assignment, mutation, call, return)
+- Update memory state (stack/heap bindings)
+- Re-check final output from updated state
+
+
+---
+
+## 🔷 3. INTERVIEW MENTAL MODEL (STEP-BY-STEP)
+
+When you see ANY question:
+
+---
+
+### 🧠 Step 1: Identify variable type
+
+* Primitive? → value
+* Object? → reference
+
+---
+
+### 🧠 Step 2: Where is it stored?
+
+* Primitive → stack
+* Object → heap (via reference)
+
+---
+
+### 🧠 Step 3: Assignment behavior
+
+* Primitive → copy value
+* Object → copy reference
+
+---
+
+### 🧠 Step 4: Operation type
+
+* Field change → mutation
+* `new` → new object (reassignment)
+
+---
+
+### 🧠 Step 5: Function call
+
+* Always pass-by-value
+* Object → reference copied
+
+---

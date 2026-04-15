@@ -334,3 +334,51 @@ p2 ─┘
 ```
 
 Result: Both `p1` and `p2` point to the same object with `name="X"`
+
+---
+
+## Level 2
+
+### Mental Model
+Treat each variable as either a value slot (primitive) or an address slot (reference). For every line, ask: "Did I copy a value, copy an address, mutate an object, or rebind a reference?"
+
+### Solve Steps
+1. Draw stack variables first.
+2. Draw heap objects and connect arrows.
+3. Mark each statement as mutate or rebind.
+4. Predict final object graph before output.
+
+## Level 3
+
+### Mental Model
+Extend the object-graph model across function boundaries and multiple aliases. The hardest bugs come from hidden shared references.
+
+### Solve Steps
+1. Track alias count for each mutable object.
+2. Track parameter passing as copy-of-reference.
+3. Separate object identity (same object) from state equality (same content).
+4. Validate behavior under null reassignment and nested objects.
+
+---
+
+### Level 2 Questions
+1. If `Person p2 = p1; p2.name = "X";`, what prints from `p1.name` and why?
+2. In a method parameter `change(Person p)`, what is the difference between `p.name = "A"` and `p = new Person()`?
+3. How would you draw stack/heap after `Box b1 = new Box(); Box b2 = b1; b2 = new Box();`?
+
+### Level 3 Questions
+1. Why can aliasing across multiple helper methods cause hidden bugs even when each method looks correct locally?
+2. What rule helps you decide if a statement changes shared state or only local binding?
+3. How do identity checks differ from state checks in object-heavy code reviews?
+
+---
+
+## 🔷 2. EXECUTION MODEL
+
+Understand how this topic runs in actual program flow:
+
+- Read statement
+- Resolve type/object/reference
+- Execute operation (assignment, mutation, call, return)
+- Update memory state (stack/heap bindings)
+- Re-check final output from updated state
