@@ -1,7 +1,7 @@
-# ☕ JAVA ASSIGNMENT - DATA TYPES AND MEMORY MODEL
+﻿# â˜• JAVA ASSIGNMENT - DATA TYPES AND MEMORY MODEL
 
 ## Level 1 (Assignments 1-10)
-## 🔹 ASSIGNMENT 1: Primitive Value Copy
+## ðŸ”¹ ASSIGNMENT 1: Primitive Value Copy
 
 ### Question
 
@@ -17,23 +17,23 @@ System.out.println(b);
 
 ---
 
-### ✅ Expected Output
+### âœ… Expected Output
 
 ~~~
 61
 64
 ~~~
 
-### 🧠 Reasoning
+### ðŸ§  Reasoning
 
 * Primitive assignment copies value
 * b changes independently
 * a unchanged
 
-👉 **Primitive copy creates independent values**
+ðŸ‘‰ **Primitive copy creates independent values**
 
 ---
-## 🔹 ASSIGNMENT 2: Reference Assignment
+## ðŸ”¹ ASSIGNMENT 2: Reference Assignment
 
 ### Question
 
@@ -49,22 +49,22 @@ System.out.println(a.v);
 
 ---
 
-### ✅ Expected Output
+### âœ… Expected Output
 
 ~~~
 65
 ~~~
 
-### 🧠 Reasoning
+### ðŸ§  Reasoning
 
 * a and b reference same object
 * field update mutates shared object
 * a observes updated value
 
-👉 **Reference assignment shares object**
+ðŸ‘‰ **Reference assignment shares object**
 
 ---
-## 🔹 ASSIGNMENT 3: Reference Reassignment
+## ðŸ”¹ ASSIGNMENT 3: Reference Reassignment
 
 ### Question
 
@@ -81,23 +81,23 @@ System.out.println(b.v);
 
 ---
 
-### ✅ Expected Output
+### âœ… Expected Output
 
 ~~~
 63
 66
 ~~~
 
-### 🧠 Reasoning
+### ðŸ§  Reasoning
 
 * b now points to new object
 * a still points to old object
 * state diverges
 
-👉 **Reassignment breaks aliasing**
+ðŸ‘‰ **Reassignment breaks aliasing**
 
 ---
-## 🔹 ASSIGNMENT 4: Method Primitive Param
+## ðŸ”¹ ASSIGNMENT 4: Method Primitive Param
 
 ### Question
 
@@ -112,22 +112,22 @@ System.out.println(a);
 
 ---
 
-### ✅ Expected Output
+### âœ… Expected Output
 
 ~~~
 64
 ~~~
 
-### 🧠 Reasoning
+### ðŸ§  Reasoning
 
 * Java passes primitives by value
 * method changes local copy
 * caller value unaffected
 
-👉 **Primitive args are copied**
+ðŸ‘‰ **Primitive args are copied**
 
 ---
-## 🔹 ASSIGNMENT 5: Method Object Mutation
+## ðŸ”¹ ASSIGNMENT 5: Method Object Mutation
 
 ### Question
 
@@ -143,22 +143,22 @@ System.out.println(a.v);
 
 ---
 
-### ✅ Expected Output
+### âœ… Expected Output
 
 ~~~
 68
 ~~~
 
-### 🧠 Reasoning
+### ðŸ§  Reasoning
 
 * reference value copied
 * both refs point same object
 * field mutation visible to caller
 
-👉 **Pass-by-value of reference still mutates object**
+ðŸ‘‰ **Pass-by-value of reference still mutates object**
 
 ---
-## 🔹 ASSIGNMENT 6: Method Object Rebinding
+## ðŸ”¹ ASSIGNMENT 6: Method Object Rebinding
 
 ### Question
 
@@ -174,22 +174,22 @@ System.out.println(a.v);
 
 ---
 
-### ✅ Expected Output
+### âœ… Expected Output
 
 ~~~
 66
 ~~~
 
-### 🧠 Reasoning
+### ðŸ§  Reasoning
 
 * parameter is local reference copy
 * rebind affects only local b
 * caller reference unchanged
 
-👉 **Parameter reassignment is local only**
+ðŸ‘‰ **Parameter reassignment is local only**
 
 ---
-## 🔹 ASSIGNMENT 7: String Pool vs equals
+## ðŸ”¹ ASSIGNMENT 7: String Pool vs equals
 
 ### Question
 
@@ -201,23 +201,23 @@ String a = "v67";`nString b = new String("v67");`nSystem.out.println(a == b);`nS
 
 ---
 
-### ✅ Expected Output
+### âœ… Expected Output
 
 ~~~
 false
 true
 ~~~
 
-### 🧠 Reasoning
+### ðŸ§  Reasoning
 
 * new String creates distinct object
 * == compares identity
 * equals compares content
 
-👉 **Use equals for String content**
+ðŸ‘‰ **Use equals for String content**
 
 ---
-## 🔹 ASSIGNMENT 8: Array Reference Copy
+## ðŸ”¹ ASSIGNMENT 8: Array Reference Copy
 
 ### Question
 
@@ -232,22 +232,22 @@ System.out.println(a[0]);
 
 ---
 
-### ✅ Expected Output
+### âœ… Expected Output
 
 ~~~
 71
 ~~~
 
-### 🧠 Reasoning
+### ðŸ§  Reasoning
 
 * arrays are objects
 * reference copy aliases same array
 * element mutation shared
 
-👉 **Array assignment copies reference**
+ðŸ‘‰ **Array assignment copies reference**
 
 ---
-## 🔹 ASSIGNMENT 9: Array Clone
+## ðŸ”¹ ASSIGNMENT 9: Array Clone
 
 ### Question
 
@@ -263,23 +263,23 @@ System.out.println(b[0]);
 
 ---
 
-### ✅ Expected Output
+### âœ… Expected Output
 
 ~~~
 69
 72
 ~~~
 
-### 🧠 Reasoning
+### ðŸ§  Reasoning
 
 * clone creates new array object
 * primitive elements copied by value
 * arrays become independent
 
-👉 **clone separates top-level array state**
+ðŸ‘‰ **clone separates top-level array state**
 
 ---
-## 🔹 ASSIGNMENT 10: Null One Reference
+## ðŸ”¹ ASSIGNMENT 10: Null One Reference
 
 ### Question
 
@@ -295,33 +295,145 @@ System.out.println(b.n);
 
 ---
 
-### ✅ Expected Output
+### âœ… Expected Output
 
 ~~~
 x
 ~~~
 
-### 🧠 Reasoning
+### ðŸ§  Reasoning
 
 * b still references object
 * nulling a removes only one reference
 * object remains accessible
 
-👉 **Nulling one variable does not delete object**
+ðŸ‘‰ **Nulling one variable does not delete object**
 
 ---
 
 ## Level 2 (Assignments 11-20)
 
-## 🔹 ASSIGNMENT 11: Primitive Value Copy
+## 🔹 ASSIGNMENT 11
 
 ### Question
 
 ~~~java
-int a = 71;
-int b = a;
-b = 74;
-System.out.println(a);
+int[][] arr = new int[2][];
+arr[0] = new int[]{1};
+arr[1] = arr[0];
+
+arr[0][0] = 99;
+
+System.out.println(arr[1][0]);
+~~~
+
+**Predict the output and explain why:**
+
+---
+
+### ✅ Expected Output
+
+~~~
+99
+~~~
+
+### 🧠 Reasoning
+
+* `arr[1]` and `arr[0]` point to the same inner array.
+* Updating `arr[0][0]` changes that shared array.
+
+👉 **2D arrays can share row references**
+
+---
+## 🔹 ASSIGNMENT 12
+
+### Question
+
+~~~java
+import java.util.*;
+
+List<int[]> list = new ArrayList<>();
+int[] a = {1};
+list.add(a);
+
+int[] b = a.clone();
+list.add(b);
+
+a[0] = 99;
+
+System.out.println(list.get(0)[0]);
+System.out.println(list.get(1)[0]);
+~~~
+
+**Predict the output and explain why:**
+
+---
+
+### ✅ Expected Output
+
+~~~
+99
+1
+~~~
+
+### 🧠 Reasoning
+
+* First element stores reference to original `a`.
+* Second element stores cloned array `b`.
+* Mutation on `a` does not affect `b`.
+
+👉 **`clone()` separates top-level array state**
+
+---
+## 🔹 ASSIGNMENT 13
+
+### Question
+
+~~~java
+import java.util.*;
+
+List<List<Integer>> x = new ArrayList<>();
+x.add(new ArrayList<>(Arrays.asList(1)));
+
+List<List<Integer>> y = new ArrayList<>(x);
+
+y.get(0).set(0, 99);
+
+System.out.println(x);
+System.out.println(y);
+~~~
+
+**Predict the output and explain why:**
+
+---
+
+### ✅ Expected Output
+
+~~~
+[[99]]
+[[99]]
+~~~
+
+### 🧠 Reasoning
+
+* `new ArrayList<>(x)` is a shallow copy of outer list.
+* Inner list reference is shared in both `x` and `y`.
+
+👉 **Shallow copy duplicates container, not nested objects**
+
+---
+## 🔹 ASSIGNMENT 14
+
+### Question
+
+~~~java
+import java.util.*;
+
+List<Integer> a = new ArrayList<>(Arrays.asList(1, 2));
+List<Integer> b = Collections.unmodifiableList(a);
+
+a.add(3);
+
 System.out.println(b);
 ~~~
 
@@ -332,29 +444,31 @@ System.out.println(b);
 ### ✅ Expected Output
 
 ~~~
-71
-74
+[1, 2, 3]
 ~~~
 
 ### 🧠 Reasoning
 
-* Primitive assignment copies value
-* b changes independently
-* a unchanged
+* `unmodifiableList` creates a read-only view, not a copy.
+* Backing list `a` is still mutable.
 
-👉 **Primitive copy creates independent values**
+👉 **Unmodifiable view reflects backing-list changes**
 
 ---
-## 🔹 ASSIGNMENT 12: Reference Assignment
+## 🔹 ASSIGNMENT 15
 
 ### Question
 
 ~~~java
-class Box { int v; }
-Box a = new Box(); a.v = 72;
-Box b = a;
-b.v = 75;
-System.out.println(a.v);
+void f(List<Integer> list) {
+    list = new ArrayList<>(list);
+    list.add(100);
+}
+
+List<Integer> l = new ArrayList<>(Arrays.asList(1, 2));
+f(l);
+
+System.out.println(l);
 ~~~
 
 **Predict the output and explain why:**
@@ -364,29 +478,30 @@ System.out.println(a.v);
 ### ✅ Expected Output
 
 ~~~
-75
+[1, 2]
 ~~~
 
 ### 🧠 Reasoning
 
-* a and b reference same object
-* field update mutates shared object
-* a observes updated value
+* Method parameter is a copied reference value.
+* Rebinding `list` inside method affects only local variable.
 
-👉 **Reference assignment shares object**
+👉 **Local reassignment does not change caller reference**
 
 ---
-## 🔹 ASSIGNMENT 13: Reference Reassignment
+## 🔹 ASSIGNMENT 16
 
 ### Question
 
 ~~~java
-class Box { int v; }
-Box a = new Box(); a.v = 73;
-Box b = a;
-b = new Box(); b.v = 76;
-System.out.println(a.v);
-System.out.println(b.v);
+void f(List<Integer> list) {
+    list.add(100);
+}
+
+List<Integer> l = new ArrayList<>(Arrays.asList(1, 2));
+f(l);
+
+System.out.println(l);
 ~~~
 
 **Predict the output and explain why:**
@@ -396,27 +511,27 @@ System.out.println(b.v);
 ### ✅ Expected Output
 
 ~~~
-73
-76
+[1, 2, 100]
 ~~~
 
 ### 🧠 Reasoning
 
-* b now points to new object
-* a still points to old object
-* state diverges
+* Method receives reference to same list object.
+* `add` mutates that shared object.
 
-👉 **Reassignment breaks aliasing**
+👉 **Object mutation is visible to caller**
 
 ---
-## 🔹 ASSIGNMENT 14: Method Primitive Param
+## 🔹 ASSIGNMENT 17
 
 ### Question
 
 ~~~java
-static void f(int x){ x = 77; }
-int a = 74;
-f(a);
+import java.util.*;
+
+List<Integer> a = Arrays.asList(1, 2, 3);
+a.set(0, 99);
+
 System.out.println(a);
 ~~~
 
@@ -427,28 +542,26 @@ System.out.println(a);
 ### ✅ Expected Output
 
 ~~~
-74
+[99, 2, 3]
 ~~~
 
 ### 🧠 Reasoning
 
-* Java passes primitives by value
-* method changes local copy
-* caller value unaffected
+* `Arrays.asList` gives fixed-size list.
+* `set` is allowed because it does not change size.
 
-👉 **Primitive args are copied**
+👉 **Fixed-size list allows replace, not add/remove**
 
 ---
-## 🔹 ASSIGNMENT 15: Method Object Mutation
+## 🔹 ASSIGNMENT 18
 
 ### Question
 
 ~~~java
-class Box { int v; }
-static void f(Box b){ b.v = 78; }
-Box a = new Box(); a.v = 75;
-f(a);
-System.out.println(a.v);
+import java.util.*;
+
+List<Integer> a = Arrays.asList(1, 2, 3);
+a.add(4);
 ~~~
 
 **Predict the output and explain why:**
@@ -458,28 +571,34 @@ System.out.println(a.v);
 ### ✅ Expected Output
 
 ~~~
-78
+Exception in thread "main" java.lang.UnsupportedOperationException
 ~~~
 
 ### 🧠 Reasoning
 
-* reference value copied
-* both refs point same object
-* field mutation visible to caller
+* `Arrays.asList` returns fixed-size list.
+* `add` tries to change size, so runtime throws exception.
 
-👉 **Pass-by-value of reference still mutates object**
+👉 **Fixed-size lists reject structural modification**
 
 ---
-## 🔹 ASSIGNMENT 16: Method Object Rebinding
+## 🔹 ASSIGNMENT 19
 
 ### Question
 
 ~~~java
-class Box { int v; }
-static void f(Box b){ b = new Box(); b.v = 79; }
-Box a = new Box(); a.v = 76;
-f(a);
-System.out.println(a.v);
+import java.util.*;
+
+List<Integer> base = new ArrayList<>(Arrays.asList(1, 2));
+List<List<Integer>> outer = new ArrayList<>();
+outer.add(base);
+
+List<Integer> copy = new ArrayList<>(base);
+outer.add(copy);
+
+base.add(99);
+
+System.out.println(outer);
 ~~~
 
 **Predict the output and explain why:**
@@ -489,84 +608,29 @@ System.out.println(a.v);
 ### ✅ Expected Output
 
 ~~~
-76
+[[1, 2, 99], [1, 2]]
 ~~~
 
 ### 🧠 Reasoning
 
-* parameter is local reference copy
-* rebind affects only local b
-* caller reference unchanged
+* First inner list in `outer` is `base` itself.
+* Second inner list is an independent copy.
+* Mutating `base` affects only first entry.
 
-👉 **Parameter reassignment is local only**
+👉 **Copying inner list breaks later mutation sharing**
 
 ---
-## 🔹 ASSIGNMENT 17: String Pool vs equals
+## 🔹 ASSIGNMENT 20
 
 ### Question
 
 ~~~java
-String a = "v77";`nString b = new String("v77");`nSystem.out.println(a == b);`nSystem.out.println(a.equals(b));
-~~~
-
-**Predict the output and explain why:**
-
----
-
-### ✅ Expected Output
-
-~~~
-false
-true
-~~~
-
-### 🧠 Reasoning
-
-* new String creates distinct object
-* == compares identity
-* equals compares content
-
-👉 **Use equals for String content**
-
----
-## 🔹 ASSIGNMENT 18: Array Reference Copy
-
-### Question
-
-~~~java
-int[] a = {78, 79};
+int[] a = {1, 2};
 int[] b = a;
-b[0] = 81;
-System.out.println(a[0]);
-~~~
 
-**Predict the output and explain why:**
+b = b.clone();
+b[0] = 99;
 
----
-
-### ✅ Expected Output
-
-~~~
-81
-~~~
-
-### 🧠 Reasoning
-
-* arrays are objects
-* reference copy aliases same array
-* element mutation shared
-
-👉 **Array assignment copies reference**
-
----
-## 🔹 ASSIGNMENT 19: Array Clone
-
-### Question
-
-~~~java
-int[] a = {79, 80};
-int[] b = a.clone();
-b[0] = 82;
 System.out.println(a[0]);
 System.out.println(b[0]);
 ~~~
@@ -578,63 +642,31 @@ System.out.println(b[0]);
 ### ✅ Expected Output
 
 ~~~
-79
-82
+1
+99
 ~~~
 
 ### 🧠 Reasoning
 
-* clone creates new array object
-* primitive elements copied by value
-* arrays become independent
+* Initially `b` aliases `a`.
+* After `clone`, `b` points to a new array.
+* Mutating `b` no longer affects `a`.
 
-👉 **clone separates top-level array state**
-
----
-## 🔹 ASSIGNMENT 20: Null One Reference
-
-### Question
-
-~~~java
-class P { String n; }
-P a = new P(); a.n = 'x';
-P b = a;
-a = null;
-System.out.println(b.n);
-~~~
-
-**Predict the output and explain why:**
-
----
-
-### ✅ Expected Output
-
-~~~
-x
-~~~
-
-### 🧠 Reasoning
-
-* b still references object
-* nulling a removes only one reference
-* object remains accessible
-
-👉 **Nulling one variable does not delete object**
+👉 **Alias removed after explicit clone + rebinding**
 
 ---
 
 ## Level 3 (Assignments 21-30)
 
-## 🔹 ASSIGNMENT 21: Primitive Value Copy
+## 🔹 ASSIGNMENT 21
 
 ### Question
 
 ~~~java
-int a = 81;
-int b = a;
-b = 84;
-System.out.println(a);
-System.out.println(b);
+Integer a = 127;
+Integer b = 127;
+
+System.out.println(a == b);
 ~~~
 
 **Predict the output and explain why:**
@@ -644,181 +676,26 @@ System.out.println(b);
 ### ✅ Expected Output
 
 ~~~
-81
-84
+true
 ~~~
 
 ### 🧠 Reasoning
 
-* Primitive assignment copies value
-* b changes independently
-* a unchanged
+* Autoboxing uses `Integer.valueOf`.
+* `127` is inside Integer cache range (`-128` to `127`).
 
-👉 **Primitive copy creates independent values**
+👉 **Cached boxed Integers can share identity**
 
 ---
-## 🔹 ASSIGNMENT 22: Reference Assignment
+## 🔹 ASSIGNMENT 22
 
 ### Question
 
 ~~~java
-class Box { int v; }
-Box a = new Box(); a.v = 82;
-Box b = a;
-b.v = 85;
-System.out.println(a.v);
-~~~
+Integer a = 128;
+Integer b = 128;
 
-**Predict the output and explain why:**
-
----
-
-### ✅ Expected Output
-
-~~~
-85
-~~~
-
-### 🧠 Reasoning
-
-* a and b reference same object
-* field update mutates shared object
-* a observes updated value
-
-👉 **Reference assignment shares object**
-
----
-## 🔹 ASSIGNMENT 23: Reference Reassignment
-
-### Question
-
-~~~java
-class Box { int v; }
-Box a = new Box(); a.v = 83;
-Box b = a;
-b = new Box(); b.v = 86;
-System.out.println(a.v);
-System.out.println(b.v);
-~~~
-
-**Predict the output and explain why:**
-
----
-
-### ✅ Expected Output
-
-~~~
-83
-86
-~~~
-
-### 🧠 Reasoning
-
-* b now points to new object
-* a still points to old object
-* state diverges
-
-👉 **Reassignment breaks aliasing**
-
----
-## 🔹 ASSIGNMENT 24: Method Primitive Param
-
-### Question
-
-~~~java
-static void f(int x){ x = 87; }
-int a = 84;
-f(a);
-System.out.println(a);
-~~~
-
-**Predict the output and explain why:**
-
----
-
-### ✅ Expected Output
-
-~~~
-84
-~~~
-
-### 🧠 Reasoning
-
-* Java passes primitives by value
-* method changes local copy
-* caller value unaffected
-
-👉 **Primitive args are copied**
-
----
-## 🔹 ASSIGNMENT 25: Method Object Mutation
-
-### Question
-
-~~~java
-class Box { int v; }
-static void f(Box b){ b.v = 88; }
-Box a = new Box(); a.v = 85;
-f(a);
-System.out.println(a.v);
-~~~
-
-**Predict the output and explain why:**
-
----
-
-### ✅ Expected Output
-
-~~~
-88
-~~~
-
-### 🧠 Reasoning
-
-* reference value copied
-* both refs point same object
-* field mutation visible to caller
-
-👉 **Pass-by-value of reference still mutates object**
-
----
-## 🔹 ASSIGNMENT 26: Method Object Rebinding
-
-### Question
-
-~~~java
-class Box { int v; }
-static void f(Box b){ b = new Box(); b.v = 89; }
-Box a = new Box(); a.v = 86;
-f(a);
-System.out.println(a.v);
-~~~
-
-**Predict the output and explain why:**
-
----
-
-### ✅ Expected Output
-
-~~~
-86
-~~~
-
-### 🧠 Reasoning
-
-* parameter is local reference copy
-* rebind affects only local b
-* caller reference unchanged
-
-👉 **Parameter reassignment is local only**
-
----
-## 🔹 ASSIGNMENT 27: String Pool vs equals
-
-### Question
-
-~~~java
-String a = "v87";`nString b = new String("v87");`nSystem.out.println(a == b);`nSystem.out.println(a.equals(b));
+System.out.println(a == b);
 ~~~
 
 **Predict the output and explain why:**
@@ -829,26 +706,142 @@ String a = "v87";`nString b = new String("v87");`nSystem.out.println(a == b);`nS
 
 ~~~
 false
+~~~
+
+### 🧠 Reasoning
+
+* `128` is outside default Integer cache range.
+* Two distinct `Integer` objects are typically created.
+
+👉 **Do not use `==` for boxed numeric value comparison**
+
+---
+## 🔹 ASSIGNMENT 23
+
+### Question
+
+~~~java
+Integer a = 128;
+Integer b = 128;
+
+System.out.println(a.equals(b));
+~~~
+
+**Predict the output and explain why:**
+
+---
+
+### ✅ Expected Output
+
+~~~
 true
 ~~~
 
 ### 🧠 Reasoning
 
-* new String creates distinct object
-* == compares identity
-* equals compares content
+* `equals` compares numeric value, not identity.
 
-👉 **Use equals for String content**
+👉 **Use `equals` for wrapper value equality**
 
 ---
-## 🔹 ASSIGNMENT 28: Array Reference Copy
+## 🔹 ASSIGNMENT 24
 
 ### Question
 
 ~~~java
-int[] a = {88, 89};
-int[] b = a;
-b[0] = 91;
+String a = "ab";
+String b = "a" + "b";
+
+System.out.println(a == b);
+~~~
+
+**Predict the output and explain why:**
+
+---
+
+### ✅ Expected Output
+
+~~~
+true
+~~~
+
+### 🧠 Reasoning
+
+* Literal concatenation is compile-time constant folding.
+* Both references point to same pooled string.
+
+👉 **Compile-time constants are interned in string pool**
+
+---
+## 🔹 ASSIGNMENT 25
+
+### Question
+
+~~~java
+String a = "ab";
+String b = new String("a") + new String("b");
+
+System.out.println(a == b);
+~~~
+
+**Predict the output and explain why:**
+
+---
+
+### ✅ Expected Output
+
+~~~
+false
+~~~
+
+### 🧠 Reasoning
+
+* Runtime concatenation with `new String(...)` creates new object.
+* It is not automatically the pooled literal reference.
+
+👉 **Runtime-created Strings are usually distinct objects**
+
+---
+## 🔹 ASSIGNMENT 26
+
+### Question
+
+~~~java
+String a = "ab";
+String b = (new String("a") + new String("b")).intern();
+
+System.out.println(a == b);
+~~~
+
+**Predict the output and explain why:**
+
+---
+
+### ✅ Expected Output
+
+~~~
+true
+~~~
+
+### 🧠 Reasoning
+
+* `intern()` returns pooled canonical string reference.
+* Literal `"ab"` already points to pooled instance.
+
+👉 **`intern()` aligns runtime String with pool identity**
+
+---
+## 🔹 ASSIGNMENT 27
+
+### Question
+
+~~~java
+int[] a = {1, 2, 3};
+
+for (int x : a) {
+    x = x + 10;
+}
+
 System.out.println(a[0]);
 ~~~
 
@@ -859,28 +852,31 @@ System.out.println(a[0]);
 ### ✅ Expected Output
 
 ~~~
-91
+1
 ~~~
 
 ### 🧠 Reasoning
 
-* arrays are objects
-* reference copy aliases same array
-* element mutation shared
+* Enhanced for-loop variable `x` is a copy of each element value.
+* Reassigning `x` does not write back into array.
 
-👉 **Array assignment copies reference**
+👉 **For-each variable reassignment does not mutate source array**
 
 ---
-## 🔹 ASSIGNMENT 29: Array Clone
+## 🔹 ASSIGNMENT 28
 
 ### Question
 
 ~~~java
-int[] a = {89, 90};
-int[] b = a.clone();
-b[0] = 92;
-System.out.println(a[0]);
-System.out.println(b[0]);
+import java.util.*;
+
+List<Integer> list = new ArrayList<>(Arrays.asList(1, 2, 3));
+
+for (Integer x : list) {
+    x = x + 10;
+}
+
+System.out.println(list);
 ~~~
 
 **Predict the output and explain why:**
@@ -890,29 +886,29 @@ System.out.println(b[0]);
 ### ✅ Expected Output
 
 ~~~
-89
-92
+[1, 2, 3]
 ~~~
 
 ### 🧠 Reasoning
 
-* clone creates new array object
-* primitive elements copied by value
-* arrays become independent
+* `x` is local loop variable holding reference/value copy.
+* Rebinding `x` does not replace elements in list.
 
-👉 **clone separates top-level array state**
+👉 **Reassigning loop variable is not list mutation**
 
 ---
-## 🔹 ASSIGNMENT 30: Null One Reference
+## 🔹 ASSIGNMENT 29
 
 ### Question
 
 ~~~java
-class P { String n; }
-P a = new P(); a.n = 'x';
-P b = a;
-a = null;
-System.out.println(b.n);
+import java.util.*;
+
+List<Integer> list = new ArrayList<>(Arrays.asList(1, 2, 3));
+
+for (int i = 0; i < list.size(); i++) {
+    list.add(i);
+}
 ~~~
 
 **Predict the output and explain why:**
@@ -922,15 +918,50 @@ System.out.println(b.n);
 ### ✅ Expected Output
 
 ~~~
-x
+No normal completion: loop keeps growing list until resource failure (typically OutOfMemoryError)
 ~~~
 
 ### 🧠 Reasoning
 
-* b still references object
-* nulling a removes only one reference
-* object remains accessible
+* `i` increases by 1 each iteration.
+* `list.size()` also increases by 1 each iteration due to `add`.
+* Condition `i < list.size()` stays true, so loop does not terminate normally.
 
-👉 **Nulling one variable does not delete object**
+👉 **Mutating loop bound source can create non-terminating growth**
+
+---
+## 🔹 ASSIGNMENT 30
+
+### Question
+
+~~~java
+Integer a = 100;
+Integer b = 100;
+Integer c = new Integer(100);
+
+System.out.println(a == b);
+System.out.println(a == c);
+System.out.println(a.equals(c));
+~~~
+
+**Predict the output and explain why:**
+
+---
+
+### ✅ Expected Output
+
+~~~
+true
+false
+true
+~~~
+
+### 🧠 Reasoning
+
+* `a` and `b` use cached boxed Integer for `100`.
+* `new Integer(100)` always creates a new object.
+* `equals` compares numeric value.
+
+👉 **Boxed identity and boxed value equality are different checks**
 
 ---

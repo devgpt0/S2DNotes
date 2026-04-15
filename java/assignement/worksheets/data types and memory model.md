@@ -1,4 +1,4 @@
-# ☕ JAVA ASSIGNMENT - DATA TYPES AND MEMORY MODEL
+﻿# 🔹 JAVA ASSIGNMENT - DATA TYPES AND MEMORY MODEL
 
 ## Level 1 (Assignments 1-10)
 ## 🔹 ASSIGNMENT 1: Primitive Value Copy
@@ -149,146 +149,167 @@ System.out.println(b.n);
 
 ## Level 2 (Assignments 11-20)
 
-## 🔹 ASSIGNMENT 11: Primitive Value Copy
-
-### Question
+## 🔹 ASSIGNMENT 11
 
 ~~~java
-int a = 71;
-int b = a;
-b = 74;
-System.out.println(a);
+int[][] arr = new int[2][];
+arr[0] = new int[]{1};
+arr[1] = arr[0];
+
+arr[0][0] = 99;
+
+System.out.println(arr[1][0]);
+~~~
+
+**Predict the output and explain why:**
+
+---
+## 🔹 ASSIGNMENT 12
+
+~~~java
+import java.util.*;
+
+List<int[]> list = new ArrayList<>();
+int[] a = {1};
+list.add(a);
+
+int[] b = a.clone();
+list.add(b);
+
+a[0] = 99;
+
+System.out.println(list.get(0)[0]);
+System.out.println(list.get(1)[0]);
+~~~
+
+**Predict the output and explain why:**
+
+---
+## 🔹 ASSIGNMENT 13
+
+~~~java
+import java.util.*;
+
+List<List<Integer>> x = new ArrayList<>();
+x.add(new ArrayList<>(Arrays.asList(1)));
+
+List<List<Integer>> y = new ArrayList<>(x);
+
+y.get(0).set(0, 99);
+
+System.out.println(x);
+System.out.println(y);
+~~~
+
+**Predict the output and explain why:**
+
+---
+## 🔹 ASSIGNMENT 14
+
+~~~java
+import java.util.*;
+
+List<Integer> a = new ArrayList<>(Arrays.asList(1, 2));
+List<Integer> b = Collections.unmodifiableList(a);
+
+a.add(3);
+
 System.out.println(b);
 ~~~
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 12: Reference Assignment
-
-### Question
+## 🔹 ASSIGNMENT 15
 
 ~~~java
-class Box { int v; }
-Box a = new Box(); a.v = 72;
-Box b = a;
-b.v = 75;
-System.out.println(a.v);
+void f(List<Integer> list) {
+    list = new ArrayList<>(list);
+    list.add(100);
+}
+
+List<Integer> l = new ArrayList<>(Arrays.asList(1, 2));
+f(l);
+
+System.out.println(l);
 ~~~
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 13: Reference Reassignment
-
-### Question
+## 🔹 ASSIGNMENT 16
 
 ~~~java
-class Box { int v; }
-Box a = new Box(); a.v = 73;
-Box b = a;
-b = new Box(); b.v = 76;
-System.out.println(a.v);
-System.out.println(b.v);
+void f(List<Integer> list) {
+    list.add(100);
+}
+
+List<Integer> l = new ArrayList<>(Arrays.asList(1, 2));
+f(l);
+
+System.out.println(l);
 ~~~
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 14: Method Primitive Param
-
-### Question
+## 🔹 ASSIGNMENT 17
 
 ~~~java
-static void f(int x){ x = 77; }
-int a = 74;
-f(a);
+import java.util.*;
+
+List<Integer> a = Arrays.asList(1, 2, 3);
+a.set(0, 99);
+
 System.out.println(a);
 ~~~
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 15: Method Object Mutation
-
-### Question
+## 🔹 ASSIGNMENT 18
 
 ~~~java
-class Box { int v; }
-static void f(Box b){ b.v = 78; }
-Box a = new Box(); a.v = 75;
-f(a);
-System.out.println(a.v);
+import java.util.*;
+
+List<Integer> a = Arrays.asList(1, 2, 3);
+a.add(4);
 ~~~
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 16: Method Object Rebinding
-
-### Question
+## 🔹 ASSIGNMENT 19
 
 ~~~java
-class Box { int v; }
-static void f(Box b){ b = new Box(); b.v = 79; }
-Box a = new Box(); a.v = 76;
-f(a);
-System.out.println(a.v);
+import java.util.*;
+
+List<Integer> base = new ArrayList<>(Arrays.asList(1, 2));
+List<List<Integer>> outer = new ArrayList<>();
+outer.add(base);
+
+List<Integer> copy = new ArrayList<>(base);
+outer.add(copy);
+
+base.add(99);
+
+System.out.println(outer);
 ~~~
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 17: String Pool vs equals
-
-### Question
+## 🔹 ASSIGNMENT 20
 
 ~~~java
-String a = "v77";`nString b = new String("v77");`nSystem.out.println(a == b);`nSystem.out.println(a.equals(b));
-~~~
-
-**Predict the output and explain why:**
-
----
-## 🔹 ASSIGNMENT 18: Array Reference Copy
-
-### Question
-
-~~~java
-int[] a = {78, 79};
+int[] a = {1, 2};
 int[] b = a;
-b[0] = 81;
-System.out.println(a[0]);
-~~~
 
-**Predict the output and explain why:**
+b = b.clone();
+b[0] = 99;
 
----
-## 🔹 ASSIGNMENT 19: Array Clone
-
-### Question
-
-~~~java
-int[] a = {79, 80};
-int[] b = a.clone();
-b[0] = 82;
 System.out.println(a[0]);
 System.out.println(b[0]);
-~~~
-
-**Predict the output and explain why:**
-
----
-## 🔹 ASSIGNMENT 20: Null One Reference
-
-### Question
-
-~~~java
-class P { String n; }
-P a = new P(); a.n = 'x';
-P b = a;
-a = null;
-System.out.println(b.n);
 ~~~
 
 **Predict the output and explain why:**
@@ -297,146 +318,135 @@ System.out.println(b.n);
 
 ## Level 3 (Assignments 21-30)
 
-## 🔹 ASSIGNMENT 21: Primitive Value Copy
-
-### Question
+## 🔹 ASSIGNMENT 21
 
 ~~~java
-int a = 81;
-int b = a;
-b = 84;
-System.out.println(a);
-System.out.println(b);
+Integer a = 127;
+Integer b = 127;
+
+System.out.println(a == b);
 ~~~
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 22: Reference Assignment
-
-### Question
+## 🔹 ASSIGNMENT 22
 
 ~~~java
-class Box { int v; }
-Box a = new Box(); a.v = 82;
-Box b = a;
-b.v = 85;
-System.out.println(a.v);
+Integer a = 128;
+Integer b = 128;
+
+System.out.println(a == b);
 ~~~
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 23: Reference Reassignment
-
-### Question
+## 🔹 ASSIGNMENT 23
 
 ~~~java
-class Box { int v; }
-Box a = new Box(); a.v = 83;
-Box b = a;
-b = new Box(); b.v = 86;
-System.out.println(a.v);
-System.out.println(b.v);
+Integer a = 128;
+Integer b = 128;
+
+System.out.println(a.equals(b));
 ~~~
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 24: Method Primitive Param
-
-### Question
+## 🔹 ASSIGNMENT 24
 
 ~~~java
-static void f(int x){ x = 87; }
-int a = 84;
-f(a);
-System.out.println(a);
+String a = "ab";
+String b = "a" + "b";
+
+System.out.println(a == b);
 ~~~
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 25: Method Object Mutation
-
-### Question
+## 🔹 ASSIGNMENT 25
 
 ~~~java
-class Box { int v; }
-static void f(Box b){ b.v = 88; }
-Box a = new Box(); a.v = 85;
-f(a);
-System.out.println(a.v);
+String a = "ab";
+String b = new String("a") + new String("b");
+
+System.out.println(a == b);
 ~~~
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 26: Method Object Rebinding
-
-### Question
+## 🔹 ASSIGNMENT 26
 
 ~~~java
-class Box { int v; }
-static void f(Box b){ b = new Box(); b.v = 89; }
-Box a = new Box(); a.v = 86;
-f(a);
-System.out.println(a.v);
+String a = "ab";
+String b = (new String("a") + new String("b")).intern();
+
+System.out.println(a == b);
 ~~~
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 27: String Pool vs equals
-
-### Question
+## 🔹 ASSIGNMENT 27
 
 ~~~java
-String a = "v87";`nString b = new String("v87");`nSystem.out.println(a == b);`nSystem.out.println(a.equals(b));
-~~~
+int[] a = {1, 2, 3};
 
-**Predict the output and explain why:**
+for (int x : a) {
+    x = x + 10;
+}
 
----
-## 🔹 ASSIGNMENT 28: Array Reference Copy
-
-### Question
-
-~~~java
-int[] a = {88, 89};
-int[] b = a;
-b[0] = 91;
 System.out.println(a[0]);
 ~~~
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 29: Array Clone
-
-### Question
+## 🔹 ASSIGNMENT 28
 
 ~~~java
-int[] a = {89, 90};
-int[] b = a.clone();
-b[0] = 92;
-System.out.println(a[0]);
-System.out.println(b[0]);
+import java.util.*;
+
+List<Integer> list = new ArrayList<>(Arrays.asList(1, 2, 3));
+
+for (Integer x : list) {
+    x = x + 10;
+}
+
+System.out.println(list);
 ~~~
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 30: Null One Reference
-
-### Question
+## 🔹 ASSIGNMENT 29
 
 ~~~java
-class P { String n; }
-P a = new P(); a.n = 'x';
-P b = a;
-a = null;
-System.out.println(b.n);
+import java.util.*;
+
+List<Integer> list = new ArrayList<>(Arrays.asList(1, 2, 3));
+
+for (int i = 0; i < list.size(); i++) {
+    list.add(i);
+}
+~~~
+
+**Predict the output and explain why:**
+
+---
+## 🔹 ASSIGNMENT 30
+
+~~~java
+Integer a = 100;
+Integer b = 100;
+Integer c = new Integer(100);
+
+System.out.println(a == b);
+System.out.println(a == c);
+System.out.println(a.equals(c));
 ~~~
 
 **Predict the output and explain why:**

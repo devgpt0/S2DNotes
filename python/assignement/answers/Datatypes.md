@@ -1,7 +1,7 @@
 ﻿# 🔹  PYTHON ASSIGNMENT - DATATYPES PYTHON ASSIGNMENT - DATATYPES
 
 ## Level 1 (Assignments 1-10)
-## ðŸ”¹ ASSIGNMENT 1: Variable as Reference
+## 🔹 ASSIGNMENT 1: Variable as Reference
 
 ### Question
 
@@ -16,14 +16,14 @@ print(b)
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 [91, 92]
 [91, 92]
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * `a` creates one list object in heap
 * `b = a` copies reference, not list object
@@ -32,7 +32,7 @@ print(b)
 ðŸ‘‰ **Variables are references (labels), not containers**
 
 ---
-## ðŸ”¹ ASSIGNMENT 2: Mutable Object Mutation
+## 🔹 ASSIGNMENT 2: Mutable Object Mutation
 
 ### Question
 
@@ -48,14 +48,14 @@ print(y)
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 [92, 93, 94]
 [92, 93, 94]
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * `x` and `y` alias same list
 * append mutates shared object
@@ -64,7 +64,7 @@ print(y)
 ðŸ‘‰ **Mutation affects all aliases**
 
 ---
-## ðŸ”¹ ASSIGNMENT 3: Immutable Rebinding
+## 🔹 ASSIGNMENT 3: Immutable Rebinding
 
 ### Question
 
@@ -80,14 +80,14 @@ print(b)
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 93
 96
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * Integers are immutable
 * Reassignment binds b to a new int object
@@ -96,7 +96,7 @@ print(b)
 ðŸ‘‰ **Rebinding is not mutation**
 
 ---
-## ðŸ”¹ ASSIGNMENT 4: Function Mutation
+## 🔹 ASSIGNMENT 4: Function Mutation
 
 ### Question
 
@@ -113,13 +113,13 @@ print(l)
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 [95, 94]
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * Function gets reference to same list
 * append mutates object in place
@@ -128,7 +128,7 @@ print(l)
 ðŸ‘‰ **Call-by-sharing + mutation changes original object**
 
 ---
-## ðŸ”¹ ASSIGNMENT 5: Function Rebinding
+## 🔹 ASSIGNMENT 5: Function Rebinding
 
 ### Question
 
@@ -145,13 +145,13 @@ print(l)
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 [97]
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * Parameter name is local
 * local rebinding does not touch caller binding
@@ -160,7 +160,7 @@ print(l)
 ðŸ‘‰ **Local rebinding has no external effect**
 
 ---
-## ðŸ”¹ ASSIGNMENT 6: Identity vs Equality
+## 🔹 ASSIGNMENT 6: Identity vs Equality
 
 ### Question
 
@@ -178,7 +178,7 @@ print(a == c)
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 True
@@ -187,7 +187,7 @@ False
 True
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * `is` checks identity
 * `==` checks value
@@ -196,7 +196,7 @@ True
 ðŸ‘‰ **Identity and value equality are different**
 
 ---
-## ðŸ”¹ ASSIGNMENT 7: Shallow Copy Top Level
+## 🔹 ASSIGNMENT 7: Shallow Copy Top Level
 
 ### Question
 
@@ -212,14 +212,14 @@ print(y)
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 [97, 98]
 [97, 98, 99]
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * slice creates new outer list
 * mutation on y does not touch x
@@ -228,7 +228,7 @@ print(y)
 ðŸ‘‰ **Shallow copy separates only outer container**
 
 ---
-## ðŸ”¹ ASSIGNMENT 8: Nested Shallow Copy Trap
+## 🔹 ASSIGNMENT 8: Nested Shallow Copy Trap
 
 ### Question
 
@@ -244,14 +244,14 @@ print(y)
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 [[98, 100], [99]]
 [[98, 100], [99]]
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * outer list copied
 * inner list shared
@@ -260,7 +260,7 @@ print(y)
 ðŸ‘‰ **Shallow copy does not clone nested objects**
 
 ---
-## ðŸ”¹ ASSIGNMENT 9: Tuple with Mutable Item
+## 🔹 ASSIGNMENT 9: Tuple with Mutable Item
 
 ### Question
 
@@ -274,13 +274,13 @@ print(t)
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 ([99, 100], 'k')
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * tuple is immutable container
 * list element is mutable
@@ -289,7 +289,7 @@ print(t)
 ðŸ‘‰ **Container immutability is not deep immutability**
 
 ---
-## ðŸ”¹ ASSIGNMENT 10: del One Name
+## 🔹 ASSIGNMENT 10: del One Name
 
 ### Question
 
@@ -304,13 +304,13 @@ print(b)
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 [100]
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * del removes one binding
 * object still referenced by b
