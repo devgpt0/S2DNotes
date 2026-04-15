@@ -1,4 +1,4 @@
-# 🐍 PYTHON ASSIGNMENT - DATATYPES
+﻿# 🔹  PYTHON ASSIGNMENT - DATATYPES
 
 ## Level 1 (Assignments 1-10)
 ## 🔹 ASSIGNMENT 1: Variable as Reference
@@ -152,308 +152,317 @@ print(b)
 
 ---
 
-## Level 2 (Assignments 11-20)
+## LEVEL 2 - Intermediate
 
-## 🔹 ASSIGNMENT 11: Variable as Reference
+## ASSIGNMENT 11
 
-### Question
-
-~~~python
-a = [101, 102]
-b = a
-print(a)
-print(b)
-~~~
+```python
+x = [[0]] * 3
+x[0].append(1)
+print(x)
+```
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 12: Mutable Object Mutation
 
-### Question
+## ASSIGNMENT 12
 
-~~~python
-x = [102, 103]
-y = x
-y.append(104)
+```python
+import copy
+
+a = [[1, 2], [3, 4]]
+b = a
+c = a[:]
+d = copy.deepcopy(a)
+
+a[0].append(99)
+
+print(b)
+print(c)
+print(d)
+```
+
+**Predict the output and explain why:**
+
+---
+
+## ASSIGNMENT 13
+
+```python
+def f(x):
+    x[0] = x[0] + 10
+
+l = [5]
+f(l)
+print(l)
+```
+
+**Predict the output and explain why:**
+
+---
+
+## ASSIGNMENT 14
+
+```python
+def f(val, lst=[]):
+    lst.append(val)
+    return lst
+
+print(f(1))
+print(f(2))
+print(f(3))
+```
+
+**Predict the output and explain why:**
+
+---
+
+## ASSIGNMENT 15
+
+```python
+def f(x):
+    x = x + [100]
+
+l = [1, 2]
+f(l)
+print(l)
+```
+
+**Predict the output and explain why:**
+
+---
+
+## ASSIGNMENT 16
+
+```python
+t1 = ([1, 2], [3, 4])
+t2 = t1[:]
+
+t2[0].append(99)
+
+print(t1)
+print(t2)
+```
+
+**Predict the output and explain why:**
+
+---
+
+## ASSIGNMENT 17
+
+```python
+d = {"a": [1]}
+x = d
+y = d.copy()
+
+d["a"].append(2)
+
 print(x)
 print(y)
-~~~
+```
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 13: Immutable Rebinding
 
-### Question
+## ASSIGNMENT 18
 
-~~~python
-a = 103
-b = a
-b = 106
-print(a)
-print(b)
-~~~
+```python
+def f(x):
+    x.append(5)
+    return x
 
-**Predict the output and explain why:**
+a = [1]
+b = f(a)
 
----
-## 🔹 ASSIGNMENT 14: Function Mutation
-
-### Question
-
-~~~python
-def f(v):
-    v.append(104)
-
-l = [105]
-f(l)
-print(l)
-~~~
-
-**Predict the output and explain why:**
-
----
-## 🔹 ASSIGNMENT 15: Function Rebinding
-
-### Question
-
-~~~python
-def f(v):
-    v = [105, 106]
-
-l = [107]
-f(l)
-print(l)
-~~~
-
-**Predict the output and explain why:**
-
----
-## 🔹 ASSIGNMENT 16: Identity vs Equality
-
-### Question
-
-~~~python
-a = [106]
-b = a
-c = [106]
 print(a is b)
-print(a == b)
-print(a is c)
-print(a == c)
-~~~
-
-**Predict the output and explain why:**
-
----
-## 🔹 ASSIGNMENT 17: Shallow Copy Top Level
-
-### Question
-
-~~~python
-x = [107, 108]
-y = x[:]
-y.append(109)
-print(x)
-print(y)
-~~~
-
-**Predict the output and explain why:**
-
----
-## 🔹 ASSIGNMENT 18: Nested Shallow Copy Trap
-
-### Question
-
-~~~python
-x = [[108], [109]]
-y = x[:]
-y[0].append(110)
-print(x)
-print(y)
-~~~
-
-**Predict the output and explain why:**
-
----
-## 🔹 ASSIGNMENT 19: Tuple with Mutable Item
-
-### Question
-
-~~~python
-t = ([109], 'k')
-t[0].append(110)
-print(t)
-~~~
-
-**Predict the output and explain why:**
-
----
-## 🔹 ASSIGNMENT 20: del One Name
-
-### Question
-
-~~~python
-a = [110]
-b = a
-del a
-print(b)
-~~~
-
-**Predict the output and explain why:**
-
----
-
-## Level 3 (Assignments 21-30)
-
-## 🔹 ASSIGNMENT 21: Variable as Reference
-
-### Question
-
-~~~python
-a = [111, 112]
-b = a
 print(a)
 print(b)
-~~~
+```
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 22: Mutable Object Mutation
 
-### Question
+## ASSIGNMENT 19
 
-~~~python
-x = [112, 113]
+```python
+x = [[1], [2]]
 y = x
-y.append(114)
+
+y[0] = [99]
+
 print(x)
 print(y)
-~~~
+```
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 23: Immutable Rebinding
 
-### Question
+## ASSIGNMENT 20
 
-~~~python
-a = 113
-b = a
-b = 116
-print(a)
-print(b)
-~~~
+```python
+x = [1, 2]
+y = x
 
-**Predict the output and explain why:**
+print(id(x), id(y))
 
----
-## 🔹 ASSIGNMENT 24: Function Mutation
+y = y + [3]
 
-### Question
-
-~~~python
-def f(v):
-    v.append(114)
-
-l = [115]
-f(l)
-print(l)
-~~~
+print(id(x), id(y))
+```
 
 **Predict the output and explain why:**
 
 ---
-## 🔹 ASSIGNMENT 25: Function Rebinding
 
-### Question
+## LEVEL 3 - Advanced
 
-~~~python
-def f(v):
-    v = [115, 116]
+## ASSIGNMENT 21
 
-l = [117]
-f(l)
-print(l)
-~~~
+```python
+a = 256
+b = 256
 
-**Predict the output and explain why:**
-
----
-## 🔹 ASSIGNMENT 26: Identity vs Equality
-
-### Question
-
-~~~python
-a = [116]
-b = a
-c = [116]
 print(a is b)
+```
+
+**Predict the output and explain why:**
+
+---
+
+## ASSIGNMENT 22
+
+```python
+a = 1000
+b = 1000
+
+print(a is b)
+```
+
+**Predict the output and explain why:**
+
+---
+
+## ASSIGNMENT 23
+
+```python
+a = "hello"
+b = "hello"
+
+print(a is b)
+```
+
+**Predict the output and explain why:**
+
+---
+
+## ASSIGNMENT 24
+
+```python
+a = "hello world"
+b = "hello " + "world"
+
+print(a is b)
+```
+
+**Predict the output and explain why:**
+
+---
+
+## ASSIGNMENT 25
+
+```python
+x = [1, 2]
+y = x
+
+x += [3]
+
+print(x)
+print(y)
+```
+
+**Predict the output and explain why:**
+
+---
+
+## ASSIGNMENT 26
+
+```python
+x = [1, 2]
+y = x
+
+x = x + [3]
+
+print(x)
+print(y)
+```
+
+**Predict the output and explain why:**
+
+---
+
+## ASSIGNMENT 27
+
+```python
+def f():
+    x = []
+    def g():
+        x.append(1)
+        return x
+    return g
+
+a = f()
+print(a())
+print(a())
+```
+
+**Predict the output and explain why:**
+
+---
+
+## ASSIGNMENT 28
+
+```python
+funcs = []
+
+for i in range(3):
+    funcs.append(lambda: i)
+
+print([f() for f in funcs])
+```
+
+**Predict the output and explain why:**
+
+---
+
+## ASSIGNMENT 29
+
+```python
+def f(x, cache={}):
+    if x in cache:
+        return cache[x]
+    cache[x] = x * x
+    return cache[x]
+
+print(f(2))
+print(f(2))
+```
+
+**Predict the output and explain why:**
+
+---
+
+## ASSIGNMENT 30
+
+```python
+a = [1, 2, 3]
+b = [1, 2, 3]
+
 print(a == b)
-print(a is c)
-print(a == c)
-~~~
+print(a is b)
+```
 
 **Predict the output and explain why:**
-
----
-## 🔹 ASSIGNMENT 27: Shallow Copy Top Level
-
-### Question
-
-~~~python
-x = [117, 118]
-y = x[:]
-y.append(119)
-print(x)
-print(y)
-~~~
-
-**Predict the output and explain why:**
-
----
-## 🔹 ASSIGNMENT 28: Nested Shallow Copy Trap
-
-### Question
-
-~~~python
-x = [[118], [119]]
-y = x[:]
-y[0].append(120)
-print(x)
-print(y)
-~~~
-
-**Predict the output and explain why:**
-
----
-## 🔹 ASSIGNMENT 29: Tuple with Mutable Item
-
-### Question
-
-~~~python
-t = ([119], 'k')
-t[0].append(120)
-print(t)
-~~~
-
-**Predict the output and explain why:**
-
----
-## 🔹 ASSIGNMENT 30: del One Name
-
-### Question
-
-~~~python
-a = [120]
-b = a
-del a
-print(b)
-~~~
-
-**Predict the output and explain why:**
-
----
