@@ -1,7 +1,7 @@
-﻿# â˜• JAVA ASSIGNMENT - DATA TYPES AND MEMORY MODEL
+﻿# 🔹 JAVA ASSIGNMENT - DATA TYPES AND MEMORY MODEL
 
 ## Level 1 (Assignments 1-10)
-## ðŸ”¹ ASSIGNMENT 1: Primitive Value Copy
+## 🔹 ASSIGNMENT 1: Primitive Value Copy
 
 ### Question
 
@@ -30,10 +30,10 @@ System.out.println(b);
 * b changes independently
 * a unchanged
 
-ðŸ‘‰ **Primitive copy creates independent values**
+🔹 **Primitive copy creates independent values**
 
 ---
-## ðŸ”¹ ASSIGNMENT 2: Reference Assignment
+## 🔹 ASSIGNMENT 2: Reference Assignment
 
 ### Question
 
@@ -61,10 +61,10 @@ System.out.println(a.v);
 * field update mutates shared object
 * a observes updated value
 
-ðŸ‘‰ **Reference assignment shares object**
+🔹 **Reference assignment shares object**
 
 ---
-## ðŸ”¹ ASSIGNMENT 3: Reference Reassignment
+## 🔹 ASSIGNMENT 3: Reference Reassignment
 
 ### Question
 
@@ -94,10 +94,10 @@ System.out.println(b.v);
 * a still points to old object
 * state diverges
 
-ðŸ‘‰ **Reassignment breaks aliasing**
+🔹 **Reassignment breaks aliasing**
 
 ---
-## ðŸ”¹ ASSIGNMENT 4: Method Primitive Param
+## 🔹 ASSIGNMENT 4: Method Primitive Param
 
 ### Question
 
@@ -124,10 +124,10 @@ System.out.println(a);
 * method changes local copy
 * caller value unaffected
 
-ðŸ‘‰ **Primitive args are copied**
+🔹 **Primitive args are copied**
 
 ---
-## ðŸ”¹ ASSIGNMENT 5: Method Object Mutation
+## 🔹 ASSIGNMENT 5: Method Object Mutation
 
 ### Question
 
@@ -155,10 +155,10 @@ System.out.println(a.v);
 * both refs point same object
 * field mutation visible to caller
 
-ðŸ‘‰ **Pass-by-value of reference still mutates object**
+🔹 **Pass-by-value of reference still mutates object**
 
 ---
-## ðŸ”¹ ASSIGNMENT 6: Method Object Rebinding
+## 🔹 ASSIGNMENT 6: Method Object Rebinding
 
 ### Question
 
@@ -186,10 +186,10 @@ System.out.println(a.v);
 * rebind affects only local b
 * caller reference unchanged
 
-ðŸ‘‰ **Parameter reassignment is local only**
+🔹 **Parameter reassignment is local only**
 
 ---
-## ðŸ”¹ ASSIGNMENT 7: String Pool vs equals
+## 🔹 ASSIGNMENT 7: String Pool vs equals
 
 ### Question
 
@@ -214,10 +214,10 @@ true
 * == compares identity
 * equals compares content
 
-ðŸ‘‰ **Use equals for String content**
+🔹 **Use equals for String content**
 
 ---
-## ðŸ”¹ ASSIGNMENT 8: Array Reference Copy
+## 🔹 ASSIGNMENT 8: Array Reference Copy
 
 ### Question
 
@@ -244,10 +244,10 @@ System.out.println(a[0]);
 * reference copy aliases same array
 * element mutation shared
 
-ðŸ‘‰ **Array assignment copies reference**
+🔹 **Array assignment copies reference**
 
 ---
-## ðŸ”¹ ASSIGNMENT 9: Array Clone
+## 🔹 ASSIGNMENT 9: Array Clone
 
 ### Question
 
@@ -276,10 +276,10 @@ System.out.println(b[0]);
 * primitive elements copied by value
 * arrays become independent
 
-ðŸ‘‰ **clone separates top-level array state**
+🔹 **clone separates top-level array state**
 
 ---
-## ðŸ”¹ ASSIGNMENT 10: Null One Reference
+## 🔹 ASSIGNMENT 10: Null One Reference
 
 ### Question
 
@@ -307,7 +307,7 @@ x
 * nulling a removes only one reference
 * object remains accessible
 
-ðŸ‘‰ **Nulling one variable does not delete object**
+🔹 **Nulling one variable does not delete object**
 
 ---
 
