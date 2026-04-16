@@ -17,14 +17,14 @@ System.out.println(b);
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 61
 64
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * Primitive assignment copies value
 * b changes independently
@@ -49,13 +49,13 @@ System.out.println(a.v);
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 65
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * a and b reference same object
 * field update mutates shared object
@@ -81,14 +81,14 @@ System.out.println(b.v);
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 63
 66
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * b now points to new object
 * a still points to old object
@@ -112,13 +112,13 @@ System.out.println(a);
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 64
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * Java passes primitives by value
 * method changes local copy
@@ -143,13 +143,13 @@ System.out.println(a.v);
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 68
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * reference value copied
 * both refs point same object
@@ -174,13 +174,13 @@ System.out.println(a.v);
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 66
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * parameter is local reference copy
 * rebind affects only local b
@@ -201,14 +201,14 @@ String a = "v67";`nString b = new String("v67");`nSystem.out.println(a == b);`nS
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 false
 true
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * new String creates distinct object
 * == compares identity
@@ -232,13 +232,13 @@ System.out.println(a[0]);
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 71
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * arrays are objects
 * reference copy aliases same array
@@ -263,14 +263,14 @@ System.out.println(b[0]);
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 69
 72
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * clone creates new array object
 * primitive elements copied by value
@@ -295,13 +295,13 @@ System.out.println(b.n);
 
 ---
 
-### âœ… Expected Output
+### 🔹 Expected Output
 
 ~~~
 x
 ~~~
 
-### ðŸ§  Reasoning
+### 🔹  Reasoning
 
 * b still references object
 * nulling a removes only one reference
