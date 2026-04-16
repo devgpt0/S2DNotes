@@ -29,7 +29,7 @@ print(b)
 * `b = a` copies reference, not list object
 * Both names point to same object
 
-ðŸ‘‰ **Variables are references (labels), not containers**
+🔹 **Variables are references (labels), not containers**
 
 ---
 ## 🔹 ASSIGNMENT 2: Mutable Object Mutation
@@ -61,7 +61,7 @@ print(y)
 * append mutates shared object
 * Both names see change
 
-ðŸ‘‰ **Mutation affects all aliases**
+🔹 **Mutation affects all aliases**
 
 ---
 ## 🔹 ASSIGNMENT 3: Immutable Rebinding
@@ -93,7 +93,7 @@ print(b)
 * Reassignment binds b to a new int object
 * a remains unchanged
 
-ðŸ‘‰ **Rebinding is not mutation**
+🔹 **Rebinding is not mutation**
 
 ---
 ## 🔹 ASSIGNMENT 4: Function Mutation
@@ -125,7 +125,7 @@ print(l)
 * append mutates object in place
 * caller sees mutation
 
-ðŸ‘‰ **Call-by-sharing + mutation changes original object**
+🔹 **Call-by-sharing + mutation changes original object**
 
 ---
 ## 🔹 ASSIGNMENT 5: Function Rebinding
@@ -157,7 +157,7 @@ print(l)
 * local rebinding does not touch caller binding
 * original list remains
 
-ðŸ‘‰ **Local rebinding has no external effect**
+🔹 **Local rebinding has no external effect**
 
 ---
 ## 🔹 ASSIGNMENT 6: Identity vs Equality
@@ -193,7 +193,7 @@ True
 * `==` checks value
 * c is different object with same content
 
-ðŸ‘‰ **Identity and value equality are different**
+🔹 **Identity and value equality are different**
 
 ---
 ## 🔹 ASSIGNMENT 7: Shallow Copy Top Level
@@ -225,7 +225,7 @@ print(y)
 * mutation on y does not touch x
 * top-level independence achieved
 
-ðŸ‘‰ **Shallow copy separates only outer container**
+🔹 **Shallow copy separates only outer container**
 
 ---
 ## 🔹 ASSIGNMENT 8: Nested Shallow Copy Trap
@@ -257,7 +257,7 @@ print(y)
 * inner list shared
 * nested mutation appears in both
 
-ðŸ‘‰ **Shallow copy does not clone nested objects**
+🔹 **Shallow copy does not clone nested objects**
 
 ---
 ## 🔹 ASSIGNMENT 9: Tuple with Mutable Item
@@ -286,7 +286,7 @@ print(t)
 * list element is mutable
 * element mutation is allowed
 
-ðŸ‘‰ **Container immutability is not deep immutability**
+🔹 **Container immutability is not deep immutability**
 
 ---
 ## 🔹 ASSIGNMENT 10: del One Name
@@ -316,7 +316,7 @@ print(b)
 * object still referenced by b
 * object remains alive
 
-ðŸ‘‰ **Lifetime depends on remaining references**
+🔹 **Lifetime depends on remaining references**
 
 ---
 
