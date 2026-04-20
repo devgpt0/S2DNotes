@@ -217,6 +217,7 @@ try {
 
 **Question:** Why is this considered bad in performance-critical systems?
 
+
 # Java Control Flow — Level 2 (Java 21 Focus)
 
 ## Advanced Tricky Questions (10)
