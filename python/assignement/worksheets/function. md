@@ -1,0 +1,336 @@
+Here is a complete set of **35 questions on Functions in Python 3**, covering function definitions, arguments, scope, return values, recursion, lambdas, and integration with **list comprehensions** + **other ways of traversing/iterating lists** (for loops, while, enumerate, zip, map, filter, etc.).
+
+Divided into three difficulty levels (10 each) + 5 Code Quality questions.
+
+### Level 1 (Beginner) – 10 Tricky Questions
+
+1. **What is the output?**
+   ```python
+   def greet(name="Guest"):
+       print(f"Hello, {name}!")
+
+   greet()
+   greet("Adarsh")
+   ```
+
+2. **Predict the output:**
+   ```python
+   def add(a, b=5):
+       return a + b
+
+   print(add(3))
+   print(add(3, 10))
+   ```
+
+3. **What will be printed?**
+   ```python
+   x = 10
+   def func():
+       x = 20
+       print(x)
+
+   func()
+   print(x)
+   ```
+
+4. **Tricky default argument:**
+   ```python
+   def append_to_list(item, lst=[]):
+       lst.append(item)
+       return lst
+
+   print(append_to_list(1))
+   print(append_to_list(2))
+   ```
+
+5. **What is the output?**
+   ```python
+   def square(n):
+       return n * n
+
+   nums = [1, 2, 3, 4]
+   result = [square(x) for x in nums]
+   print(result)
+   ```
+
+6. **Using enumerate to traverse:**
+   ```python
+   fruits = ["apple", "banana", "cherry"]
+   for i, fruit in enumerate(fruits, start=1):
+       print(i, fruit)
+   ```
+
+7. **What does this return?**
+   ```python
+   def is_even(n):
+       return n % 2 == 0
+
+   evens = list(filter(is_even, range(10)))
+   print(evens)
+   ```
+
+8. **Predict:**
+   ```python
+   def multiply(*args):
+       result = 1
+       for num in args:
+           result *= num
+       return result
+
+   print(multiply(2, 3, 4))
+   ```
+
+9. **List comprehension vs loop:**
+   ```python
+   nums = [1, 2, 3, 4, 5]
+   squares = []
+   for n in nums:
+       if n % 2 == 1:
+           squares.append(n**2)
+   print(squares)
+   # Rewrite the above using list comprehension in one line
+   ```
+
+10. **What is printed?**
+    ```python
+    def outer():
+        x = "outer"
+        def inner():
+            print(x)
+        inner()
+    outer()
+    ```
+
+---
+
+### Level 2 (Intermediate) – 10 Tricky Questions
+
+1. **What is the output?**
+   ```python
+   def func(a, b, c=10, *args, **kwargs):
+       print(a, b, c, args, kwargs)
+
+   func(1, 2, 3, 4, 5, x=6, y=7)
+   ```
+
+2. **Tricky scope with list:**
+   ```python
+   lst = [1, 2, 3]
+   def modify():
+       lst.append(4)   # mutable
+       # lst = [10, 20]  # would be local if uncommented
+
+   modify()
+   print(lst)
+   ```
+
+3. **Using zip to traverse multiple lists:**
+   ```python
+   names = ["Alice", "Bob"]
+   ages = [25, 30]
+   for name, age in zip(names, ages):
+       print(f"{name} is {age} years old")
+   ```
+
+4. **List comprehension with condition:**
+   ```python
+   nums = [1, 2, 3, 4, 5, 6]
+   result = [x**2 if x % 2 == 0 else x for x in nums]
+   print(result)
+   ```
+
+5. **What does this function return?**
+   ```python
+   def process(lst):
+       return [x * 2 for x in lst if x > 3]
+
+   print(process([1, 4, 2, 5, 3]))
+   ```
+
+6. **Recursion tricky case:**
+   ```python
+   def factorial(n):
+       if n <= 1:
+           return 1
+       return n * factorial(n-1)
+
+   print(factorial(5))
+   ```
+
+7. **Lambda + map traversal:**
+   ```python
+   nums = [1, 2, 3, 4]
+   doubled = list(map(lambda x: x*2, nums))
+   print(doubled)
+   ```
+
+8. **Nested list comprehension (traversing matrix):**
+   ```python
+   matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+   flattened = [num for row in matrix for num in row]
+   print(flattened)
+   ```
+
+9. **What is the difference in output?**
+   ```python
+   # Version A
+   squares = [x**2 for x in range(10) if x % 2 == 0]
+
+   # Version B - equivalent using for loop + append
+   squares_b = []
+   for x in range(10):
+       if x % 2 == 0:
+           squares_b.append(x**2)
+   ```
+
+10. **Using while to traverse list (less common):**
+    ```python
+    lst = ["a", "b", "c", "d"]
+    i = 0
+    while i < len(lst):
+        print(lst[i])
+        i += 1
+    ```
+
+---
+
+### Level 3 (Advanced) – 10 Tricky Questions
+
+1. **What will be printed? (closure + list comp)**
+   ```python
+   def create_multipliers():
+       return [lambda x: i * x for i in range(5)]
+
+   multipliers = create_multipliers()
+   print([m(10) for m in multipliers])
+   ```
+
+2. **Advanced list comprehension with zip and enumerate:**
+   ```python
+   a = [10, 20, 30]
+   b = [1, 2, 3]
+   result = [(i, x + y) for i, (x, y) in enumerate(zip(a, b))]
+   print(result)
+   ```
+
+3. **Recursion with list traversal:**
+   ```python
+   def sum_list(lst):
+       if not lst:
+           return 0
+       return lst[0] + sum_list(lst[1:])
+
+   print(sum_list([1, 2, 3, 4, 5]))
+   ```
+
+4. **Generator expression vs list comprehension (memory):**
+   ```python
+   # Which one is better for large data?
+   gen = (x**2 for x in range(1000000))
+   lst = [x**2 for x in range(1000000)]
+   ```
+
+5. **Complex nested + condition:**
+   ```python
+   data = [[1, 2, 3], [4, 5], [6, 7, 8, 9]]
+   result = [val for sub in data for val in sub if val % 2 == 0]
+   print(result)
+   ```
+
+6. **Function returning multiple values + unpacking:**
+   ```python
+   def stats(nums):
+       return min(nums), max(nums), sum(nums)/len(nums)
+
+   mn, mx, avg = stats([10, 20, 30, 40])
+   print(mn, mx, avg)
+   ```
+
+7. **Using map with custom function + list comp alternative:**
+   ```python
+   def cube(n):
+       return n**3
+
+   nums = range(1, 6)
+   print(list(map(cube, nums)))
+   # Equivalent list comprehension?
+   ```
+
+8. **Tricky default mutable + function:**
+   ```python
+   def bad_func(items=None):
+       if items is None:
+           items = []
+       items.append("item")
+       return items
+
+   print(bad_func())
+   print(bad_func())
+   ```
+
+9. **Filter + lambda + list comp comparison:**
+   ```python
+   nums = list(range(20))
+   odds = list(filter(lambda x: x % 2 == 1, nums))
+   # Rewrite using list comprehension
+   ```
+
+10. **Very advanced – function as argument + comprehension:**
+    ```python
+    def apply_to_list(func, lst):
+        return [func(x) for x in lst]
+
+    print(apply_to_list(lambda x: x*10, [1, 2, 3]))
+    ```
+
+---
+
+### Code Quality Questions (5 Questions)
+
+These focus on best practices for functions, list comprehensions, and list traversal.
+
+1. **Code Review:**  
+   What is wrong with this function and how would you improve it (readability + performance)?
+   ```python
+   def process_numbers(numbers):
+       result = []
+       for i in range(len(numbers)):
+           if numbers[i] > 10:
+               result.append(numbers[i] * 2)
+       return result
+   ```
+
+2. **Refactor for better style:**
+   ```python
+   def get_even_squares(lst):
+       evens = []
+       for num in lst:
+           if num % 2 == 0:
+               evens.append(num ** 2)
+       return evens
+   ```
+   Rewrite using list comprehension. When is list comprehension better/worse?
+
+3. **Best practice question:**  
+   When should you prefer `map()` / `filter()` over list comprehensions?  
+   Give an example where using a generator expression `(x for x in ...)` is better than a list comprehension.
+
+4. **Improve this code (traversal + function):**
+   ```python
+   def calculate_total(prices):
+       total = 0
+       i = 0
+       while i < len(prices):
+           total += prices[i]
+           i += 1
+       return total
+   ```
+
+5. **Code Quality:**  
+   Explain the issues with using mutable default arguments in functions.  
+   Also, when writing a function that processes a list, should you modify the original list in-place or return a new one? Why? Give an example with list comprehension.
+
+---
+
+Would you like **detailed answers with explanations** for all 35 questions?  
+I can also provide them in quiz format (questions first, answers hidden), or add more focus on recursion, decorators, or type hints. Just let me know!
