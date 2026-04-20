@@ -301,6 +301,174 @@ System.out.println(list);
 
 ---
 
+## Level 3 — Java 21 Control Flow Questions (Pattern Matching for switch) (10)
+
+### Q1. Basic type pattern matching in switch
+
+```java
+static String describe(Object obj) {
+    return switch (obj) {
+        case Integer i -> "Integer: " + i;
+        case String s -> "String: " + s;
+        case null -> "Null value";
+        default -> "Other type";
+    };
+}
+```
+
+**Question:** What is returned for inputs: 42, "Hello", null, 3.14? Explain how type patterns work.
+
+---
+
+### Q2. Guarded patterns in switch
+
+```java
+static String classify(Number n) {
+    return switch (n) {
+        case Integer i when i > 0 -> "Positive Integer";
+        case Integer i -> "Non-positive Integer";
+        case Double d when d.isNaN() -> "Not a Number";
+        default -> "Other Number";
+    };
+}
+```
+
+**Question:** What happens for inputs: 5, -3, Double.NaN, 4.2? When are guards evaluated?
+
+---
+
+### Q3. Dominance rules in pattern matching
+
+```java
+static String test(Object o) {
+    return switch (o) {
+        case Object obj -> "Any object";
+        case String s -> "String";
+    };
+}
+```
+
+**Question:** Will this compile? Explain dominance rules and why order matters.
+
+---
+
+### Q4. Exhaustiveness with sealed types
+
+```java
+sealed interface Shape permits Circle, Rectangle {}
+final class Circle implements Shape {}
+final class Rectangle implements Shape {}
+
+static int area(Shape s) {
+    return switch (s) {
+        case Circle c -> 1;
+        // case Rectangle r -> 2;
+    };
+}
+```
+
+**Question:** Will this compile? Why is exhaustiveness enforced here?
+
+---
+
+### Q5. Null handling with pattern matching
+
+```java
+static String handle(String s) {
+    return switch (s) {
+        case "A" -> "Alpha";
+        case "B" -> "Beta";
+        case null -> "Null input";
+        default -> "Other";
+    };
+}
+```
+
+**Question:** What happens if `s = null`? How does explicit `case null` differ from default?
+
+---
+
+### Q6. Record patterns in switch
+
+```java
+record Point(int x, int y) {}
+
+static String analyze(Object o) {
+    return switch (o) {
+        case Point(int x, int y) when x == y -> "Diagonal point";
+        case Point(int x, int y) -> "Point (" + x + "," + y + ")";
+        default -> "Not a point";
+    };
+}
+```
+
+**Question:** What is returned for `new Point(5,5)` and `new Point(3,7)`?
+
+---
+
+### Q7. Pattern variable scope in switch
+
+```java
+Object obj = "test";
+switch (obj) {
+    case String s -> System.out.println(s.length());
+    default -> {}
+}
+System.out.println(s);  // Is this accessible?
+```
+
+**Question:** Will this compile? Explain scope of pattern variables.
+
+---
+
+### Q8. Combined type and constant patterns
+
+```java
+static String describe(Object o) {
+    return switch (o) {
+        case String s when s.equals("special") -> "Special string";
+        case Integer i when i == 42 -> "The answer";
+        case String s -> "Any string";
+        default -> "Other";
+    };
+}
+```
+
+**Question:** What is returned for "special", 42, "hello", true? Explain matching order.
+
+---
+
+### Q9. When clause vs if-else in patterns
+
+```java
+static String check(Object o) {
+    return switch (o) {
+        case Integer i when i > 100 -> "Large";
+        case Integer i -> "Small or negative";
+        default -> "Not integer";
+    };
+}
+```
+
+**Question:** For input 150 and 50, what is returned? Why use `when` instead of traditional if?
+
+---
+
+### Q10. Switch with pattern matching as expression vs statement
+
+```java
+Object value = 42;
+switch (value) {
+    case Integer i when i > 0 -> System.out.println("Positive");
+    case Integer i -> System.out.println("Non-positive");
+    default -> System.out.println("Other");
+}
+```
+
+**Question:** Is this valid as a statement? What changes if it is converted to an expression?
+
+---
+
 ## Extra — Code Quality (Good vs Bad Control Flow) (5)
 
 ### Q11. Deep nesting vs guard clauses
