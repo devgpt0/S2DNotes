@@ -216,4 +216,261 @@ try {
 ```
 
 **Question:** Why is this considered bad in performance-critical systems?
-```
+
+# Java Control Flow — Level 2 (Java 21 Focus)
+
+## Advanced Tricky Questions (10)
+
+### Q1. Switch pattern matching with guards
+```java
+static String test(Object o) {
+    return switch (o) {
+        case Integer i when i > 0 -> "Positive Int";
+        case Integer i -> "Non-positive Int";
+        case null -> "Null";
+        default -> "Other";
+    };
+}
+
+What happens for input: 5, -1, null, "test"?
+
+Explain guard evaluation order.
+
+
+
+---
+
+Q2. Dominance in pattern matching
+
+static String test(Object o) {
+    return switch (o) {
+        case Object obj -> "Object";
+        case String s -> "String";
+    };
+}
+
+Will this compile?
+
+Explain dominance rules in switch patterns.
+
+
+
+---
+
+Q3. Exhaustiveness in switch expressions
+
+sealed interface Shape permits Circle, Square {}
+final class Circle implements Shape {}
+final class Square implements Shape {}
+
+static int test(Shape s) {
+    return switch (s) {
+        case Circle c -> 1;
+    };
+}
+
+Will this compile?
+
+Why is exhaustiveness important?
+
+
+
+---
+
+Q4. Record pattern matching
+
+record Point(int x, int y) {}
+
+static String test(Object o) {
+    return switch (o) {
+        case Point(int x, int y) when x == y -> "Diagonal";
+        case Point(int x, int y) -> "Point";
+        default -> "Other";
+    };
+}
+
+What happens for new Point(2,2) vs new Point(2,3)?
+
+
+
+---
+
+Q5. Null handling in switch
+
+static String test(String s) {
+    return switch (s) {
+        case "A" -> "Alpha";
+        case "B" -> "Beta";
+        default -> "Other";
+    };
+}
+
+What happens if s = null?
+
+How to handle safely in Java 21?
+
+
+
+---
+
+Q6. Pattern variable scope
+
+if (obj instanceof String s) {
+    System.out.println(s.length());
+}
+System.out.println(s);
+
+Will this compile?
+
+Explain scope rules.
+
+
+
+---
+
+Q7. Guarded pattern fall-through
+
+static String test(Object o) {
+    return switch (o) {
+        case Integer i when i > 10 -> "Big";
+        case Integer i -> "Small";
+        default -> "Other";
+    };
+}
+
+What happens for i = 10?
+
+Why?
+
+
+
+---
+
+Q8. for-each vs indexed loop mutation
+
+List<Integer> list = List.of(1, 2, 3);
+for (Integer x : list) {
+    x++;
+}
+System.out.println(list);
+
+What is the output?
+
+Why does mutation not persist?
+
+
+
+---
+
+Q9. try-with-resources control flow
+
+class A implements AutoCloseable {
+    public void close() {
+        System.out.println("close");
+    }
+}
+
+try (A a = new A()) {
+    System.out.println("try");
+    return;
+}
+
+What is printed?
+
+Order of execution?
+
+
+
+---
+
+Q10. Virtual threads + control flow
+
+Thread.startVirtualThread(() -> {
+    for (int i = 0; i < 3; i++) {
+        System.out.println(i);
+    }
+});
+System.out.println("Main");
+
+Possible output order?
+
+Does control flow guarantee ordering?
+
+
+
+---
+
+Code Quality & Control Flow Patterns (5)
+
+Q11. Pattern matching vs instanceof chain
+
+if (obj instanceof Integer) {
+    Integer i = (Integer) obj;
+} else if (obj instanceof String) {
+    String s = (String) obj;
+}
+
+Rewrite using Java 21 pattern matching.
+
+Why is it better?
+
+
+
+---
+
+Q12. Switch vs polymorphism
+
+switch (shape) {
+    case "CIRCLE": drawCircle(); break;
+    case "SQUARE": drawSquare(); break;
+}
+
+Why is this design poor?
+
+Suggest a better approach.
+
+
+
+---
+
+Q13. Overuse of default in switch
+
+switch (day) {
+    case MONDAY -> work();
+    default -> rest();
+}
+
+Why can this hide bugs?
+
+Improve using exhaustive handling.
+
+
+
+---
+
+Q14. Control flow with Optional
+
+if (value != null) {
+    process(value);
+}
+
+Rewrite using Optional.
+
+Trade-offs?
+
+
+
+---
+
+Q15. Imperative vs declarative flow
+
+List<Integer> result = new ArrayList<>();
+for (int x : list) {
+    if (x > 10) {
+        result.add(x);
+    }
+}
+
+Rewrite using modern Java constructs.
+
+Performance considerations?
