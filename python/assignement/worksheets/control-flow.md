@@ -383,6 +383,3 @@ These focus on best practices, readability, and proper use of control flow.
    Give an example where using `while` is more appropriate than `for`, and explain why.
 
 ---
-
-Would you like **answers with detailed explanations** for all these questions?  
-I can also provide a clean PDF-style formatted version or separate them into quiz format with hidden answers. Just tell me!
