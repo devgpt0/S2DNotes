@@ -671,3 +671,4 @@ print((lambda f, x: f(x))(fun, 10))
 
 **Output? Explain function invocation inside lambda.**
 
+
