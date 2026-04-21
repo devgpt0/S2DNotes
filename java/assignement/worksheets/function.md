@@ -1219,6 +1219,365 @@ class Test {
 
 **Output? Why fixed arity wins over varargs?**
 
+````md id="c8t2af"
+# Java Functions — Level 3 (Expert, Edge Cases & JVM-Level Reasoning)
+
+## Q1
+```java
+class Test {
+    static void fun(int x, Object... y) {
+        System.out.println("A");
+    }
+
+    static void fun(int... x) {
+        System.out.println("B");
+    }
+
+    public static void main(String[] args) {
+        fun(10);
+    }
+}
+````
+
+**Which method is selected? Explain varargs + fixed parameter interaction.**
+
+---
+
+## Q2
+
+```java
+class Test {
+    static void fun(Integer x) {
+        System.out.println("Integer");
+    }
+
+    static void fun(long x) {
+        System.out.println("long");
+    }
+
+    static void fun(int... x) {
+        System.out.println("varargs");
+    }
+
+    public static void main(String[] args) {
+        fun(10);
+    }
+}
+```
+
+**Output? Explain full overload resolution order (widening vs boxing vs varargs).**
+
+---
+
+## Q3
+
+```java
+class Test {
+    static void fun(Object o) {
+        System.out.println("Object");
+    }
+
+    static void fun(Object... o) {
+        System.out.println("Object varargs");
+    }
+
+    public static void main(String[] args) {
+        fun(null);
+    }
+}
+```
+
+**Will this compile? If yes, which method is called? Explain ambiguity rules.**
+
+---
+
+## Q4
+
+```java
+class Test {
+    static void fun(int x, Integer y) {
+        System.out.println("A");
+    }
+
+    static void fun(Integer x, int y) {
+        System.out.println("B");
+    }
+
+    static void fun(int... x) {
+        System.out.println("C");
+    }
+
+    public static void main(String[] args) {
+        fun(10, 10);
+    }
+}
+```
+
+**Which method is selected? Does ambiguity still exist or is it resolved?**
+
+---
+
+## Q5
+
+```java
+class Test {
+    static <T> void fun(T x, T y) {
+        System.out.println("generic");
+    }
+
+    static void fun(Object x, String y) {
+        System.out.println("Object-String");
+    }
+
+    public static void main(String[] args) {
+        fun("A", "B");
+    }
+}
+```
+
+**Output? Explain type inference vs overload specificity.**
+
+---
+
+## Q6
+
+```java
+class Test {
+    static void fun(int x) {
+        System.out.println("int");
+    }
+
+    static <T extends Number> void fun(T x) {
+        System.out.println("Number generic");
+    }
+
+    public static void main(String[] args) {
+        fun(10);
+    }
+}
+```
+
+**Which method is chosen? Why does bounded generic lose/win?**
+
+---
+
+## Q7
+
+```java
+class Test {
+    static void fun(Integer x) {
+        System.out.println("Integer");
+    }
+
+    static void fun(int x) {
+        System.out.println("int");
+    }
+
+    static void fun(Object x) {
+        System.out.println("Object");
+    }
+
+    public static void main(String[] args) {
+        Integer a = null;
+        fun(a);
+    }
+}
+```
+
+**Output? Explain null + reference hierarchy resolution.**
+
+---
+
+## Q8
+
+```java
+class Test {
+    static void fun(int x) {
+        System.out.println("int");
+    }
+
+    static void fun(int... x) {
+        System.out.println("varargs");
+    }
+
+    static void fun(Integer x) {
+        System.out.println("Integer");
+    }
+
+    public static void main(String[] args) {
+        fun();
+    }
+}
+```
+
+**Output? Why are only certain overloads considered?**
+
+---
+
+## Q9
+
+```java
+class Test {
+    static void fun(long x, float y) {
+        System.out.println("long-float");
+    }
+
+    static void fun(float x, long y) {
+        System.out.println("float-long");
+    }
+
+    public static void main(String[] args) {
+        fun(10, 10);
+    }
+}
+```
+
+**Will this compile? Explain dual widening ambiguity.**
+
+---
+
+## Q10
+
+```java
+class Test {
+    static void fun(Object o, String s) {
+        System.out.println("Object-String");
+    }
+
+    static void fun(String s, Object o) {
+        System.out.println("String-Object");
+    }
+
+    public static void main(String[] args) {
+        fun(null, null);
+    }
+}
+```
+
+**Compile or error? Explain most specific method failure.**
+
+---
+
+## Q11
+
+```java
+class Test {
+    static void fun(int x) {
+        System.out.println("int");
+    }
+
+    static void fun(long x) {
+        System.out.println("long");
+    }
+
+    static void fun(Integer x) {
+        System.out.println("Integer");
+    }
+
+    public static void main(String[] args) {
+        short s = 10;
+        fun(s);
+    }
+}
+```
+
+**Output? Explain widening chain priority.**
+
+---
+
+## Q12
+
+```java
+class Test {
+    static void fun(int x) {
+        System.out.println("int");
+    }
+
+    static void fun(double x) {
+        System.out.println("double");
+    }
+
+    static void fun(Integer x) {
+        System.out.println("Integer");
+    }
+
+    public static void main(String[] args) {
+        fun(10.0f);
+    }
+}
+```
+
+**Output? Explain float → double vs boxing path.**
+
+---
+
+## Q13
+
+```java
+class Test {
+    static <T> void fun(T... x) {
+        System.out.println("generic varargs");
+    }
+
+    static void fun(String... x) {
+        System.out.println("String varargs");
+    }
+
+    public static void main(String[] args) {
+        fun("A", "B");
+    }
+}
+```
+
+**Output? Why does non-generic varargs win?**
+
+---
+
+## Q14
+
+```java
+class Test {
+    static void fun(int x, long y) {
+        System.out.println("A");
+    }
+
+    static void fun(long x, long y) {
+        System.out.println("B");
+    }
+
+    public static void main(String[] args) {
+        fun(10, 10);
+    }
+}
+```
+
+**Output? Explain partial exact match vs full widening.**
+
+---
+
+## Q15
+
+```java
+class Test {
+    static void fun(int x, Object y) {
+        System.out.println("A");
+    }
+
+    static void fun(Integer x, Object y) {
+        System.out.println("B");
+    }
+
+    public static void main(String[] args) {
+        fun(10, null);
+    }
+}
+```
+
+**Output? Explain boxing vs exact reference match interaction.**
+
+
+
+
 
 
 
