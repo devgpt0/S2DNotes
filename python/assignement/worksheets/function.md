@@ -1,4 +1,4 @@
-````md id="pyfnl1_15"
+
 # Python Functions — Level 1 (Interview-Focused, Tricky Syntax)
 
 ## Q1
@@ -10,7 +10,7 @@ def fun(x=[]):
 fun()
 fun()
 ```
-````
+
 
 **What is the output? Why does it behave this way?**
 
