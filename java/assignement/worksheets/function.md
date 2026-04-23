@@ -1,4 +1,3 @@
-````md
 # Java Functions — Level 1 (Interview-Focused, Tricky Syntax)
 
 ## Q1
@@ -16,7 +15,7 @@ class Test {
         fun(10);
     }
 }
-````
+
 
 **What is the output? Why?**
 
