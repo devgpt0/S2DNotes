@@ -838,6 +838,14 @@ C) never use append
 D) always use recursion
 ```
 
+50. Which operation is safest when original list must remain unchanged while sorting?
+```text
+A) lst.sort()
+B) sorted(lst)
+C) lst.reverse()
+D) del lst[:]
+```
+
 ## Level 2
 
 ### Tricky Predict the Output (50)
@@ -1661,6 +1669,14 @@ C) use only loops
 D) avoid built-ins
 ```
 
+50. For multi-key custom sorting readability, best pattern is:
+```text
+A) nested if/else bubble sort code
+B) sorted(data, key=lambda x: (key1, key2))
+C) random shuffle until ordered
+D) compare stringified whole object only
+```
+
 ## Interview Theory (Top 25)
 
 1. Difference between list and tuple in Python?
@@ -1688,4 +1704,3 @@ D) avoid built-ins
 23. Common exceptions in list operations and when they happen.
 24. How to avoid mutability bugs in function arguments?
 25. Best interview-safe checklist for list problems before final submission?
-
