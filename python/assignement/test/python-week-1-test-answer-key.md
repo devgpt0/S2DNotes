@@ -232,9 +232,9 @@ Reason: Ternary condition `x > 3` is true.
 
 ## Q58
 Output: YES
-Reason: `and` has higher precedence: `a or (b and False)` -> `True`.
+Reason: `and` has higher preceden                                                                         ce: `a or (b and False)` -> `True`.
 
-## Q59
+## Q59 
 Output: 1 3
 Reason: `i==2` continues, so print skipped; breaks after printing 3.
 
