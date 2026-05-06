@@ -1,27 +1,51 @@
 # 06 - Pitfalls And Best Practices
 
-## Common Mistakes
+## 1) Common Mistakes
 
-1. Mutable key objects.
-2. Overriding `equals` but not `hashCode`.
-3. Assuming `HashMap` order is fixed.
-4. Using `containsValue` in hot paths (usually `O(n)`).
-5. Ignoring null rules in `ConcurrentHashMap` and immutable maps.
+1. using mutable key objects
+2. overriding `equals` without `hashCode` (or vice versa)
+3. assuming `HashMap` iteration order is fixed
+4. using `containsValue` in hot path (`O(n)`)
+5. using `get(key) == null` to test existence when null values are possible
+6. wrong `remove` overload expectations (`remove(key)` vs `remove(key, value)`)
+7. forgetting null restrictions in `ConcurrentHashMap` and immutable maps
 
-## Key Best Practices
+## 2) Key Best Practices
 
-- Prefer immutable keys.
-- Use `entrySet()` when both key and value are needed.
-- Use `merge()` for counting.
-- Use `computeIfAbsent()` for grouping/list initialization.
-- Pick map type by requirement, not habit.
+- prefer immutable keys (`String`, records, immutable DTOs)
+- always keep `equals/hashCode` contract correct
+- use `entrySet()` when you need both key and value
+- use `merge()` for counting
+- use `computeIfAbsent()` for grouping/list initialization
+- choose map by requirements (order/sort/thread safety), not habit
 
-## Null Handling Quick Table
+## 3) `equals/hashCode` Golden Rule
+
+If `a.equals(b)` is true, then `a.hashCode() == b.hashCode()` must be true.
+
+## 4) Null Handling Quick Table
 
 | Map Type | Null Key | Null Value |
 |---|---|---|
-| HashMap | one allowed | allowed |
-| LinkedHashMap | one allowed | allowed |
-| TreeMap | usually not allowed | allowed |
-| ConcurrentHashMap | not allowed | not allowed |
-| Map.of / copyOf | not allowed | not allowed |
+| `HashMap` | one allowed | allowed |
+| `LinkedHashMap` | one allowed | allowed |
+| `TreeMap` | usually not allowed | allowed |
+| `ConcurrentHashMap` | not allowed | not allowed |
+| `Hashtable` | not allowed | not allowed |
+| `Map.of/copyOf` | not allowed | not allowed |
+
+## 5) Correct Existence Check
+
+Prefer:
+
+```java
+if (map.containsKey(key)) {
+    // key exists even if value is null
+}
+```
+
+instead of:
+
+```java
+if (map.get(key) != null) { ... } // ambiguous when null values allowed
+```

@@ -1,17 +1,29 @@
 # 04 - Map Implementations (When To Use Which)
 
-## 1) HashMap
+## 1) Quick Selection Table
 
-- Fast average `O(1)` for `put/get/remove`.
-- No order guarantee.
-- Allows one `null` key and multiple `null` values.
+| Type | Order | Typical Complexity | Null Key | Null Value | Thread Safety | Best Fit |
+|---|---|---|---|---|---|---|
+| `HashMap` | no guarantee | avg `O(1)` | one allowed | allowed | no | general-purpose fast lookup |
+| `LinkedHashMap` | insertion/access order | avg `O(1)` | one allowed | allowed | no | predictable order, LRU base |
+| `TreeMap` | sorted by key | `O(log n)` | not allowed | allowed | no | sorted reports, range queries |
+| `ConcurrentHashMap` | no guarantee | avg `O(1)` | not allowed | not allowed | yes | concurrent read/write |
+| `WeakHashMap` | no guarantee | avg `O(1)` | allowed | allowed | no | lifecycle-bound metadata |
+| `IdentityHashMap` | no guarantee | avg `O(1)` | allowed | allowed | no | identity (`==`) semantics |
+| `EnumMap` | enum declaration order | near `O(1)` | not allowed | allowed | no | enum-key maps |
+| `Hashtable` | no guarantee | avg `O(1)` | not allowed | not allowed | legacy synchronized | legacy APIs |
+| `Map.of/copyOf` | iteration order defined by factory contract | read-only | not allowed | not allowed | safe to share | constants, defensive returns |
 
-Use when order is not needed and speed is priority.
+## 2) HashMap
 
-## 2) LinkedHashMap
+- fastest common default
+- no iteration order contract
+- collision + resize behavior matters for large workloads
 
-- Maintains insertion order.
-- Can also maintain access order.
+## 3) LinkedHashMap
+
+- predictable iteration
+- optional access order for LRU behavior
 
 ```java
 LinkedHashMap<Integer, String> m = new LinkedHashMap<>(16, 0.75f, true);
@@ -19,58 +31,44 @@ m.put(1, "A");
 m.put(2, "B");
 m.put(3, "C");
 m.get(2);
-System.out.println(m); // access order changes
+System.out.println(m); // {1=A, 3=C, 2=B}
 ```
 
-Great for predictable iteration and LRU cache base.
+## 4) TreeMap
 
-## 3) TreeMap
+- sorted keys via natural order or comparator
+- supports navigation: `ceilingKey`, `floorKey`, `higherKey`, `subMap`
 
-- Keys are always sorted.
-- Core operations are `O(log n)`.
+## 5) ConcurrentHashMap
 
-```java
-TreeMap<Integer, String> tm = new TreeMap<>();
-tm.put(20, "B");
-tm.put(10, "A");
-tm.put(30, "C");
-System.out.println(tm); // {10=A, 20=B, 30=C}
-```
+- high concurrency without locking whole map
+- atomic compound helpers: `putIfAbsent`, `compute`, `merge`
+- weakly consistent iteration
 
-Use for sorted reports and range queries.
+## 6) WeakHashMap
 
-## 4) ConcurrentHashMap
+- keys are weak references
+- entries may disappear after GC when key has no strong reference
 
-- Thread-safe map for concurrent read/write.
-- Does not allow `null` key or value.
-- Iterators are weakly consistent.
+## 7) IdentityHashMap
 
-## 5) WeakHashMap
+- key equality is `==`, not `equals`
+- use only when identity semantics are explicitly needed
 
-- Keys are weak references.
-- Entry can disappear after GC if key has no strong reference.
+## 8) EnumMap
 
-Use only for memory-sensitive lifecycle-based metadata.
+- best map when key domain is one enum type
+- memory efficient and very fast
 
-## 6) IdentityHashMap
+## 9) Immutable Maps
 
-- Uses `==` for key comparison (not `equals`).
+- factories: `Map.of`, `Map.ofEntries`, `Map.copyOf`
+- reject null keys/values
+- reject duplicate keys at creation
 
-Use rarely, mainly framework internals.
+## 10) Java 21 SequencedMap
 
-## 7) EnumMap
-
-- Best map when keys are enum constants.
-- Fast and memory efficient.
-
-## 8) Immutable Maps
-
-- `Map.of(...)`, `Map.ofEntries(...)`, `Map.copyOf(...)`
-- No structural modification allowed.
-
-## 9) Java 21 SequencedMap
-
-Useful ordered operations:
+Ordered map operations to know:
 
 - `firstEntry()`
 - `lastEntry()`

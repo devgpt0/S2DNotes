@@ -31,7 +31,15 @@ Collisions are handled inside buckets.
 It is not thread-safe.
 Custom keys must follow `equals/hashCode` contract."
 
-## 5) Final Self-Check
+## 5) High-Value Tricky Points
+
+- `HashMap` allows one null key, `ConcurrentHashMap` allows none.
+- `containsValue` is linear; avoid in performance-sensitive paths.
+- `TreeMap` key ordering is based on comparator/natural order, not insertion.
+- `LinkedHashMap` can be insertion-ordered or access-ordered.
+- bad comparator/`equals` contract can break sorted maps/sets behavior.
+
+## 6) Final Self-Check
 
 You are ready if you can:
 

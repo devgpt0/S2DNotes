@@ -26,6 +26,7 @@ Important:
 
 - Same bucket does not mean same key.
 - `equals` decides real key match.
+- JDK uses tree bins for high-collision buckets (after thresholds) to improve worst-case behavior.
 
 ## 3) Resize and Load Factor
 
@@ -37,6 +38,8 @@ Default values:
 
 When size crosses threshold, map resizes (usually doubles).
 
+Resizing is expensive (rehash of existing entries), so pre-size when expected size is known.
+
 ## 4) equals and hashCode Contract
 
 If custom objects are keys, always override both `equals` and `hashCode`.
@@ -44,6 +47,12 @@ If custom objects are keys, always override both `equals` and `hashCode`.
 Rule:
 
 - if `a.equals(b)` is true, then `a.hashCode() == b.hashCode()` must be true.
+
+Practical key design:
+
+- keep keys immutable after insertion
+- avoid expensive hash computations in hot paths
+- include the same fields in both `equals` and `hashCode`
 
 ## 5) Iteration Best Practice
 
@@ -54,3 +63,9 @@ for (Map.Entry<String, Integer> e : map.entrySet()) {
     System.out.println(e.getKey() + " : " + e.getValue());
 }
 ```
+
+## 6) Null and Thread Safety
+
+- allows one `null` key
+- allows multiple `null` values
+- not thread-safe for concurrent writes

@@ -106,3 +106,10 @@ isEmpty after clear: true
 
 Important: `HashMap` does not guarantee print order.
 If you need stable order for teaching output, use `LinkedHashMap`.
+
+## Method Families Cheat Note
+
+- read: `get`, `getOrDefault`, `containsKey`, `containsValue`
+- write: `put`, `putIfAbsent`, `replace`, `remove`, `clear`, `replaceAll`
+- compute/update: `computeIfAbsent`, `computeIfPresent`, `compute`, `merge`
+- views: `keySet`, `values`, `entrySet` (backed views)
