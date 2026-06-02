@@ -1,4 +1,4 @@
-﻿# Clean Code Foundations
+9﻿# Clean Code Foundations
 
 ## 1. Why Clean Code Matters in Real Projects
 
@@ -454,8 +454,3 @@ Deliverables:
 - short note: "3 clean code improvements I made"
 
 ---
-
-## Final Recap
-Clean code is not decoration. It is engineering discipline that reduces defects and improves delivery speed.
-
-If students master this lecture well, OOP in the next lecture becomes natural and clean, not confusing and messy.
