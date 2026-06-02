@@ -438,17 +438,6 @@ What improved:
 - give one bad and one good code example
 - explain impact on maintainability and testing
 
----
-
-## 15. In-Class 2-Hour Teaching Plan
-
-- 0-15 min: Why maintainability fails
-- 15-35 min: Naming workshop
-- 35-60 min: Single-responsibility functions
-- 60-75 min: Magic numbers and constants
-- 75-95 min: DRY and duplication smells
-- 95-110 min: Comments, side effects, guard clauses
-- 110-120 min: live refactor + Q/A
 
 ---
 
