@@ -393,8 +393,3 @@ Clean code requirements:
 - no shared mutable class-level lists
 
 ---
-
-## Final Recap
-This lecture is the bridge from Python syntax to software design thinking.
-
-Students who master these fundamentals can learn Encapsulation, Abstraction, Inheritance, Polymorphism, and SOLID much faster and with fewer misconceptions.
