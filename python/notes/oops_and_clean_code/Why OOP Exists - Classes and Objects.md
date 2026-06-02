@@ -368,19 +368,7 @@ State and operations stay together. Less dictionary-key mistakes, better discove
 ### Strong answer pattern
 - define concept
 - show mini code example
-- explain real project impact
-
----
-
-## 15. In-Class 2-Hour Teaching Plan
-
-- 0-20 min: procedural pain and motivation for OOP
-- 20-40 min: class/object/state/behavior
-- 40-60 min: `self` and method calls internally
-- 60-80 min: constructor design + validation
-- 80-100 min: class vs instance attributes + mutable defaults
-- 100-115 min: live coding student management class
-- 115-120 min: interview Q/A and recap
+- explain real project 
 
 ---
 
