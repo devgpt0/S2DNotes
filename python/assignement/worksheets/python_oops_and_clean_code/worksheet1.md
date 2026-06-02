@@ -4,304 +4,354 @@
 ## Section A: MCQ (1-50)
 
 1. What is the primary goal of clean code?
-A. Reduce file size
-B. Make code run only faster
-C. Improve readability and maintainability
-D. Use advanced syntax
+
+- **A.** Reduce file size
+- **B.** Make code run only faster
+- **C.** Improve readability and maintainability
+- **D.** Use advanced syntax
 
 2. Which variable name is best?
-A. x
-B. n1
-C. student_total_marks
-D. data
+
+- **A.** x
+- **B.** n1
+- **C.** student_total_marks
+- **D.** data
 
 3. Which function name communicates intent best?
-A. process
-B. calc
-C. do_task
-D. calculate_average_score
+
+- **A.** process
+- **B.** calc
+- **C.** do_task
+- **D.** calculate_average_score
 
 4. Which is a magic number example?
-A. TAX_RATE = 0.18
-B. if marks >= 75
-C. MIN_ATTENDANCE = 75
-D. MAX_USERS = 100
+
+- **A.** TAX_RATE = 0.18
+- **B.** if marks >= 75
+- **C.** MIN_ATTENDANCE = 75
+- **D.** MAX_USERS = 100
 
 5. DRY stands for:
-A. Do Review Yourself
-B. Do Repeat Yourself
-C. Do not Repeat Yourself
-D. Data Reuse Yield
+
+- **A.** Do Review Yourself
+- **B.** Do Repeat Yourself
+- **C.** Do not Repeat Yourself
+- **D.** Data Reuse Yield
 
 6. A function that validates, saves, and emails in one place violates:
-A. DRY
-B. Single Responsibility
-C. Encapsulation
-D. Inheritance
+
+- **A.** DRY
+- **B.** Single Responsibility
+- **C.** Encapsulation
+- **D.** Inheritance
 
 7. Best use of comments in clean code is to explain:
-A. obvious syntax
-B. every line
-C. why a non-obvious decision is made
-D. variable declarations only
+
+- **A.** obvious syntax
+- **B.** every line
+- **C.** why a non-obvious decision is made
+- **D.** variable declarations only
 
 8. Which is best for boolean naming?
-A. flag
-B. status
-C. is_active
-D. value
+
+- **A.** flag
+- **B.** status
+- **C.** is_active
+- **D.** value
 
 9. Which is true about readable code?
-A. Must be shortest possible
-B. Must use one-liners
-C. Should communicate intent clearly
-D. Should avoid function extraction
+
+- **A.** Must be shortest possible
+- **B.** Must use one-liners
+- **C.** Should communicate intent clearly
+- **D.** Should avoid function extraction
 
 10. Which function is easier to test?
-A. Long function with many side effects
-B. Small pure function with clear input-output
-C. Function with global variables
-D. Function with random print statements
+
+- **A.** Long function with many side effects
+- **B.** Small pure function with clear input-output
+- **C.** Function with global variables
+- **D.** Function with random print statements
 
 11. A class is:
-A. a single function
-B. a blueprint for objects
-C. always required in Python
-D. same as a module
+
+- **A.** a single function
+- **B.** a blueprint for objects
+- **C.** always required in Python
+- **D.** same as a module
 
 12. An object is:
-A. a loop
-B. an instance of class
-C. a package
-D. a comment
+
+- **A.** a loop
+- **B.** an instance of class
+- **C.** a package
+- **D.** a comment
 
 13. `self` refers to:
-A. class itself always
-B. current instance object
-C. global namespace
-D. file scope
+
+- **A.** class itself always
+- **B.** current instance object
+- **C.** global namespace
+- **D.** file scope
 
 14. `__init__` in Python is mainly used to:
-A. delete object
-B. initialize instance data
-C. compile class
-D. print class name
+
+- **A.** delete object
+- **B.** initialize instance data
+- **C.** compile class
+- **D.** print class name
 
 15. Which is a good class name?
-A. DataHandler
-B. Manager
-C. Student
-D. Utility
+
+- **A.** DataHandler
+- **B.** Manager
+- **C.** Student
+- **D.** Utility
 
 16. Which is better for adding two numbers?
-A. class AddNumbers
-B. def add_numbers(a, b)
-C. class SumHelper
-D. class MathManager
+
+- **A.** class AddNumbers
+- **B.** def add_numbers(a, b)
+- **C.** class SumHelper
+- **D.** class MathManager
 
 17. Which is state in OOP?
-A. method body
-B. object attributes
-C. for loop
-D. import statement
+
+- **A.** method body
+- **B.** object attributes
+- **C.** for loop
+- **D.** import statement
 
 18. Which is behavior in OOP?
-A. instance variables
-B. constants
-C. methods
-D. comments
+
+- **A.** instance variables
+- **B.** constants
+- **C.** methods
+- **D.** comments
 
 19. Why does procedural code often fail at scale?
-A. Python cannot run it
-B. duplication and scattered logic
-C. classes are mandatory
-D. syntax errors only
+
+- **A.** Python cannot run it
+- **B.** duplication and scattered logic
+- **C.** classes are mandatory
+- **D.** syntax errors only
 
 20. Best constructor practice:
-A. no validation ever
-B. include basic validity checks
-C. make network calls every time
-D. print debug by default
+
+- **A.** no validation ever
+- **B.** include basic validity checks
+- **C.** make network calls every time
+- **D.** print debug by default
 
 21. Which naming pair is best?
-A. n, m
-B. student_name, marks
-C. a1, b1
-D. temp, data
+
+- **A.** n, m
+- **B.** student_name, marks
+- **C.** a1, b1
+- **D.** temp, data
 
 22. Which indicates hidden side effect?
-A. returns computed value
-B. modifies global variable silently
-C. uses local variable
-D. has type hint
+
+- **A.** returns computed value
+- **B.** modifies global variable silently
+- **C.** uses local variable
+- **D.** has type hint
 
 23. Guard clauses help by:
-A. increasing nesting
-B. reducing readability
-C. handling invalid cases early
-D. replacing constructors
+
+- **A.** increasing nesting
+- **B.** reducing readability
+- **C.** handling invalid cases early
+- **D.** replacing constructors
 
 24. Which code is cleaner?
-A. if x > 90: return "A"
-B. if average_score > GRADE_A_THRESHOLD: return "A"
-C. if m > 90: return "A"
-D. if n > 90: return "A"
+
+- **A.** if x > 90: return "A"
+- **B.** if average_score > GRADE_A_THRESHOLD: return "A"
+- **C.** if m > 90: return "A"
+- **D.** if n > 90: return "A"
 
 25. A class attribute is:
-A. unique for each object
-B. shared across all instances
-C. local to function
-D. same as parameter
+
+- **A.** unique for each object
+- **B.** shared across all instances
+- **C.** local to function
+- **D.** same as parameter
 
 26. An instance attribute is:
-A. shared by all objects
-B. attached to each object separately
-C. always constant
-D. only for static methods
+
+- **A.** shared by all objects
+- **B.** attached to each object separately
+- **C.** always constant
+- **D.** only for static methods
 
 27. Risk with `items=[]` in constructor default is:
-A. syntax error
-B. shared mutable state across instances
-C. cannot append values
-D. slower runtime only
+
+- **A.** syntax error
+- **B.** shared mutable state across instances
+- **C.** cannot append values
+- **D.** slower runtime only
 
 28. Better constructor default pattern for list is:
-A. items=[]
-B. items={}
-C. items=None then create new list
-D. items=0
+
+- **A.** items=[]
+- **B.** items={}
+- **C.** items=None then create new list
+- **D.** items=0
 
 29. Which statement is true?
-A. All code must be OOP
-B. Everything should be a class
-C. Use class when domain concept + state + behavior exist
-D. Functions should be avoided
+
+- **A.** All code must be OOP
+- **B.** Everything should be a class
+- **C.** Use class when domain concept + state + behavior exist
+- **D.** Functions should be avoided
 
 30. Which is not a clean code smell?
-A. meaningful names
-B. duplicated logic
-C. long god function
-D. magic numbers
+
+- **A.** meaningful names
+- **B.** duplicated logic
+- **C.** long god function
+- **D.** magic numbers
 
 31. Which is best method name?
-A. do_it
-B. handle
-C. calculate_annual_tax
-D. run
+
+- **A.** do_it
+- **B.** handle
+- **C.** calculate_annual_tax
+- **D.** run
 
 32. What makes refactoring safe?
-A. big-bang rewrite
-B. tiny changes + tests
-C. changing behavior and style together blindly
-D. skipping validation
+
+- **A.** big-bang rewrite
+- **B.** tiny changes + tests
+- **C.** changing behavior and style together blindly
+- **D.** skipping validation
 
 33. Which is better comment strategy?
-A. comment each assignment
-B. remove all comments always
-C. keep comments for business rules and trade-offs
-D. write comments instead of clear code
+
+- **A.** comment each assignment
+- **B.** remove all comments always
+- **C.** keep comments for business rules and trade-offs
+- **D.** write comments instead of clear code
 
 34. Which class design is better?
-A. Student with calculate_average()
-B. Student data + global utility methods only
-C. Student with unrelated 20 methods
-D. StudentManagerProcessorHelper
+
+- **A.** Student with calculate_average()
+- **B.** Student data + global utility methods only
+- **C.** Student with unrelated 20 methods
+- **D.** StudentManagerProcessorHelper
 
 35. `student.calculate_average()` internally maps to:
-A. Student.calculate_average()
-B. calculate_average(student)
-C. Student.calculate_average(student)
-D. student.self.calculate_average()
+
+- **A.** Student.calculate_average()
+- **B.** calculate_average(student)
+- **C.** Student.calculate_average(student)
+- **D.** student.self.calculate_average()
 
 36. Which is true about clean code and interviews?
-A. only syntax is tested
-B. design reasoning is often tested
-C. naming is never asked
-D. refactoring is out of scope
+
+- **A.** only syntax is tested
+- **B.** design reasoning is often tested
+- **C.** naming is never asked
+- **D.** refactoring is out of scope
 
 37. Which violates one responsibility most?
-A. determine_grade()
-B. save_student()
-C. send_grade_email()
-D. process_everything_and_notify_and_store()
+
+- **A.** determine_grade()
+- **B.** save_student()
+- **C.** send_grade_email()
+- **D.** process_everything_and_notify_and_store()
 
 38. Better constant naming style:
-A. taxrate
-B. TaxRate
-C. TAX_RATE
-D. tax-Rate
+
+- **A.** taxrate
+- **B.** TaxRate
+- **C.** TAX_RATE
+- **D.** tax-Rate
 
 39. Best choice for class modeling library system:
-A. AddBookData
-B. Book, Member, Library
-C. GenericHandler
-D. DataClassOnly
+
+- **A.** AddBookData
+- **B.** Book, Member, Library
+- **C.** GenericHandler
+- **D.** DataClassOnly
 
 40. Which is better for output clarity?
-A. print("x", a)
-B. print(f"Average score: {average_score:.2f}")
-C. print(avg)
-D. print(data)
+
+- **A.** print("x", a)
+- **B.** print(f"Average score: {average_score:.2f}")
+- **C.** print(avg)
+- **D.** print(data)
 
 41. What does maintainability mean?
-A. code never changes
-B. easy to understand and modify safely
-C. only fast runtime
-D. fewer files
+
+- **A.** code never changes
+- **B.** easy to understand and modify safely
+- **C.** only fast runtime
+- **D.** fewer files
 
 42. Which is a good clean code improvement?
-A. rename `x` to `student_name`
-B. add nested ifs
-C. remove function boundaries
-D. increase hidden globals
+
+- **A.** rename `x` to `student_name`
+- **B.** add nested ifs
+- **C.** remove function boundaries
+- **D.** increase hidden globals
 
 43. Which is true about abstraction level in a function?
-A. mix UI + DB + business logic always
-B. keep statements at similar abstraction level
-C. always use one line
-D. avoid helper methods
+
+- **A.** mix UI + DB + business logic always
+- **B.** keep statements at similar abstraction level
+- **C.** always use one line
+- **D.** avoid helper methods
 
 44. Which is an OOP-friendly definition?
-A. objects group data + behavior
-B. objects are only dictionaries
-C. classes are optional syntax sugar without design value
-D. OOP means inheritance only
+
+- **A.** objects group data + behavior
+- **B.** objects are only dictionaries
+- **C.** classes are optional syntax sugar without design value
+- **D.** OOP means inheritance only
 
 45. Which is cleaner API?
-A. car.inject_fuel(); car.fire_spark(); car.start_piston()
-B. car.start()
-C. car.do_everything_manually()
-D. car.helper()
+
+- **A.** car.inject_fuel(); car.fire_spark(); car.start_piston()
+- **B.** car.start()
+- **C.** car.do_everything_manually()
+- **D.** car.helper()
 
 46. Good interview explanation for DRY includes:
-A. remove all repeated words
-B. remove repeated business logic
-C. avoid loops
-D. avoid functions
+
+- **A.** remove all repeated words
+- **B.** remove repeated business logic
+- **C.** avoid loops
+- **D.** avoid functions
 
 47. Which method should likely be in `Student` class?
-A. deploy_server()
-B. calculate_average()
-C. parse_json_logs()
-D. send_global_alert()
+
+- **A.** deploy_server()
+- **B.** calculate_average()
+- **C.** parse_json_logs()
+- **D.** send_global_alert()
 
 48. Which is better error handling?
-A. except Exception: pass
-B. catch specific exception and re-raise with context
-C. always ignore errors
-D. print only
+
+- **A.** except Exception: pass
+- **B.** catch specific exception and re-raise with context
+- **C.** always ignore errors
+- **D.** print only
 
 49. Which concept best prevents confusion in teams?
-A. clever code golf
-B. consistent naming conventions
-C. random style per file
-D. heavy abbreviation
+
+- **A.** clever code golf
+- **B.** consistent naming conventions
+- **C.** random style per file
+- **D.** heavy abbreviation
 
 50. Why is this lecture before advanced OOP?
-A. clean code reduces future OOP misuse
-B. because Python requires it
-C. because classes cannot be taught first
-D. no reason
+
+- **A.** clean code reduces future OOP misuse
+- **B.** because Python requires it
+- **C.** because classes cannot be taught first
+- **D.** no reason
 
 ---
 
