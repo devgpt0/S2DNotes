@@ -13,4 +13,3 @@ def test_agent_response():
     assert "Artificial Intelligence (AI) is the simulation of human intelligence processes" in response
     #Test unknown query
     
-    

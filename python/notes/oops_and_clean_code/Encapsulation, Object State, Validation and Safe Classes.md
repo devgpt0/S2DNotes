@@ -28,7 +28,6 @@ account = BankAccount("John", 10000)
 account.balance = -50000  # Invalid state
 print(account.balance)
 ```
-
 Issue:
 - any code can break business rules
 - invalid objects enter the system
@@ -40,7 +39,6 @@ Real-world invalid states:
 - empty customer ID
 - invalid order status
 - negative salary
-
 ---
 
 ## 3. Object State vs Behavior
