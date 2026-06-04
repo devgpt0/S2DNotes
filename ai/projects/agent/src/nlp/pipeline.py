@@ -1,7 +1,7 @@
 from nlp.text_processor import TextProcessor
 from nlp.tokenzier import Tokenizer
 
-class NLPPipeline:
+class    NLPPipeline:
 
     def __init__(self):
         self.text_processor = TextProcessor()

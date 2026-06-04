@@ -1,29 +1,29 @@
 from study_agent.models import Task
 from nlp.pipeline import NLPPipeline
+from nlp.tokenizer_engine import TokenizerEngine
 
 class StudyAgent:
 
     def __init__(self):
         self.name = "StudyAgent"
+        self.tokenizer_engine = TokenizerEngine()
         self.nlp_pipeline = NLPPipeline()
 
     def think(self, task: Task):
-        query = task.query.lower()
-        print(f"Thinking about the query: {query}")
-
-        tokens = self.nlp_pipeline.process(query)
-
+        token_ids = self.tokenizer_engine.encode(task.query)
+        print(f"Encoded Task: {token_ids}")
+        
+        tokens = self.nlp_pipeline.process(task.query)
+        print(f"Processed Tokens: {tokens}")
+        
         if "python" in tokens:
-            print("[Decision] I know something about Python!")
-
-            return "Python is a popular programming language known for its simplicity and versatility."
-
+            return "Python is a popular programming language used for web development, data science, and automation."
+        
         if "ai" in tokens:
-            print("[Decision] I know something about AI!")
-            return "Artificial Intelligence (AI) is the simulation of human intelligence processes by machines, especially computer systems."
+            return "Artificial Intelligence (AI) is the simulation of human intelligence processes by machines."
+        
+        return "I'm not sure how to help with that. Can you ask something else?"
 
-        print("[Decision] I don't know much about that.")
-        return "I'm not sure how to answer that. Can you please provide more details or ask a different question?"
 
     def run(self, user_input: str) -> str:
         task = Task(query=user_input)
