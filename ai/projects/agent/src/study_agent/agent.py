@@ -1,6 +1,7 @@
 from study_agent.models import Task
 from nlp.pipeline import NLPPipeline
 from nlp.tokenizer_engine import TokenizerEngine
+from nlp.bag_of_words import BagOfWords
 
 class StudyAgent:
 
@@ -8,13 +9,19 @@ class StudyAgent:
         self.name = "StudyAgent"
         self.tokenizer_engine = TokenizerEngine()
         self.nlp_pipeline = NLPPipeline()
+        self.bag_of_words = BagOfWords()
 
     def think(self, task: Task):
         token_ids = self.tokenizer_engine.encode(task.query)
         print(f"Encoded Task: {token_ids}")
+    
         
         tokens = self.tokenizer_engine.decode(token_ids).split()
         print(f"Decoded  Tokens: {tokens}")
+        
+        
+        bow_features = self.bag_of_words.transform(task.query)
+        print(f"Bag of Words Features: {bow_features}")
         
         if "python" in tokens:
             return "Python is a popular programming language used for web development, data science, and automation."
