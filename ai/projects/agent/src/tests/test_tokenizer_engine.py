@@ -12,4 +12,4 @@ def test_tokenizer_engine():
     
     decoded_text = engine.decode(token_ids)
     
-    assert decoded_text == "Hello world This is a test"
+    assert decoded_text == "hello world this is a test"

@@ -9,7 +9,7 @@ class TokenizerEngine:
         self.vocab = Vocabulary()
 
     def encode(self, text: str) -> list[int]:
-        cleaned_text = re.sub(r"[^\w\s]", "", text).strip()
+        cleaned_text = re.sub(r"[^\w\s]", "", text).strip().lower()
         tokens = cleaned_text.split()
         token_ids = self.vocab.encode(tokens)
         return token_ids
@@ -18,5 +18,3 @@ class TokenizerEngine:
         tokens = self.vocab.decode(token_ids)
         return " ".join(tokens)
 
-    def decoode(self, token_ids: list[int]) -> str:
-        return self.decode(token_ids)

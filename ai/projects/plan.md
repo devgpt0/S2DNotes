@@ -18,4 +18,9 @@ UserInput -> Agent -> Think and Match with Key words -> Answer
 version : 2
 UserInput->Text Processor -> Normalize Text->Tokenizer -> Token -> Agent -> Think ->Answer 
 
+version : 3
+UserInput->Tokenizer Engine (Encode)->Think -> Tokenizer(Decode)->Output
+
+
+
 Agent = LLM + Memory + Tools + Planning + Loop

@@ -13,8 +13,8 @@ class StudyAgent:
         token_ids = self.tokenizer_engine.encode(task.query)
         print(f"Encoded Task: {token_ids}")
         
-        tokens = self.nlp_pipeline.process(task.query)
-        print(f"Processed Tokens: {tokens}")
+        tokens = self.tokenizer_engine.decode(token_ids).split()
+        print(f"Decoded  Tokens: {tokens}")
         
         if "python" in tokens:
             return "Python is a popular programming language used for web development, data science, and automation."
