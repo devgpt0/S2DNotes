@@ -2,6 +2,7 @@ from study_agent.models import Task
 from nlp.pipeline import NLPPipeline
 from nlp.tokenizer_engine import TokenizerEngine
 from nlp.bag_of_words import BagOfWords
+from nlp.search_engine import SearchEngine
 
 class StudyAgent:
 
@@ -10,8 +11,23 @@ class StudyAgent:
         self.tokenizer_engine = TokenizerEngine()
         self.nlp_pipeline = NLPPipeline()
         self.bag_of_words = BagOfWords()
+        self.search_engine = SearchEngine()
+        
+        self.search_engine.add_document("Python is programming language")
+        self.search_engine.add_document("AI enables intelligent system")
+        self.search_engine.add_document("Machine learning learns from data")
 
     def think(self, task: Task):
+        if task.query.startswith("search"):
+            
+            query = task.query.replace("search","")
+            
+            results = self.search_engine.search(query) 
+            
+            best_doc = results[0][0]
+            
+            return (f"Best Match: \n{best_doc}")
+        
         token_ids = self.tokenizer_engine.encode(task.query)
         print(f"Encoded Task: {token_ids}")
     

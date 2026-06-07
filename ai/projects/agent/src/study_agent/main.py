@@ -1,5 +1,6 @@
 from study_agent.agent import StudyAgent
 
+
 def main():
     print("Hello from study_agent!")
     agent = StudyAgent()
