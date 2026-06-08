@@ -2,21 +2,22 @@ import math
 
 from collections import Counter
 
-from nlp.pipeline import Pipeline
+from nlp.pipeline import NLPPipeline
 
 from nlp.document_corpus import DocumentCorpus
 
+
 class TFIDF:
     
-    def __init_(self,corpus:DocumentCorpus):
-        self.pipeline = Pipeline()
+    def __init__(self):
+        self.pipeline = NLPPipeline()
     
     def term_frequency(self,tokens:list[str],term:str)->float:
         
         if not tokens:
             return 0.0
         
-        counter = Counter(tokens)
+        counter = Counter(tokens) 
         
         return counter[term] / len(tokens)
     
@@ -30,10 +31,10 @@ class TFIDF:
            corpus.get_documents()
        ):
            tokens = (
-               self.pipeline.tokenize(doc)
+               self.pipeline.process(doc)
            )
            if term in tokens:
-               docs_with_term += 1
+               docs_with_term += 1 
                
     
        if docs_with_term == 0:
@@ -42,12 +43,7 @@ class TFIDF:
        return math.log(total_docs / docs_with_term)
         
 
-    def tf_idf(self,document:str,term:str)->float:
-        tf = self.term_frequency(document, term)
-        idf = self.inverse_document_frequency(term)
-        return tf * idf
-
-    def tfdif_score(
+    def tfidf_score(
         self,
         tokens:list[str],
         corpus:DocumentCorpus,
@@ -56,9 +52,9 @@ class TFIDF:
         
         tf = self.term_frequency(tokens, term)
         idf = self.inverse_document_frequency(corpus, term)
-        
         return tf * idf
     
+   
     def score_query_against_document(
         self,
         query:str,
@@ -75,6 +71,18 @@ class TFIDF:
            score += doc_tokens.get(token, 0.0)
            
        return score
-           
+    
+    
+    def document_vector(self,document:str, corpus:DocumentCorpus)->dict[str,float]:
+        tokens = self.pipeline.process(document)
+        unique_terms = set(tokens)
+        
+        vector = {}
+        
+        for token in unique_terms:
+            score = self.tfidf_score(tokens, corpus, token)
+            vector[token] = score
+        
+        return vector 
     
     

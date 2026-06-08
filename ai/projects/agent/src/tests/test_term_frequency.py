@@ -2,7 +2,7 @@ from nlp.tfidf import TFIDF
 
 def test_term_frequency():
     
-    tfidf = TFIDF(None)
+    tfidf = TFIDF()
     
     tokens = ["the", "cat", "sat", "on", "the", "mat"]
     

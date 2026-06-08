@@ -16,6 +16,7 @@ class StudyAgent:
         self.search_engine.add_document("Python is programming language")
         self.search_engine.add_document("AI enables intelligent system")
         self.search_engine.add_document("Machine learning learns from data")
+        self.search_engine.add_document("Adarsh is an the best AI/ML Engineer")
 
     def think(self, task: Task):
         if task.query.startswith("search"):

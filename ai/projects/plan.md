@@ -3,7 +3,7 @@ A terminal Based Agent that :
 1.Accept user query/goal
 2.Classify your intent
 3.Execute actions
-4.Return a response5.Logs reasoning steps
+4.Return a responses.Logs reasoning steps
 
 Architecture: 
 User -> Agent -> Think -> Decide ->Act->Response
@@ -20,7 +20,18 @@ UserInput->Text Processor -> Normalize Text->Tokenizer -> Token -> Agent -> Thin
 
 version : 3
 UserInput->Tokenizer Engine (Encode)->Think -> Tokenizer(Decode)->Output
+Encode : Words -> Tokens -> TokenIDs
+Decode : TokenIds->Tokens -> Words
 
+version : 4
+UserInput-> Check (Wethear the user want to ask or want to search)
+Ask -> Tokenizer(Encode)-> Think ->Tokenizer(Decode)->Output
+Search->
 
+Search -> Keywords(Excat) and Sematic(Similar) 
+
+Python , python ,PYTHON -> Response
+
+AI ,Aritifical Intelligence -> Same ? -> Keyword -> Excat , Similiar -> Sematic search 
 
 Agent = LLM + Memory + Tools + Planning + Loop

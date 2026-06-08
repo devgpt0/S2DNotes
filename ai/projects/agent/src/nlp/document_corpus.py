@@ -1,7 +1,7 @@
 class DocumentCorpus:
     
-    def __init__(self, documents):
-        self.documents = documents
+    def __init__(self):
+        self.documents = []
         
     def add_document(self,document)->None:
         self.documents.append(document)

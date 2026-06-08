@@ -15,7 +15,7 @@ class SearchEngine:
         results = []
         
         for doc in self.corpus.get_documents():
-            score = self.tfidf.score_query_against_document(query, doc)
+            score = self.tfidf.score_query_against_document(query, doc ,self.corpus)
             results.append((doc, score))
             
         results.sort(key=lambda x: x[1], reverse=True)
