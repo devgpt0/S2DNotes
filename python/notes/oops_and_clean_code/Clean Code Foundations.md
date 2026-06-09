@@ -1,4 +1,4 @@
-9﻿# Clean Code Foundations
+# Clean Code Foundations
 
 ## 1. Why Clean Code Matters in Real Projects
 
