@@ -1,4 +1,4 @@
-from study_agent.agent import StudyAgent
+from core.agent import StudyAgent
 
 def test_agent_response():
     
@@ -13,3 +13,4 @@ def test_agent_response():
     assert "Artificial Intelligence (AI) is the simulation of human intelligence processes" in response
     #Test unknown query
     
+

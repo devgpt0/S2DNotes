@@ -26,9 +26,16 @@ Decode : TokenIds->Tokens -> Words
 version : 4
 UserInput-> Check (Wethear the user want to ask or want to search)
 Ask -> Tokenizer(Encode)-> Think ->Tokenizer(Decode)->Output
-Search->
+Search-> IF/TDF ( Keyword Search)-> Output
 
 Search -> Keywords(Excat) and Sematic(Similar) 
+
+version : 5
+UserInput->Check ( Wether it is sematic / keyword / ask)-> Response
+Ask -> Tokenizer(Encode)-> Think ->Tokenizer(Decode)->Output
+Keyword Search-> IF/TDF ( Keyword Search)-> Output
+Sematic Search -> Embeddings -> Cosine Similarity -> Output
+
 
 Python , python ,PYTHON -> Response
 

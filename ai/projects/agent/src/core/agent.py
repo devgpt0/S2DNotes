@@ -1,8 +1,8 @@
-from study_agent.models import Task
+from core.models import Task
 from nlp.pipeline import NLPPipeline
 from nlp.tokenizer_engine import TokenizerEngine
 from nlp.bag_of_words import BagOfWords
-from nlp.search_engine import SearchEngine
+from nlp.keyword_search import KeywordEngine
 
 class StudyAgent:
 
@@ -11,19 +11,19 @@ class StudyAgent:
         self.tokenizer_engine = TokenizerEngine()
         self.nlp_pipeline = NLPPipeline()
         self.bag_of_words = BagOfWords()
-        self.search_engine = SearchEngine()
+        self.keyword_engine = KeywordEngine()
         
-        self.search_engine.add_document("Python is programming language")
-        self.search_engine.add_document("AI enables intelligent system")
-        self.search_engine.add_document("Machine learning learns from data")
-        self.search_engine.add_document("Adarsh is an the best AI/ML Engineer")
+        self.keyword_engine.add_document("Python is programming language")
+        self.keyword_engine.add_document("AI enables intelligent system")
+        self.keyword_engine.add_document("Machine learning learns from data")
+        self.keyword_engine.add_document("Adarsh is an the best AI/ML Engineer")
 
     def think(self, task: Task):
         if task.query.startswith("search"):
             
             query = task.query.replace("search","")
             
-            results = self.search_engine.search(query) 
+            results = self.keyword_engine.search(query) 
             
             best_doc = results[0][0]
             

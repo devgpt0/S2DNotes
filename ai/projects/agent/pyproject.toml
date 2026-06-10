@@ -9,11 +9,13 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "numpy>=2.4.6",
     "pytest>=9.0.3",
+    "sentence-transformers>=5.5.1",
 ]
 
 [project.scripts]
-study-agent = "study_agent.main:main"
+core-agent = "core.main:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -23,3 +25,4 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
+

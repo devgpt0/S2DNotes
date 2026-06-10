@@ -2,7 +2,7 @@ from nlp.document_corpus import DocumentCorpus
 
 from nlp.tfidf import TFIDF
 
-class SearchEngine:
+class KeywordEngine:
     def __init__(self):
         self.corpus = DocumentCorpus()
         self.tfidf = TFIDF()
@@ -20,4 +20,13 @@ class SearchEngine:
             
         results.sort(key=lambda x: x[1], reverse=True)
         return results
+    
+    def keyword_search(self,query:str):
+        return self.search(query)
+
+
+# Backward-compatible alias while migrating from SearchEngine -> KeywordEngine.
+SearchEngine = KeywordEngine
+# Backward-compatible alias while migrating module naming.
+KeywordSearch = KeywordEngine
     
