@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 
 from core.hybrid_search import HybridSearch
+from core.openrouter_llm import OpenRouterLLM
 from core.query_router import QueryRouter
 from core.search_mode import SearchMode
 from data.knowledge_base import (
@@ -58,6 +59,7 @@ class AgentV4:
         self.router = QueryRouter()
         self.keyword_engine = KeywordSearch()
         self.hybrid_search = HybridSearch()
+        self.llm = OpenRouterLLM()
 
         self.semantic_engine = None
         self.awaiting_mode_selection = False
@@ -280,6 +282,16 @@ class AgentV4:
 
         return best_doc
 
+    def _generate_retrieval_answer(self, query: str, mode_name: str, context: str) -> str:
+        """Use LLM to synthesize retrieval context; fallback to context when unavailable."""
+        if not self.llm.is_configured():
+            return context
+
+        response = self.llm.generate_with_context(query, context, mode_name)
+        if self.llm.is_failure_message(response):
+            return context
+        return response
+
     def handle_mode_change(self, query: str) -> str | None:
         user_input = query.strip()
         lowered = user_input.lower()
@@ -338,7 +350,8 @@ class AgentV4:
             if not results:
                 return "No keyword results found."
             best_doc = self._select_best_document(query, results)
-            return self._extract_relevant_section(query, best_doc)
+            context = self._extract_relevant_section(query, best_doc)
+            return self._generate_retrieval_answer(query, "keyword", context)
 
         if mode == SearchMode.SEMANTIC:
             ready, message = self._ensure_semantic_engine()
@@ -349,7 +362,8 @@ class AgentV4:
             if not results:
                 return "No semantic results found."
             best_doc = self._select_best_document(query, results)
-            return self._extract_relevant_section(query, best_doc)
+            context = self._extract_relevant_section(query, best_doc)
+            return self._generate_retrieval_answer(query, "semantic", context)
 
         if mode == SearchMode.HYBRID:
             ready, message = self._ensure_semantic_engine()
@@ -364,10 +378,7 @@ class AgentV4:
             if not results:
                 return "No hybrid results found."
             best_doc = self._select_best_document(query, results)
-            return self._extract_relevant_section(query, best_doc)
+            context = self._extract_relevant_section(query, best_doc)
+            return self._generate_retrieval_answer(query, "hybrid", context)
 
-        return (
-            "Chat mode active. "
-            "No LLM connected yet. "
-            "Use `/mode` to switch retrieval modes."
-        )
+        return self.llm.generate(query)

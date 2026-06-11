@@ -24,13 +24,13 @@ PROJECT_OVERVIEW_DOCS = """
 
 ## Search Modes
 - `chat`
-  - placeholder conversational mode, no LLM backend connected.
+  - LLM-backed conversational mode through OpenRouter (requires API key).
 - `keyword`
-  - TF-IDF style lexical scoring using local in-memory documents.
+  - TF-IDF retrieval with LLM synthesis from retrieved context.
 - `semantic`
-  - embedding-based similarity using `sentence-transformers`.
+  - embedding retrieval with LLM synthesis from retrieved context.
 - `hybrid`
-  - keyword + semantic pipeline path (currently ranking is keyword-dominant).
+  - keyword + semantic retrieval path (ranking is keyword-dominant), then LLM synthesis.
 
 ## Runtime Entry Points
 - Shell script entry:
@@ -60,6 +60,7 @@ ARCHITECTURE_DOCS = """
 - Routing/state layer
   - `core/query_router.py`, `core/search_mode.py`
 - Retrieval engines
+  - Chat LLM: `core/openrouter_llm.py` (OpenRouter chat completions)
   - Keyword: `nlp/keyword_search.py` + `nlp/tfidf.py`
   - Semantic: `nlp/embedding_search.py` + `nlp/embedding_model.py`
   - Hybrid: `core/hybrid_search.py`
@@ -99,9 +100,10 @@ ARCHITECTURE_DOCS = """
 
 ## Section-Level Response Strategy
 - Docs are split by markdown `##` headers.
-- Agent tries to return only the most relevant section.
+- Agent extracts the most relevant section as retrieval context.
+- LLM uses this context to generate final answer in keyword/semantic/hybrid modes.
 - Heuristic boosts prioritize run/setup/mode/test/debug intent tokens.
-- This keeps responses focused and reduces irrelevant long outputs.
+- If LLM is unavailable, extracted section is returned directly.
 """
 
 SETUP_AND_RUN_DOCS = """
@@ -114,6 +116,12 @@ SETUP_AND_RUN_DOCS = """
 ## Setup
 1. `cd ai/projects/agent`
 2. `uv sync`
+
+## Optional Chat LLM Setup
+- `export OPENROUTER_API_KEY="your_api_key_here"`
+- `export OPENROUTER_MODEL="~openai/gpt-latest"`
+- `export OPENROUTER_MAX_TOKENS=512`
+- Or put those keys in `ai/projects/agent/.env` or `ai/projects/agent/src/.env`
 
 ## Run Commands
 - Recommended:
@@ -177,6 +185,7 @@ ai/projects/agent/
       agent.py
       hybrid_search.py
       models.py
+      openrouter_llm.py
       query_router.py
       search_mode.py
     data/

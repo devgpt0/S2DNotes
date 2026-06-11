@@ -17,9 +17,9 @@ This README is the main operational document for this project. It is intentional
 
 The app runs an interactive CLI and supports these retrieval modes:
 
-- `chat`: non-retrieval placeholder response (no LLM wired yet)
-- `keyword`: TF-IDF based matching over internal docs
-- `semantic`: embedding-based matching using `sentence-transformers`
+- `chat`: LLM-backed response via OpenRouter (when `OPENROUTER_API_KEY` is configured)
+- `keyword`: TF-IDF retrieval with LLM answer synthesis from retrieved context
+- `semantic`: embedding retrieval with LLM answer synthesis from retrieved context
 - `hybrid`: keyword + semantic pipeline path (currently keyword-weighted in ranking)
 
 Data source for retrieval is `src/data/knowledge_base.py`.
@@ -33,7 +33,7 @@ Request flow:
 3. `AgentV4.run(query)`
 4. Mode command handling (`/mode ...`) or retrieval dispatch
 5. Mode-specific engine returns ranked docs
-6. Agent returns the most relevant section from the best doc
+6. Agent extracts best section context and returns LLM-synthesized answer (fallback: section text)
 
 Core components:
 
@@ -42,6 +42,7 @@ Core components:
 - `src/core/query_router.py`: active mode state
 - `src/core/search_mode.py`: mode enum
 - `src/core/hybrid_search.py`: hybrid combiner
+- `src/core/openrouter_llm.py`: OpenRouter chat completion client
 
 NLP components:
 
@@ -69,6 +70,18 @@ uv sync
 ```
 
 If `uv` is missing, install it first and rerun.
+
+Optional chat-mode LLM configuration:
+
+```bash
+export OPENROUTER_API_KEY="your_api_key_here"
+export OPENROUTER_MODEL="~openai/gpt-latest"
+export OPENROUTER_MAX_TOKENS=512
+```
+
+You can also store these in either:
+- `ai/projects/agent/.env`
+- `ai/projects/agent/src/.env`
 
 ## 5) Run
 
@@ -122,17 +135,20 @@ Important:
 Keyword mode:
 
 - Scores docs with TF-IDF based on query tokens
-- Returns top result and extracts best matching section
+- Extracts best matching section, then asks LLM to answer from that context
+- If LLM is unavailable/credits fail, returns the extracted section directly
 
 Semantic mode:
 
 - Lazily initializes embedding model on first semantic/hybrid usage
 - Can fail when model download/init fails; agent falls back with message
+- When semantic retrieval succeeds, agent uses LLM synthesis with retrieved context
 
 Hybrid mode:
 
 - Calls both keyword and semantic search paths
 - Current combine logic only aggregates keyword scores in ranking (known limitation)
+- Uses LLM synthesis over the selected retrieval context, with local fallback on LLM failure
 
 Section extraction:
 
@@ -358,7 +374,7 @@ uv run pytest -q src/tests/test_agent_v4_mode.py
 
 ## 12) Known Limitations (Current)
 
-- Chat mode is placeholder only (no LLM integration)
+- LLM-backed answers (all modes) need `OPENROUTER_API_KEY`; without it, retrieval modes return local context
 - Hybrid ranking does not yet fuse semantic score into final rank
 - Startup banner mode numbering is inconsistent with runtime mapping
 - `tokenzier.py` naming typo is legacy coupling risk
