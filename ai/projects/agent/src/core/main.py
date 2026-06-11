@@ -24,11 +24,10 @@ BANNER = r"""
 ┃ COMMANDS                                                                     ┃
 ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
 ┃  /mode              → Show mode selection menu                               ┃
-┃  /mode 1            → Switch to Keyword Mode                                 ┃
+┃  /mode 1            → Switch to Chat Mode                                    ┃
 ┃  /mode 2            → Switch to Semantic Mode                                ┃
 ┃  /mode 3            → Switch to Hybrid Mode                                  ┃
-┃  /mode 4            → Switch to Chat Mode                                    ┃
-┃                                                                              ┃
+┃  /mode 4            → Switch to Keyword Mode                                 ┃
 ┃  /mode keyword      → TF-IDF Retrieval                                       ┃
 ┃  /mode semantic     → Embedding Retrieval                                    ┃
 ┃  /mode hybrid       → Hybrid Search                                          ┃
