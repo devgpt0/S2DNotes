@@ -6,8 +6,8 @@ from core.hybrid_search import HybridSearch
 from core.openrouter_llm import OpenRouterLLM
 from core.query_router import QueryRouter
 from core.search_mode import SearchMode
-from data.knowledge_base import (
-    ARCHITECTURE_DOCS,
+from data.knowledge_base import(
+     ARCHITECTURE_DOCS,
     CODE_MAP_DOCS,
     DEBUGGING_DOCS,
     KNOWN_ISSUES_DOCS,
@@ -16,7 +16,9 @@ from data.knowledge_base import (
     RETRIEVAL_NOTES_DOCS,
     SETUP_AND_RUN_DOCS,
     TESTING_DOCS,
+    KNOWLEDGE_BASE_INDEX_DOCS,
 )
+from document_loader.document_manager import DocumentManager
 from nlp.keyword_search import KeywordSearch
 
 
@@ -60,31 +62,43 @@ class AgentV4:
         self.keyword_engine = KeywordSearch()
         self.hybrid_search = HybridSearch()
         self.llm = OpenRouterLLM()
+        self.document_manager = DocumentManager()
 
         self.semantic_engine = None
         self.awaiting_mode_selection = False
 
+        self.documents: list[str] = []
+        self.nodes: list[str] = []
         self.documents = [
             PROJECT_OVERVIEW_DOCS,
             ARCHITECTURE_DOCS,
             SETUP_AND_RUN_DOCS,
-            CODE_MAP_DOCS,
             TESTING_DOCS,
             DEBUGGING_DOCS,
             KNOWN_ISSUES_DOCS,
             MAINTENANCE_DOCS,
+            CODE_MAP_DOCS,
             RETRIEVAL_NOTES_DOCS,
+            KNOWLEDGE_BASE_INDEX_DOCS,
         ]
-        self.nodes = self._build_nodes(self.documents)
-
-        for node in self.nodes:
-            self.keyword_engine.add_document(node)
+        self._ingest_documents(self.documents)
 
     def _build_nodes(self, documents: list[str]) -> list[str]:
         nodes: list[str] = []
         for document in documents:
             nodes.extend(self._split_document_into_nodes(document))
         return nodes
+
+    def _ingest_documents(self, documents: list[str]) -> int:
+        new_nodes = self._build_nodes(documents)
+        for node in new_nodes:
+            self.keyword_engine.add_document(node)
+            if self.semantic_engine is not None:
+                self.semantic_engine.add_document(node)
+
+        self.documents.extend(documents)
+        self.nodes.extend(new_nodes)
+        return len(new_nodes)
 
     def _split_document_into_nodes(self, document: str) -> list[str]:
         lines = document.strip().splitlines()
@@ -337,7 +351,45 @@ class AgentV4:
 
         return None
 
+    def handle_load_command(self, query: str) -> str | None:
+        user_input = query.strip()
+        lowered = user_input.lower()
+        if lowered != "load" and not lowered.startswith("load "):
+            return None
+
+        parts = user_input.split(maxsplit=1)
+        if len(parts) == 1:
+            return "Usage: load <file-or-directory-path>"
+
+        path = parts[1].strip()
+        if not path:
+            return "Usage: load <file-or-directory-path>"
+
+        result = self.document_manager.load(path)
+        indexed_nodes = 0
+        if result.loaded:
+            indexed_nodes = self._ingest_documents([doc.content for doc in result.loaded])
+
+        messages: list[str] = []
+        if result.loaded:
+            messages.append(
+                f"Loaded {len(result.loaded)} document(s) and indexed {indexed_nodes} node(s)."
+            )
+        if result.skipped:
+            messages.append(f"Skipped already-loaded document(s): {len(result.skipped)}.")
+        if result.errors:
+            preview = " | ".join(result.errors[:3])
+            messages.append(f"Load error(s): {preview}")
+
+        if not messages:
+            return "No documents were loaded."
+        return " ".join(messages)
+
     def run(self, query: str) -> str:
+        load_response = self.handle_load_command(query)
+        if load_response:
+            return load_response
+
         mode_response = self.handle_mode_change(query)
         if mode_response:
             return mode_response

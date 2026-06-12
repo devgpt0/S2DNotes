@@ -32,7 +32,7 @@ class OpenRouterLLM:
         self.model = (
             model
             or os.getenv("OPENROUTER_MODEL", "")
-            or file_config.get("OPENROUTER_MODEL", "~openai/gpt-latest")
+            or file_config.get("OPENROUTER_MODEL", "openrouter/free")
         ).strip()
         self.http_referer = (
             os.getenv("OPENROUTER_HTTP_REFERER", "")

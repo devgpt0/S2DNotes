@@ -44,7 +44,7 @@ PROJECT_OVERVIEW_DOCS = """
 - Internal documentation source: `src/data/knowledge_base.py`
 - Test suite status observed in this repository: 14 passed, 0 failed
 - Known technical debt:
-  - mode order mismatch between startup banner text and runtime mode map
+  - dynamic document loading currently has no persistent index on disk
   - typo-coupled filename `tokenzier.py`
   - hybrid ranking path does not blend semantic scores into final score yet
 """
@@ -65,18 +65,20 @@ ARCHITECTURE_DOCS = """
   - Semantic: `nlp/embedding_search.py` + `nlp/embedding_model.py`
   - Hybrid: `core/hybrid_search.py`
 - Data source layer
-  - `data/knowledge_base.py` static markdown docs
+  - `data/knowledge_base.py` built-in seed docs
+  - `document_loader/*` dynamic file ingestion (`load <path>`)
 
 ## Request Lifecycle
 1. User runs `uv run core-agent`.
 2. `core.main.main()` creates `AgentV4`.
-3. `AgentV4.__init__` loads docs from `knowledge_base.py`.
-4. Docs are split into section nodes and indexed into keyword engine.
-5. For each user query, `AgentV4.run()` performs:
+3. `AgentV4.__init__` loads built-in docs from `knowledge_base.py`.
+4. Optional `load <path>` command ingests TXT/MD/PDF/DOCX documents at runtime.
+5. Docs are split into section nodes and indexed into retrieval engines.
+6. For each user query, `AgentV4.run()` performs:
    - mode command handling (`/mode`, `mode <name>`) or
    - retrieval in active mode.
-6. Top document candidate is selected.
-7. Best section inside that document is extracted and returned.
+7. Top document candidate is selected.
+8. Best section inside that document is extracted and returned.
 
 ## Internal Data Flow
 - Knowledge docs (`str`) -> split into section nodes (`list[str]`) -> added to keyword corpus.
@@ -119,7 +121,7 @@ SETUP_AND_RUN_DOCS = """
 
 ## Optional Chat LLM Setup
 - `export OPENROUTER_API_KEY="your_api_key_here"`
-- `export OPENROUTER_MODEL="~openai/gpt-latest"`
+- `export OPENROUTER_MODEL="openrouter/free"`
 - `export OPENROUTER_MAX_TOKENS=512`
 - Or put those keys in `ai/projects/agent/.env` or `ai/projects/agent/src/.env`
 
@@ -140,6 +142,8 @@ SETUP_AND_RUN_DOCS = """
   - select by name (`chat|keyword|semantic|hybrid`)
 - `mode <name>`
   - backward-compatible syntax
+- `load <path>`
+  - load one file or a directory of TXT/MD/PDF/DOCX docs
 - `exit`
   - quit app
 
@@ -151,8 +155,7 @@ SETUP_AND_RUN_DOCS = """
 - `4 -> hybrid`
 
 Important note:
-- Startup banner in `core/main.py` currently shows a different numbering order.
-- Runtime behavior follows `AgentV4.MODE_BY_INDEX` and `/mode` menu output.
+- Startup banner and runtime behavior follow `AgentV4.MODE_BY_INDEX`.
 
 ## First Semantic Run Notes
 - `sentence-transformers` model initialization can take extra time on first usage.
@@ -247,7 +250,7 @@ ai/projects/agent/
     - handles blank input and `exit`
     - sends all other input to `agent.run()`
   - Important behavior:
-    - banner mode numbering currently differs from runtime mapping.
+    - supports runtime document ingestion via `load <path>`.
 
 - `src/core/agent_v4.py`
   - primary runtime orchestrator.
@@ -448,7 +451,7 @@ TESTING_DOCS = """
   - basic keyword/embedding/tokenization paths
 - Gaps:
   - no explicit assertions for hybrid semantic score blending
-  - no tests validating banner numbering consistency with runtime mapping
+  - no tests covering PDF/DOCX loader dependency/runtime failures
   - no integration tests across very large doc corpora
   - no tests for semantic init failure simulation path
 
@@ -504,10 +507,9 @@ DEBUGGING_DOCS = """
 - Cause: unsupported index/name or malformed input.
 - Fix: run `/mode`, then choose valid index/name.
 
-7) Banner mode order confusion
-- Cause: banner text order differs from runtime mapping.
-- Fix now: trust `/mode` menu and `MODE_BY_INDEX` map.
-- Long-term fix: align `main.py` banner labels with runtime map.
+7) `load <path>` fails for PDF
+- Cause: `pypdf` dependency is not installed.
+- Fix: install dependency (`uv add pypdf`) and rerun load command.
 
 ### Retrieval Relevance and Result Shape
 8) `No keyword results found.`
@@ -591,31 +593,27 @@ KNOWN_ISSUES_DOCS = """
 
 ## Active Issues and Risks
 
-1) Mode numbering inconsistency
-- `core/main.py` banner shows a mode order that differs from `AgentV4.MODE_BY_INDEX`.
-- User confusion risk when selecting by numbers from banner instead of `/mode` menu.
-
-2) Hybrid score fusion incomplete
+1) Hybrid score fusion incomplete
 - Semantic results are computed in hybrid path but not included in final combined score.
 - Current hybrid ranking behaves close to keyword-only.
 
-3) Typo-coupled module name
+2) Typo-coupled module name
 - `nlp/tokenzier.py` misspelling is part of current import graph.
 - Any rename must include synchronized import updates.
 
-4) Thin stopword list design risk
+3) Thin stopword list design risk
 - `STOP_WORDS` is minimal and static.
 - Retrieval quality can vary for broader natural-language prompts.
 
-5) Legacy path still present
+4) Legacy path still present
 - `core/agent.py` and `core/models.py` remain for legacy tests/use.
 - Not default runtime path but still part of maintenance surface.
 
-6) `tests/text_processor.py` is not auto-collected
+5) `tests/text_processor.py` is not auto-collected
 - File name does not match pytest default `test_*.py` pattern.
 - Can cause false assumption that all test-like functions are executed.
 
-7) Semantic initialization dependency sensitivity
+6) Semantic initialization dependency sensitivity
 - `sentence-transformers` runtime and model availability can fail in constrained environments.
 """
 
@@ -699,11 +697,11 @@ MAINTENANCE_DOCS = """
   - `## Testing Docs`
 
 ## Safe Modernization Backlog
-1. Align banner mode numbering with runtime mode map.
-2. Implement true hybrid score fusion.
-3. Decide and execute `tokenzier.py` rename migration plan.
-4. Strengthen tests for semantic failure paths.
-5. Add collection-safe name for `tests/text_processor.py` if intended for execution.
+1. Implement true hybrid score fusion.
+2. Decide and execute `tokenzier.py` rename migration plan.
+3. Strengthen tests for semantic failure paths.
+4. Add collection-safe name for `tests/text_processor.py` if intended for execution.
+5. Add optional persistence for dynamically loaded documents.
 """
 
 KNOWLEDGE_BASE_INDEX_DOCS = """

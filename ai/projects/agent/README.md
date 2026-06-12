@@ -22,7 +22,7 @@ The app runs an interactive CLI and supports these retrieval modes:
 - `semantic`: embedding retrieval with LLM answer synthesis from retrieved context
 - `hybrid`: keyword + semantic pipeline path (currently keyword-weighted in ranking)
 
-Data source for retrieval is `src/data/knowledge_base.py`.
+Data source for retrieval starts with built-in docs from `src/data/knowledge_base.py` and can be extended at runtime using `load <path>` for TXT/MD/PDF/DOCX files.
 
 ## 3) Architecture Overview
 
@@ -75,7 +75,7 @@ Optional chat-mode LLM configuration:
 
 ```bash
 export OPENROUTER_API_KEY="your_api_key_here"
-export OPENROUTER_MODEL="~openai/gpt-latest"
+export OPENROUTER_MODEL="openrouter/free"
 export OPENROUTER_MAX_TOKENS=512
 ```
 
@@ -113,6 +113,7 @@ Supported commands:
 - `/mode <number>` -> set mode by index
 - `/mode <name>` -> set mode by name
 - `mode <name>` -> backward-compatible old syntax
+- `load <path>` -> load one file or a directory of TXT/MD/PDF/DOCX files
 - `exit` -> quit CLI
 
 ### Mode Index Mapping (Source Of Truth)
@@ -124,11 +125,7 @@ Supported commands:
 - `3` -> `semantic`
 - `4` -> `hybrid`
 
-Important:
-
-- The startup ASCII banner in `main.py` displays a different numbering order (`1 keyword, 2 semantic, 3 hybrid, 4 chat`).
-- Runtime behavior follows `AgentV4`, not the banner text.
-- Use `/mode` menu output as the authoritative mapping.
+The startup banner and runtime mode map are aligned with this order.
 
 ## 7) Retrieval Behavior
 
@@ -161,7 +158,8 @@ Section extraction:
 - `src/core/agent_v4.py`: primary runtime logic
 - `src/core/agent.py`: legacy `StudyAgent`
 - `src/core/hybrid_search.py`: hybrid ranking combiner
-- `src/data/knowledge_base.py`: internal indexed docs
+- `src/data/knowledge_base.py`: built-in seed docs
+- `src/document_loader/*.py`: dynamic file loaders + document manager
 - `src/nlp/*.py`: NLP/retrieval building blocks
 - `src/tests/*.py`: pytest coverage
 
@@ -247,14 +245,15 @@ Observed status (June 11, 2026):
 - Fix:
   - use valid values (`1..4`, `chat|keyword|semantic|hybrid`)
 
-7. Banner numbering confusion
-- Cause: `main.py` banner order differs from `AgentV4` mode mapping
+7. Document load failures
+- Signature:
+  - `Load error(s): ...`
+- Cause:
+  - unsupported extension, missing file, or missing PDF dependency (`pypdf`)
 - Debug:
-  - compare startup banner vs `/mode` menu
-- Workaround:
-  - trust `/mode` output
-- Recommended code fix:
-  - align banner labels with `MODE_BY_INDEX`
+  - validate path and extension
+  - run `load <absolute-or-relative-path>`
+  - for PDFs install dependency: `uv add pypdf`
 
 ### D) Retrieval Errors / Low Relevance
 
@@ -376,7 +375,6 @@ uv run pytest -q src/tests/test_agent_v4_mode.py
 
 - LLM-backed answers (all modes) need `OPENROUTER_API_KEY`; without it, retrieval modes return local context
 - Hybrid ranking does not yet fuse semantic score into final rank
-- Startup banner mode numbering is inconsistent with runtime mapping
 - `tokenzier.py` naming typo is legacy coupling risk
 
 ## 13) Maintenance Checklist

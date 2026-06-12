@@ -6,7 +6,7 @@ from core.openrouter_llm import OpenRouterLLM
 def test_openrouter_llm_reads_api_key_from_env_file(tmp_path: Path, monkeypatch):
     env_file = tmp_path / ".env"
     env_file.write_text(
-        "OPENROUTER_API_KEY=file-key\nOPENROUTER_MODEL=~openai/gpt-latest\n",
+        "OPENROUTER_API_KEY=file-key\nOPENROUTER_MODEL=openrouter/free\n",
         encoding="utf-8",
     )
 
@@ -17,7 +17,7 @@ def test_openrouter_llm_reads_api_key_from_env_file(tmp_path: Path, monkeypatch)
     llm = OpenRouterLLM()
 
     assert llm.api_key == "file-key"
-    assert llm.model == "~openai/gpt-latest"
+    assert llm.model == "openrouter/free"
 
 
 def test_openrouter_llm_prefers_os_env_over_env_file(tmp_path: Path, monkeypatch):
