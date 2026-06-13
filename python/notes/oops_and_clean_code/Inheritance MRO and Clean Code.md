@@ -81,6 +81,52 @@ Child class can inherit:
 
 It can also override any method for specialized behavior.
 
+Quick refresher:
+- instance method: uses `self` (object-level behavior)
+- class method: uses `cls` (class-level behavior/factory)
+- static method: no `self`/`cls` (domain utility)
+
+Example:
+```python
+class BaseUser:
+    platform = "NotesApp"
+
+    def __init__(self, username: str):
+        self.username = username
+
+    def describe(self) -> str:  # instance method
+        return f"user={self.username}, platform={self.platform}"
+
+    @classmethod
+    def guest(cls):  # class method
+        return cls("guest")
+
+    @staticmethod
+    def is_valid_username(name: str) -> bool:  # static method
+        return len(name) >= 3 and name.isalnum()
+
+
+class AdminUser(BaseUser):
+    pass
+
+
+admin = AdminUser("Asha01")
+guest = AdminUser.guest()
+
+print(admin.describe())
+print(guest.describe())
+print(AdminUser.is_valid_username("A1"))
+print(AdminUser.is_valid_username("Asha01"))
+```
+
+Expected output:
+```text
+user=Asha01, platform=NotesApp
+user=guest, platform=NotesApp
+False
+True
+```
+
 ---
 
 ## 5. Types of Inheritance in Python

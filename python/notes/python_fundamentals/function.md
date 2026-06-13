@@ -133,3 +133,387 @@ For any function snippet:
 - Decorator wrapping behavior
 - try/finally return override
 - map/callable/code object basics
+
+## 14. Decorators (Interview + Real Project Essential)
+
+A decorator is a function that takes another function and returns a wrapped function.
+
+Mental model:
+```text
+decorated_function = decorator(original_function)
+```
+
+`@decorator_name` is just shorthand for that replacement.
+
+Example:
+```python
+from functools import wraps
+
+
+def log_call(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"[BEFORE] calling {func.__name__} with args={args}, kwargs={kwargs}")
+        result = func(*args, **kwargs)
+        print(f"[AFTER] {func.__name__} returned {result}")
+        return result
+    return wrapper
+
+
+@log_call
+def add(a, b):
+    print("Inside add()")
+    return a + b
+
+
+total = add(10, 20)
+print("Final total:", total)
+print("Function name after decoration:", add.__name__)
+```
+
+Expected output:
+```text
+[BEFORE] calling add with args=(10, 20), kwargs={}
+Inside add()
+[AFTER] add returned 30
+Final total: 30
+Function name after decoration: add
+```
+
+Why `@wraps` matters:
+- preserves original function metadata (`__name__`, docstring)
+- helps debugging and tooling
+
+## 15. Detailed Function Examples (Step by Step)
+
+### 15.1 Argument Binding with `/` and `*`
+
+```python
+def build_url(protocol, /, host, *, port=80, path="/"):
+    url = f"{protocol}://{host}:{port}{path}"
+    print("Built URL:", url)
+    return url
+
+
+build_url("https", "example.com", port=443, path="/docs")
+
+try:
+    build_url(protocol="https", host="example.com")
+except TypeError as error:
+    print("Binding error:", error)
+```
+
+Expected output:
+```text
+Built URL: https://example.com:443/docs
+Binding error: build_url() got some positional-only arguments passed as keyword arguments: 'protocol'
+```
+
+### 15.2 Mutable Default Trap vs Safe Pattern
+
+```python
+def add_tag_bad(tag, tags=[]):
+    tags.append(tag)
+    print("BAD tags now:", tags)
+    return tags
+
+
+def add_tag_good(tag, tags=None):
+    tags = [] if tags is None else tags
+    tags.append(tag)
+    print("GOOD tags now:", tags)
+    return tags
+
+
+add_tag_bad("python")
+add_tag_bad("django")
+
+add_tag_good("python")
+add_tag_good("django")
+```
+
+Expected output:
+```text
+BAD tags now: ['python']
+BAD tags now: ['python', 'django']
+GOOD tags now: ['python']
+GOOD tags now: ['django']
+```
+
+### 15.3 Mutation vs Reassignment
+
+```python
+def mutate_list(values):
+    values.append(99)
+    print("Inside mutate_list:", values)
+
+
+def reassign_list(values):
+    values = values + [99]
+    print("Inside reassign_list:", values)
+
+
+numbers1 = [1, 2, 3]
+numbers2 = [1, 2, 3]
+
+mutate_list(numbers1)
+print("After mutate_list:", numbers1)
+
+reassign_list(numbers2)
+print("After reassign_list:", numbers2)
+```
+
+Expected output:
+```text
+Inside mutate_list: [1, 2, 3, 99]
+After mutate_list: [1, 2, 3, 99]
+Inside reassign_list: [1, 2, 3, 99]
+After reassign_list: [1, 2, 3]
+```
+
+### 15.4 Closures and Late Binding Fix
+
+```python
+bad_funcs = []
+for i in range(3):
+    bad_funcs.append(lambda: i)
+
+print("Late binding result:", [func() for func in bad_funcs])
+
+good_funcs = []
+for i in range(3):
+    good_funcs.append(lambda i=i: i)
+
+print("Fixed closure result:", [func() for func in good_funcs])
+```
+
+Expected output:
+```text
+Late binding result: [2, 2, 2]
+Fixed closure result: [0, 1, 2]
+```
+
+### 15.5 `try/finally` Return Override
+
+```python
+def tricky_return():
+    try:
+        print("Inside try block")
+        return "TRY"
+    finally:
+        print("Inside finally block")
+        return "FINALLY"
+
+
+print("Function returned:", tricky_return())
+```
+
+Expected output:
+```text
+Inside try block
+Inside finally block
+Function returned: FINALLY
+```
+
+## 16. Decorator Usage Patterns (More Practical)
+
+### 16.1 Parameterized Decorator
+
+```python
+from functools import wraps
+
+
+def repeat(times):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            result = None
+            for run in range(1, times + 1):
+                print(f"Run {run}/{times}")
+                result = func(*args, **kwargs)
+            return result
+        return wrapper
+    return decorator
+
+
+@repeat(3)
+def greet(name):
+    print(f"Hello, {name}")
+
+
+greet("Asha")
+```
+
+Expected output:
+```text
+Run 1/3
+Hello, Asha
+Run 2/3
+Hello, Asha
+Run 3/3
+Hello, Asha
+```
+
+### 16.2 Stacked Decorators and Order
+
+```python
+from functools import wraps
+
+
+def make_upper(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        transformed = result.upper()
+        print("make_upper applied")
+        return transformed
+    return wrapper
+
+
+def add_exclamation(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        transformed = result + "!"
+        print("add_exclamation applied")
+        return transformed
+    return wrapper
+
+
+@add_exclamation
+@make_upper
+def message():
+    print("message() executed")
+    return "python decorators"
+
+
+print("Final message:", message())
+```
+
+Expected output:
+```text
+message() executed
+make_upper applied
+add_exclamation applied
+Final message: PYTHON DECORATORS!
+```
+
+### 16.3 Real Use: Access Control Decorator
+
+```python
+from functools import wraps
+
+
+def require_role(required_role):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(user_role, *args, **kwargs):
+            if user_role != required_role:
+                print(f"Access denied for role={user_role}")
+                return None
+            print(f"Access granted for role={user_role}")
+            return func(user_role, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
+@require_role("admin")
+def delete_user(user_role, username):
+    print(f"Deleting user: {username}")
+    return True
+
+
+print("Admin attempt:", delete_user("admin", "ravi"))
+print("Guest attempt:", delete_user("guest", "ravi"))
+```
+
+Expected output:
+```text
+Access granted for role=admin
+Deleting user: ravi
+Admin attempt: True
+Access denied for role=guest
+Guest attempt: None
+```
+
+### 16.4 Real Use: Timing Decorator
+
+```python
+import time
+from functools import wraps
+
+
+def time_it(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        end = time.perf_counter()
+        print(f"{func.__name__} took {(end - start) * 1000:.2f} ms")
+        return result
+    return wrapper
+
+
+@time_it
+def compute_sum(n):
+    total = sum(range(n + 1))
+    print("Computed total:", total)
+    return total
+
+
+compute_sum(100000)
+```
+
+Expected output (time value will vary):
+```text
+Computed total: 5000050000
+compute_sum took 1.23 ms
+```
+
+### 16.5 Async Function Decorator
+
+```python
+import asyncio
+from functools import wraps
+
+
+def async_log(func):
+    @wraps(func)
+    async def wrapper(*args, **kwargs):
+        print(f"[ASYNC BEFORE] {func.__name__}")
+        result = await func(*args, **kwargs)
+        print(f"[ASYNC AFTER] {func.__name__} -> {result}")
+        return result
+    return wrapper
+
+
+@async_log
+async def fetch_profile(user_id):
+    await asyncio.sleep(0.1)
+    print(f"Fetching profile for user_id={user_id}")
+    return {"user_id": user_id, "status": "ok"}
+
+
+async def main():
+    data = await fetch_profile(101)
+    print("Final data:", data)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+Expected output:
+```text
+[ASYNC BEFORE] fetch_profile
+Fetching profile for user_id=101
+[ASYNC AFTER] fetch_profile -> {'user_id': 101, 'status': 'ok'}
+Final data: {'user_id': 101, 'status': 'ok'}
+```
+
+## 17. Quick Practice Prompts
+
+1. Write a decorator that retries a function 3 times on exception.
+2. Write a decorator that caches function results for same arguments.
+3. Write a decorator that validates all numeric arguments are positive.
+4. Refactor one script in your notes to use a logging decorator.

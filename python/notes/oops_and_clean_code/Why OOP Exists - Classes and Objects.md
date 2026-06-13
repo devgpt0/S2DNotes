@@ -207,6 +207,78 @@ class Student:
 
 ---
 
+## 7.1 Instance Method vs Class Method vs Static Method
+
+These three method types are used for different responsibilities inside a class.
+
+### Instance method
+- first parameter is `self`
+- works with per-object state
+- most common method type
+
+### Class method
+- decorated with `@classmethod`
+- first parameter is `cls`
+- works with class-level data
+- often used as an alternative constructor
+
+### Static method
+- decorated with `@staticmethod`
+- no `self` and no `cls`
+- utility logic related to class domain
+
+Example:
+```python
+class Employee:
+    company_name = "ABC Corp"
+    employee_count = 0
+
+    def __init__(self, name: str, monthly_salary: float):
+        self.name = name
+        self.monthly_salary = monthly_salary
+        Employee.employee_count += 1
+
+    def calculate_annual_salary(self) -> float:
+        return self.monthly_salary * 12
+
+    @classmethod
+    def from_annual_salary(cls, name: str, annual_salary: float):
+        monthly_salary = annual_salary / 12
+        return cls(name, monthly_salary)
+
+    @staticmethod
+    def is_valid_work_email(email: str) -> bool:
+        return "@" in email and email.endswith(".com")
+
+
+emp1 = Employee("Asha", 50000)
+print("Instance method -> annual salary:", emp1.calculate_annual_salary())
+
+emp2 = Employee.from_annual_salary("Ravi", 720000)
+print("Class method -> monthly salary:", emp2.monthly_salary)
+
+print("Class method -> employee count:", Employee.employee_count)
+
+print("Static method -> valid:", Employee.is_valid_work_email("asha@abccorp.com"))
+print("Static method -> invalid:", Employee.is_valid_work_email("ashabccorp.com"))
+```
+
+Expected output:
+```text
+Instance method -> annual salary: 600000
+Class method -> monthly salary: 60000.0
+Class method -> employee count: 2
+Static method -> valid: True
+Static method -> invalid: False
+```
+
+Quick interview memory:
+- `self` -> object data/behavior
+- `cls` -> class data/factory behavior
+- static -> helper rule tied to class domain
+
+---
+
 ## 8. Common OOP Mistakes Asked in Interviews
 
 1. Creating classes for simple utility operations
@@ -323,6 +395,74 @@ Why interviewers like this example:
 - `__str__`: user-facing readable text
 
 If `__str__` is absent, Python may use `__repr__`.
+
+---
+
+## 12.1 Dunder Methods (`__method__`) Concept
+
+Dunder methods are "special methods" Python calls automatically for built-in operations.
+
+Common examples:
+- `__init__` -> object initialization
+- `__str__` -> `str(obj)` / `print(obj)`
+- `__repr__` -> `repr(obj)` / debugging
+- `__len__` -> `len(obj)`
+- `__eq__` -> `obj1 == obj2`
+- `__add__` -> `obj1 + obj2`
+
+Example:
+```python
+class Cart:
+    def __init__(self, items):
+        self.items = items
+
+    def __str__(self):
+        return f"Cart with {len(self.items)} item(s): {self.items}"
+
+    def __repr__(self):
+        return f"Cart(items={self.items!r})"
+
+    def __len__(self):
+        return len(self.items)
+
+    def __eq__(self, other):
+        if not isinstance(other, Cart):
+            return NotImplemented
+        return self.items == other.items
+
+    def __add__(self, other):
+        if not isinstance(other, Cart):
+            return NotImplemented
+        return Cart(self.items + other.items)
+
+
+cart1 = Cart(["pen", "book"])
+cart2 = Cart(["bottle"])
+cart3 = Cart(["pen", "book"])
+
+print("str(cart1):", str(cart1))
+print("repr(cart1):", repr(cart1))
+print("len(cart1):", len(cart1))
+print("cart1 == cart3:", cart1 == cart3)
+
+merged = cart1 + cart2
+print("merged cart:", merged)
+print("len(merged):", len(merged))
+```
+
+Expected output:
+```text
+str(cart1): Cart with 2 item(s): ['pen', 'book']
+repr(cart1): Cart(items=['pen', 'book'])
+len(cart1): 2
+cart1 == cart3: True
+merged cart: Cart with 3 item(s): ['pen', 'book', 'bottle']
+len(merged): 3
+```
+
+Interview rule:
+- do not call dunder methods directly (`cart.__len__()`) in normal code
+- prefer built-in operations (`len(cart)`, `print(cart)`, `cart1 + cart2`)
 
 ---
 
