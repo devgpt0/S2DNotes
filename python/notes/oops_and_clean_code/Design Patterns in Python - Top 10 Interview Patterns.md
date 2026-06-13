@@ -1,4 +1,4 @@
-# Design Patterns in Python - Top 10 Interview Patterns
+# Design Patterns in Python
 
 ## 1. How to Use This Note
 

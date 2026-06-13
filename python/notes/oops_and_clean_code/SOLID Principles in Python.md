@@ -1,4 +1,4 @@
-# SOLID Principles in Python (Easy Notes + Interview Ready)
+# SOLID Principles in Python 
 
 ## 1. Why SOLID Matters
 
