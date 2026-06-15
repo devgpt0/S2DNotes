@@ -1,84 +1,111 @@
 """
 Central project knowledge base for the `agent` repository.
 
-This module is organized into focused doc variables so code can consume
-specific sections (architecture, runbook, debugging, maintenance, etc.).
+These strings are indexed by AgentV4 and returned through retrieval modes.
+Keep this file aligned with README.md and runtime behavior whenever code changes.
 """
 
 PROJECT_OVERVIEW_DOCS = """
 # Project Overview Docs
 
-## Repository identity
-- Root: `C:/pocs/notes/ai/projects/agent`
-- Packaging: `src` layout
-- Python: `>=3.12`
-- Build backend: `setuptools`
-- Runtime script entrypoint: `core-agent`
+## Repository Identity
+- Relative root: `ai/projects/agent`
+- Package name: `agent`
+- Version: `0.1.0`
+- Python requirement: `>=3.12`
+- Packaging style: src-layout (`src/`)
+- Build backend: `setuptools.build_meta`
+- CLI entrypoint: `core-agent -> core.main:main`
 
-## What this project does
-- Runs a CLI study assistant over an internal project knowledge base.
-- Supports retrieval modes:
-  - chat
-  - keyword (TF-IDF)
-  - semantic (embeddings)
-  - hybrid (keyword + semantic pipeline scaffold)
+## Primary Purpose
+- Runs a CLI study assistant over an internal documentation corpus.
+- Supports multiple retrieval strategies over that corpus.
+- Returns focused section answers (not full document dumps) for user queries.
 
-## Main package areas
-- `src/core`
-  - app entrypoint, mode router, agent runtime
-- `src/nlp`
-  - NLP and retrieval engines
-- `src/tests`
-  - pytest tests for core behaviors
-- `src/data`
-  - knowledge base docs used by the agent
+## Search Modes
+- `chat`
+  - LLM-backed conversational mode through OpenRouter (requires API key).
+- `keyword`
+  - TF-IDF retrieval with LLM synthesis from retrieved context.
+- `semantic`
+  - embedding retrieval with LLM synthesis from retrieved context.
+- `hybrid`
+  - keyword + semantic retrieval path (ranking is keyword-dominant), then LLM synthesis.
 
-## Current maturity snapshot (June 10, 2026)
-- `core/main.py` starts `AgentV4` with ASCII banner and command help.
-- `/mode` supports numbered direct selection (`1..4`) and named selection.
-- Keyword and semantic engines are runnable.
-- Full test suite currently passes in this project environment.
+## Runtime Entry Points
+- Shell script entry:
+  - `uv run core-agent`
+- Python module entry:
+  - `uv run --with . python -m core.main`
+- Direct file execution (`python src/core/main.py`) is not recommended for src-layout imports.
+
+## Project State Snapshot (June 11, 2026)
+- Main runtime class: `core.agent_v4.AgentV4`
+- Internal documentation source: `src/data/knowledge_base.py`
+- Test suite status observed in this repository: 14 passed, 0 failed
+- Known technical debt:
+  - dynamic document loading currently has no persistent index on disk
+  - typo-coupled filename `tokenzier.py`
+  - hybrid ranking path does not blend semantic scores into final score yet
 """
 
 ARCHITECTURE_DOCS = """
 # Architecture Docs
 
-## Request lifecycle
-1. User launches CLI via `uv run core-agent`.
-2. `core.main` creates `AgentV4`.
-3. `AgentV4.run(query)` handles either:
-   - mode command (`/mode`, `/mode 2`, `/mode semantic`, etc.)
-   - retrieval query in current mode
+## High-Level Architecture
+- Interface layer
+  - `core/main.py`: CLI loop and user IO
+- Orchestration layer
+  - `core/agent_v4.py`: mode handling, retrieval dispatch, section extraction
+- Routing/state layer
+  - `core/query_router.py`, `core/search_mode.py`
+- Retrieval engines
+  - Chat LLM: `core/openrouter_llm.py` (OpenRouter chat completions)
+  - Keyword: `nlp/keyword_search.py` + `nlp/tfidf.py`
+  - Semantic: `nlp/embedding_search.py` + `nlp/embedding_model.py`
+  - Hybrid: `core/hybrid_search.py`
+- Data source layer
+  - `data/knowledge_base.py` built-in seed docs
+  - `document_loader/*` dynamic file ingestion (`load <path>`)
 
-## Runtime components
-- `core.main`
-  - prints banner, command help, and runs REPL loop
-- `core.agent_v4.AgentV4`
-  - mode management
-  - retrieval orchestration
-  - lazy semantic engine initialization
-- `core.query_router.QueryRouter`
-  - stores current `SearchMode`
-- `core.search_mode.SearchMode`
-  - enum: `chat`, `keyword`, `semantic`, `hybrid`
-- `core.hybrid_search.HybridSearch`
-  - combines engine outputs (currently keyword-weighted behavior)
+## Request Lifecycle
+1. User runs `uv run core-agent`.
+2. `core.main.main()` creates `AgentV4`.
+3. `AgentV4.__init__` loads built-in docs from `knowledge_base.py`.
+4. Optional `load <path>` command ingests TXT/MD/PDF/DOCX documents at runtime.
+5. Docs are split into section nodes and indexed into retrieval engines.
+6. For each user query, `AgentV4.run()` performs:
+   - mode command handling (`/mode`, `mode <name>`) or
+   - retrieval in active mode.
+7. Top document candidate is selected.
+8. Best section inside that document is extracted and returned.
 
-## Retrieval stack
-- Keyword:
-  - `nlp.keyword_search.KeywordEngine`
-  - `DocumentCorpus` + `TFIDF`
-- Semantic:
-  - `nlp.embedding_search.EmbeddingSearch`
-  - `nlp.embedding_model.EmbeddingModel`
-  - `sentence_transformers` backend
-- Hybrid:
-  - `HybridSearch.search(query, keyword_engine, semantic_engine)`
+## Internal Data Flow
+- Knowledge docs (`str`) -> split into section nodes (`list[str]`) -> added to keyword corpus.
+- Query (`str`) -> normalized retrieval query -> engine result list (`list[(doc, score)]`).
+- Top-k results -> heuristic rerank in `_select_best_document`.
+- Final doc -> `_extract_relevant_section` -> response section text.
 
-## Knowledge base integration
-- `AgentV4` loads sections from `data.knowledge_base`.
-- Each section is indexed into keyword search at startup.
-- Semantic embeddings are built lazily when semantic/hybrid mode is activated.
+## Mode and State Model
+- Mode enum values: `chat`, `keyword`, `semantic`, `hybrid`
+- Default mode: `chat`
+- Router owner: `QueryRouter`
+- Mode selection supports:
+  - numeric (`/mode 1..4`)
+  - name (`/mode keyword`, etc.)
+  - follow-up single token after menu prompt
+
+## Semantic Initialization Strategy
+- Semantic engine is lazily initialized.
+- Triggered when mode changes to `semantic` or `hybrid` (or when running those paths).
+- On initialization failure, the agent returns a safe error message and stays/falls back to keyword mode.
+
+## Section-Level Response Strategy
+- Docs are split by markdown `##` headers.
+- Agent extracts the most relevant section as retrieval context.
+- LLM uses this context to generate final answer in keyword/semantic/hybrid modes.
+- Heuristic boosts prioritize run/setup/mode/test/debug intent tokens.
+- If LLM is unavailable, extracted section is returned directly.
 """
 
 SETUP_AND_RUN_DOCS = """
@@ -86,252 +113,601 @@ SETUP_AND_RUN_DOCS = """
 
 ## Prerequisites
 - Python 3.12+
-- `uv` installed
+- `uv` installed and available in PATH
 
 ## Setup
-1. `cd C:/pocs/notes/ai/projects/agent`
+1. `cd ai/projects/agent`
 2. `uv sync`
 
-## Run
-- Script:
-  - `uv run core-agent`
-- Module:
-  - `uv run --with . python -m core.main`
+## Optional Chat LLM Setup
+- `export OPENROUTER_API_KEY="your_api_key_here"`
+- `export OPENROUTER_MODEL="openrouter/free"`
+- `export OPENROUTER_MAX_TOKENS=512`
+- Or put those keys in `ai/projects/agent/.env` or `ai/projects/agent/src/.env`
 
-## CLI commands
+## Run Commands
+- Recommended:
+  - `uv run core-agent`
+- Alternative:
+  - `uv run --with . python -m core.main`
+- Not recommended:
+  - `python src/core/main.py`
+
+## CLI Commands
 - `/mode`
-  - show numbered mode menu
+  - show mode menu and current mode
 - `/mode 1|2|3|4`
-  - switch mode directly by number
+  - select mode by index
 - `/mode <name>`
-  - switch by mode name (`chat|keyword|semantic|hybrid`)
+  - select by name (`chat|keyword|semantic|hybrid`)
+- `mode <name>`
+  - backward-compatible syntax
+- `load <path>`
+  - load one file or a directory of TXT/MD/PDF/DOCX docs
 - `exit`
   - quit app
 
-## First-run note for semantic mode
-- First semantic usage may download model artifacts (`all-MiniLM-L6-v2`).
-- Initial semantic mode activation can be slower than keyword/chat mode.
+## Mode Index Source Of Truth
+`AgentV4.MODE_BY_INDEX` currently maps:
+- `1 -> chat`
+- `2 -> keyword`
+- `3 -> semantic`
+- `4 -> hybrid`
+
+Important note:
+- Startup banner and runtime behavior follow `AgentV4.MODE_BY_INDEX`.
+
+## First Semantic Run Notes
+- `sentence-transformers` model initialization can take extra time on first usage.
+- If model artifacts are unavailable or init fails, agent returns semantic-unavailable message.
+
+## Quick Sanity Run
+1. Launch: `uv run core-agent`
+2. Ask menu: `/mode`
+3. Switch keyword: `/mode 2`
+4. Query: `How to start this application ?`
+5. Exit: `exit`
 """
 
 CODE_MAP_DOCS = """
 # Code Map Docs
 
-## `src/core`
+## Folder Structure (Detailed)
 
-### `core/main.py`
-- Active CLI entrypoint.
-- Prints banner and command help.
-- Uses `AgentV4`.
+```text
+ai/projects/agent/
+  README.md
+  pyproject.toml
+  uv.lock
+  src/
+    __init__.py
+    core/
+      __init__.py
+      main.py
+      agent_v4.py
+      agent.py
+      hybrid_search.py
+      models.py
+      openrouter_llm.py
+      query_router.py
+      search_mode.py
+    data/
+      __init__.py
+      knowledge_base.py
+    nlp/
+      __init__.py
+      bag_of_words.py
+      document_corpus.py
+      document_stats.py
+      embedding_model.py
+      embedding_search.py
+      frequency_analyzer.py
+      keyword_engine.py
+      keyword_search.py
+      pipeline.py
+      stopword.py
+      text_processor.py
+      tfidf.py
+      tokenizer_engine.py
+      tokenzier.py
+      vocabulary.py
+    tests/
+      test_agent.py
+      test_agent_v4_mode.py
+      test_bag_of_words.py
+      test_embedding_model.py
+      test_frequency_analyzer.py
+      test_keyword_search.py
+      test_term_frequency.py
+      test_tokenizer.py
+      test_tokenizer_engine.py
+      test_vocabulary.py
+      text_processor.py
+```
 
-### `core/agent_v4.py`
-- Primary runtime agent.
-- Features:
-  - `/mode` menu and direct selection
-  - mode-by-index and mode-by-name parsing
-  - lazy semantic engine startup
-  - retrieval dispatch by current mode
+## Root Files: What Each File Does
+- `README.md`
+  - human-facing main project documentation.
+- `pyproject.toml`
+  - package metadata, dependencies, script entrypoint, pytest pythonpath setup.
+- `uv.lock`
+  - dependency lock file for reproducible installs in this environment.
 
-### `core/query_router.py`
-- `QueryRouter` stores and updates active `SearchMode`.
+## `src/` Package Root
+- `src/__init__.py`
+  - package marker; currently empty.
 
-### `core/search_mode.py`
-- Enum values:
-  - `chat`
-  - `keyword`
-  - `semantic`
-  - `hybrid`
+## `src/core` Package: File-by-File
+- `src/core/__init__.py`
+  - package marker with short docstring.
 
-### `core/hybrid_search.py`
-- Hybrid retrieval combiner.
-- Calls keyword and semantic engines.
-- Returns ranked `(document, score)` list.
+- `src/core/main.py`
+  - CLI executable entrypoint.
+  - Responsibilities:
+    - creates `AgentV4`
+    - prints startup banner
+    - runs REPL loop
+    - handles blank input and `exit`
+    - sends all other input to `agent.run()`
+  - Important behavior:
+    - supports runtime document ingestion via `load <path>`.
 
-### `core/agent.py`
-- Legacy/simple study agent path.
-- Uses keyword search and canned responses.
-- Not the default CLI path anymore.
+- `src/core/agent_v4.py`
+  - primary runtime orchestrator.
+  - Responsibilities:
+    - mode parsing and state transitions
+    - mode menu and awaiting-followup logic
+    - lazy semantic engine initialization
+    - knowledge docs loading and node splitting
+    - query normalization for retrieval
+    - document reranking heuristics
+    - section-level extraction for focused answers
+  - Key attributes:
+    - `MODE_BY_INDEX`, `MODE_BY_NAME`
+    - `RETRIEVAL_FILLER_TOKENS`
+    - `documents`, `nodes`, `keyword_engine`, `semantic_engine`
+  - Key methods:
+    - `_split_document_into_nodes`: splits by `##` headers
+    - `_ensure_semantic_engine`: guarded semantic bootstrapping
+    - `_select_best_document`: intent-aware rerank over top-k
+    - `_extract_relevant_section`: section-level narrowing
 
-### `core/models.py`
-- `Task` dataclass for legacy/simple agent flow.
+- `src/core/agent.py`
+  - legacy `StudyAgent` implementation.
+  - Uses tokenizer/bag-of-words and canned responses for simple queries.
+  - Includes old `search` behavior with hardcoded sample documents.
+  - Still tested by `test_agent.py`, but not the default CLI path.
 
-## `src/nlp`
+- `src/core/hybrid_search.py`
+  - hybrid retrieval combiner.
+  - Current behavior:
+    - computes both keyword and semantic result sets
+    - only keyword scores are merged into `combined` ranking
+    - semantic scores are currently unused in final ranking
+  - Technical debt:
+    - parameter typo name: `sematic_engine`
 
-### `nlp/keyword_search.py`
-- Primary keyword engine.
-- Exposes:
-  - `KeywordEngine` (primary)
-  - `KeywordSearch` alias
-  - `SearchEngine` legacy alias
+- `src/core/models.py`
+  - simple dataclass models.
+  - `Task` dataclass wraps `query: str` for legacy agent path.
 
-### `nlp/keyword_engine.py`
-- Compatibility shim re-exporting symbols from `keyword_search`.
+- `src/core/query_router.py`
+  - runtime mode state container.
+  - `set_mode` converts input string to `SearchMode` enum.
 
-### `nlp/tfidf.py`
-- TF-IDF math and query/document scoring.
+- `src/core/search_mode.py`
+  - enum definitions for supported modes.
+  - Source of canonical mode string values.
 
-### `nlp/document_corpus.py`
-- In-memory document store.
+## `src/data` Package
+- `src/data/__init__.py`
+  - package marker; currently empty.
 
-### `nlp/embedding_model.py`
-- `SentenceTransformer` wrapper.
-- Uses model: `all-MiniLM-L6-v2`.
+- `src/data/knowledge_base.py`
+  - internal retrievable docs used by `AgentV4`.
+  - Exposes constants for documentation sections.
+  - Exposes `KNOWLEDGE_BASE` dict and `get_knowledge_base()` accessor.
 
-### `nlp/embedding_search.py`
-- Builds embedding index and cosine-similarity search.
-- Provides `semantic_search(query)` alias.
+## `src/nlp` Package: File-by-File
+- `src/nlp/__init__.py`
+  - package marker; currently empty.
 
-### `nlp/pipeline.py`, `text_processor.py`, `tokenzier.py`, `tokenizer_engine.py`, `vocabulary.py`, `bag_of_words.py`, `frequency_analyzer.py`
-- Token pipeline and lexical feature utilities.
+- `src/nlp/pipeline.py`
+  - `NLPPipeline` composition object.
+  - Flow: normalize -> tokenize -> stopword removal.
+  - Imports tokenizer from `tokenzier.py` (typo-coupled module name).
+
+- `src/nlp/tokenzier.py`
+  - minimal whitespace tokenizer.
+  - `Tokenizer.tokenize(text) -> list[str]`.
+
+- `src/nlp/text_processor.py`
+  - normalization and stopword filtering.
+  - `normalize`: lowercase, punctuation strip, trim.
+  - `remove_stopwords`: filters against `STOP_WORDS`.
+
+- `src/nlp/stopword.py`
+  - small static stopword set used by pipeline.
+
+- `src/nlp/document_corpus.py`
+  - in-memory document list abstraction.
+  - add/get/count methods.
+
+- `src/nlp/tfidf.py`
+  - lexical scoring core.
+  - Implements:
+    - term frequency
+    - inverse document frequency
+    - per-document vector construction
+    - query vs document score aggregation
+  - Depends on `NLPPipeline` for tokenization/normalization.
+
+- `src/nlp/keyword_search.py`
+  - keyword retrieval engine.
+  - `KeywordEngine` stores corpus + TFIDF object.
+  - Methods:
+    - `add_document`
+    - `search`
+    - `keyword_search` (alias wrapper)
+  - Backward aliases:
+    - `SearchEngine = KeywordEngine`
+    - `KeywordSearch = KeywordEngine`
+
+- `src/nlp/keyword_engine.py`
+  - compatibility shim.
+  - Re-exports `KeywordEngine`, `KeywordSearch`, `SearchEngine` from `keyword_search`.
+
+- `src/nlp/embedding_model.py`
+  - wraps `SentenceTransformer("all-MiniLM-L6-v2")`.
+  - `embed(text)` returns numpy vector.
+
+- `src/nlp/embedding_search.py`
+  - semantic retrieval implementation.
+  - Maintains parallel arrays for documents and embeddings.
+  - Computes cosine similarity and sorted ranking.
+  - `semantic_search` is alias to `search`.
+
+- `src/nlp/frequency_analyzer.py`
+  - token frequency helper using `Counter`.
+  - supports `count_tokens` and `most_common`.
+
+- `src/nlp/bag_of_words.py`
+  - bag-of-words feature extractor.
+  - Uses `NLPPipeline` + `FrequencyAnalyzer`.
+
+- `src/nlp/tokenizer_engine.py`
+  - token-ID encoding/decoding helper.
+  - Cleans text and maps tokens through `Vocabulary`.
+
+- `src/nlp/vocabulary.py`
+  - dynamic token<->id mapping.
+  - Supports incremental vocab growth and decode fallback.
+  - Contains default decode fallback for ids 0 and 1.
+
+- `src/nlp/document_stats.py`
+  - simple token metrics helper (`word_count`, `unique_words`).
+  - currently standalone and not wired into main runtime path.
+
+## `src/tests` Package: File-by-File
+- `src/tests/test_agent_v4_mode.py`
+  - mode menu text expectations
+  - numeric mode switching assertions
+  - retrieval focus assertion for start/run query
+
+- `src/tests/test_agent.py`
+  - legacy `StudyAgent` response tests for python/ai prompts.
+
+- `src/tests/test_keyword_search.py`
+  - keyword search ranking sanity check.
+
+- `src/tests/test_embedding_model.py`
+  - embedding vector generation basic check.
+
+- `src/tests/test_bag_of_words.py`
+  - bag-of-words token count output check.
+
+- `src/tests/test_frequency_analyzer.py`
+  - token frequency counting check.
+
+- `src/tests/test_term_frequency.py`
+  - TF term frequency math checks.
+
+- `src/tests/test_tokenizer.py`
+  - whitespace tokenizer output check.
+
+- `src/tests/test_tokenizer_engine.py`
+  - token id encode/decode deterministic flow check.
+
+- `src/tests/test_vocabulary.py`
+  - encode/decode mapping checks.
+
+- `src/tests/text_processor.py`
+  - contains a test-like function but filename does not start with `test_`.
+  - not auto-collected by default pytest discovery patterns.
 """
 
 TESTING_DOCS = """
 # Testing Docs
 
-## Test files in `src/tests`
-- `test_agent.py`
-- `test_agent_v4_mode.py`
-- `test_bag_of_words.py`
-- `test_embedding_model.py`
-- `test_frequency_analyzer.py`
-- `test_keyword_search.py`
-- `test_term_frequency.py`
-- `test_tokenizer.py`
-- `test_tokenizer_engine.py`
-- `test_vocabulary.py`
-- `text_processor.py` (not auto-collected; filename does not start with `test_`)
-
-## Main test command
-- `uv run pytest -q src/tests`
-
-## Validation commands
+## Core Commands
+- Full suite:
+  - `uv run pytest -q src/tests`
+- Targeted mode logic:
+  - `uv run pytest -q src/tests/test_agent_v4_mode.py`
+- Targeted embedding smoke:
+  - `uv run pytest -q src/tests/test_embedding_model.py`
 - Compile check:
-  - `uv run python -m py_compile src/core/agent_v4.py src/core/main.py src/nlp/embedding_model.py src/nlp/embedding_search.py`
-- Whole source compile check:
   - `uv run python -m compileall -q src`
 
-## Current expected status
-- Full suite should pass in this project environment.
-- Semantic tests may take longer on first run due model initialization/download.
+## Current Observed Status (June 11, 2026)
+- Test files under `src/tests`: 11 files
+- Auto-collected test files: 10 (`text_processor.py` not auto-collected)
+- Total executed tests observed: 14
+- Status observed: 14 passed, 0 failed
+
+## Coverage Characteristics
+- Strongest coverage:
+  - mode switching and menu formatting
+  - basic keyword/embedding/tokenization paths
+- Gaps:
+  - no explicit assertions for hybrid semantic score blending
+  - no tests covering PDF/DOCX loader dependency/runtime failures
+  - no integration tests across very large doc corpora
+  - no tests for semantic init failure simulation path
+
+## Practical Regression Watchlist
+- Start/run query should return section containing `## Run` and `uv run core-agent`.
+- `/mode 2` should map to keyword mode based on `AgentV4.MODE_BY_INDEX`.
+- Renaming `tokenzier.py` without import updates breaks tests/runtime.
 """
 
 DEBUGGING_DOCS = """
 # Debugging Docs
 
-## Fast debugging workflow
-1. `cd C:/pocs/notes/ai/projects/agent`
-2. `uv sync`
-3. `uv run pytest -q src/tests`
-4. `uv run core-agent`
-5. Reproduce with targeted inputs (`/mode`, `/mode 2`, query text)
+## Fast Debug Workflow
+1. `cd ai/projects/agent`
+2. `python --version`
+3. `uv --version`
+4. `uv sync`
+5. `uv run pytest -q src/tests`
+6. `uv run core-agent`
+7. Reproduce with minimal input and mode-specific steps.
 
-## Mode debugging
-- Check mode list:
-  - `/mode`
-- Set mode numerically:
-  - `/mode 1`
+## Troubleshooting Matrix (Detailed)
+
+### Environment and Tooling
+1) `uv: command not found`
+- Cause: uv missing or not in PATH.
+- Fix: install uv, reopen shell, rerun `uv sync`.
+
+2) Python version mismatch (`>=3.12` required)
+- Cause: old interpreter.
+- Fix: switch to Python 3.12+, recreate env, rerun sync.
+
+3) `VIRTUAL_ENV ... does not match ... .venv`
+- Cause: another venv already active.
+- Impact: warning, but can cause confusion over installed packages.
+- Fix: deactivate foreign venv and prefer `uv run ...` commands.
+
+### Import and Entry Errors
+4) `ModuleNotFoundError` for `core`/`nlp`
+- Cause: direct script execution in src-layout.
+- Fix: use `uv run core-agent` or `python -m core.main` through uv.
+
+5) Import errors after tokenizer rename
+- Cause: code imports `nlp.tokenzier`; rename not fully propagated.
+- Debug command: `rg -n "tokenzier|tokenizer" src`
+- Fix: update imports atomically before/with rename.
+
+### CLI and Mode Routing
+6) Invalid mode selection responses
+- Signatures:
+  - `Invalid mode selection.`
+  - `Please choose 1, 2, 3, 4 ...`
+- Cause: unsupported index/name or malformed input.
+- Fix: run `/mode`, then choose valid index/name.
+
+7) `load <path>` fails for PDF
+- Cause: `pypdf` dependency is not installed.
+- Fix: install dependency (`uv add pypdf`) and rerun load command.
+
+### Retrieval Relevance and Result Shape
+8) `No keyword results found.`
+- Cause: empty corpus, token mismatch, or query normalization side effects.
+- Checkpoints:
+  - verify `AgentV4.__init__` loaded docs
+  - verify nodes were added to keyword engine
+  - test exact phrase from docs
+
+9) `No semantic results found.`
+- Cause: semantic index empty or no valid embeddings loaded.
+- Checkpoints:
+  - ensure `_ensure_semantic_engine` succeeded
+  - ensure `add_document` ran for nodes
+
+10) `Semantic mode is currently unavailable (...) Staying in keyword mode.`
+- Cause: exception while constructing semantic engine/model.
+- Typical reasons:
+  - model initialization/download issue
+  - dependency/runtime incompatibility
+- Fix path:
+  - run `uv run pytest -q src/tests/test_embedding_model.py`
+  - inspect exception string in agent response
+
+11) Start intent returns wrong section (regression pattern)
+- Repro flow:
   - `/mode 2`
-  - `/mode 3`
-  - `/mode 4`
-- Set mode by name:
-  - `/mode keyword`
-- Backward compatibility:
-  - `mode keyword` is still accepted
+  - `How to start this application ?`
+- Expected pattern:
+  - contains `## Run`
+  - contains `uv run core-agent`
+- Debug focus:
+  - `_normalize_query_for_retrieval`
+  - `_select_best_document`
+  - `_extract_relevant_section`
+  - run mode-specific test file
 
-## Retrieval debugging
-- Keyword issues:
-  - inspect `KeywordEngine.search` results and scores
-- Semantic issues:
-  - validate embedding model can initialize
-  - validate document embeddings are present
-- Hybrid issues:
-  - inspect both keyword and semantic outputs before combine
+12) Hybrid seems keyword-only
+- Cause:
+  - `hybrid_search.py` computes semantic results but does not merge semantic scores.
+- Debug:
+  - inspect `combined` dict building logic in hybrid search.
+- Fix direction:
+  - normalize keyword and semantic score scales
+  - weighted fusion and rerank
 
-## Import/path debugging
-- Confirm running from project root.
-- Confirm `pythonpath = ["src"]` behavior under pytest.
-- After renames, run:
-  - `rg -n "keyword_engine|keyword_search|search_engine|study_agent|score" src README.md pyproject.toml`
+### Data and NLP Component Issues
+13) Unexpected stopword filtering
+- Cause: small stopword list may remove intended tokens.
+- File: `nlp/stopword.py`
+- Fix: adjust stopword list and rerun token/pipeline tests.
+
+14) Vocabulary decode surprises (`<UNK>` or defaults)
+- Cause: decode for unseen ids uses defaults (`hello`/`world`) then `<UNK>` fallback.
+- File: `nlp/vocabulary.py`
+- Fix: align decode policy with expected behavior before expanding usage.
+
+15) Performance slow with larger corpora
+- Cause:
+  - TF-IDF is computed per query per document without persistent vector cache
+  - semantic embeddings are generated eagerly when docs added
+- Mitigations:
+  - precompute/cached vectors
+  - chunk pruning/top-k narrowing before expensive phases
+
+## Layered Debug Isolation
+- Layer 1: CLI and IO
+  - file: `core/main.py`
+- Layer 2: mode routing and behavior
+  - files: `core/agent_v4.py`, `core/query_router.py`, `core/search_mode.py`
+- Layer 3: keyword retrieval
+  - files: `nlp/keyword_search.py`, `nlp/tfidf.py`, `nlp/document_corpus.py`
+- Layer 4: semantic retrieval
+  - files: `nlp/embedding_model.py`, `nlp/embedding_search.py`
+- Layer 5: data corpus content
+  - file: `data/knowledge_base.py`
 """
 
 KNOWN_ISSUES_DOCS = """
 # Known Issues Docs
 
-## Active issues and risks
+## Active Issues and Risks
 
-### 1) Hybrid scoring behavior is still simplistic
-- `HybridSearch` currently computes semantic results but does not blend semantic
-  scores into ranking logic.
-- Effective behavior is close to keyword-only ranking.
+1) Hybrid score fusion incomplete
+- Semantic results are computed in hybrid path but not included in final combined score.
+- Current hybrid ranking behaves close to keyword-only.
 
-### 2) Semantic mode startup can fail in constrained environments
-- First semantic run may require model download/network.
-- If model initialization fails, `AgentV4` falls back safely and returns a
-  semantic-unavailable message.
+2) Typo-coupled module name
+- `nlp/tokenzier.py` misspelling is part of current import graph.
+- Any rename must include synchronized import updates.
 
-### 3) Windows Hugging Face cache warnings
-- On Windows, symlink limitations can trigger hub warnings.
-- This is non-fatal but may use more disk space.
+3) Thin stopword list design risk
+- `STOP_WORDS` is minimal and static.
+- Retrieval quality can vary for broader natural-language prompts.
 
-### 4) `tokenzier.py` filename typo coupling
-- Renaming this file without synchronized import updates will break pipeline/tests.
+4) Legacy path still present
+- `core/agent.py` and `core/models.py` remain for legacy tests/use.
+- Not default runtime path but still part of maintenance surface.
 
-### 5) Keyword compatibility shim debt
-- `nlp/keyword_engine.py` is kept for backward compatibility.
-- Remove only after all imports rely solely on `nlp.keyword_search`.
+5) `tests/text_processor.py` is not auto-collected
+- File name does not match pytest default `test_*.py` pattern.
+- Can cause false assumption that all test-like functions are executed.
+
+6) Semantic initialization dependency sensitivity
+- `sentence-transformers` runtime and model availability can fail in constrained environments.
 """
 
 RETRIEVAL_NOTES_DOCS = """
 # Retrieval Notes Docs
 
-## Current behavior and limitation
-- Retrieval in this project is still largely pattern/keyword driven.
-- When documents are too large, top matches can be broad and less precise.
+## Node Construction Strategy
+- Agent ingests docs as large markdown blocks.
+- `_split_document_into_nodes` splits each doc by `##` section headers.
+- Each node is prefixed with parent `#` doc title.
 
-## Why smaller nodes improve accuracy
-- Smaller section-level nodes reduce topic mixing.
-- Query-to-node matching becomes more focused (higher precision).
-- Returned answers are shorter and more relevant to the intent.
+## Query Normalization
+- `_normalize_query_for_retrieval` removes filler tokens:
+  - examples: `how`, `what`, `the`, `please`, `should`
+- If all tokens are removed, original query is retained.
 
-## Current implementation choice
-- `AgentV4` now indexes section-level nodes built from each knowledge-base doc.
-- Node splitting is based on `##` section boundaries.
-- Retrieved node output is further narrowed by section scoring in
-  `_extract_relevant_section`.
+## Document Selection Heuristics
+- Base score comes from engine result score.
+- Additional boosts in `_select_best_document` for intent tokens:
+  - run/setup intent boosts
+  - test intent boosts
+  - mode/command boosts
+  - debug/issue boosts
+- Top-k considered currently: first 5 engine results.
 
-## Next improvements (optional)
-- Add overlap-aware chunking for long sections.
-- Add metadata tags (`doc_name`, `section_name`) to each node.
-- Re-rank top-k nodes with semantic+keyword fusion.
-- Add confidence thresholds before returning a section directly.
+## Section Selection Heuristics
+- `_extract_relevant_section` scores each `##` section with token overlap.
+- Title matches are weighted stronger than content matches.
+- Additional boosts for run/setup/mode/test intent mapping.
+
+## Keyword Retrieval Characteristics
+- Per-query scoring over full corpus.
+- Uses TF-IDF computed from current in-memory corpus.
+- Deterministic for same corpus and query.
+
+## Semantic Retrieval Characteristics
+- Embeddings generated using `all-MiniLM-L6-v2`.
+- Cosine similarity ranking over stored embeddings.
+- First semantic use includes model boot cost.
+
+## Hybrid Retrieval Characteristics
+- Currently computes both keyword and semantic results.
+- Final ranking only reflects keyword score accumulation.
+- Semantic list is currently unused in final `combined` dict.
+
+## Quality and Precision Considerations
+- Very large sections can dilute relevance.
+- Section-level nodes improve precision vs full-document indexing.
+- Heuristic tuning impacts run/setup style queries significantly.
 """
 
 MAINTENANCE_DOCS = """
 # Maintenance Docs
 
-## Refactor checklist
-1. Rename/move module.
-2. Update imports with `rg`.
-3. Run targeted tests.
-4. Run full tests.
-5. Run compile checks.
-6. Update these docs immediately after behavior changes.
+## Change Checklist (Code + Docs)
+1. Implement the code change.
+2. Update `README.md` for user-facing behavior changes.
+3. Update `data/knowledge_base.py` for retrievable in-app docs.
+4. Run test suite and compile checks.
+5. Verify mode flow manually (`/mode`, numeric and named switching).
+6. Confirm no stale imports/aliases after refactors.
 
-## Release readiness checklist
-- `uv run pytest -q src/tests` passes.
-- `uv run core-agent` starts and `/mode` flow works.
-- Semantic mode can be activated (or failure path is clearly handled).
-- No syntax errors from `uv run python -m compileall -q src`.
-- README and `pyproject.toml` entrypoint match runtime reality.
+## Validation Commands
+- `uv run pytest -q src/tests`
+- `uv run python -m compileall -q src`
+- `uv run pytest -q src/tests/test_agent_v4_mode.py`
 
-## Useful grep commands
-- `rg -n "keyword_engine|keyword_search|search_engine" src`
-- `rg -n "study_agent|score" src README.md pyproject.toml`
-- `rg -n "^from |^import " src`
+## Refactor-Safe Grep Commands
+- `rg -n "tokenzier|tokenizer" src`
+- `rg -n "KeywordEngine|KeywordSearch|SearchEngine" src`
+- `rg -n "MODE_BY_INDEX|SearchMode|/mode" src/core`
+- `rg -n "EmbeddingSearch|EmbeddingModel|semantic" src`
+
+## Documentation Synchronization Rule
+- If runtime behavior changes, update docs in same change set.
+- Keep section headings stable when possible so retrieval heuristics continue to work.
+- Preserve critical headings used by intent/ranking logic:
+  - `## Run Commands`
+  - `## Setup`
+  - `## CLI Commands`
+  - `## Testing Docs`
+
+## Safe Modernization Backlog
+1. Implement true hybrid score fusion.
+2. Decide and execute `tokenzier.py` rename migration plan.
+3. Strengthen tests for semantic failure paths.
+4. Add collection-safe name for `tests/text_processor.py` if intended for execution.
+5. Add optional persistence for dynamically loaded documents.
 """
 
 KNOWLEDGE_BASE_INDEX_DOCS = """
 # Knowledge Base Index
 
+Available sections in `KNOWLEDGE_BASE`:
 - `project_overview_docs`
 - `architecture_docs`
 - `setup_and_run_docs`
@@ -341,8 +717,10 @@ KNOWLEDGE_BASE_INDEX_DOCS = """
 - `known_issues_docs`
 - `retrieval_notes_docs`
 - `maintenance_docs`
+- `knowledge_base_index_docs`
 
-Use `get_knowledge_base()` to fetch all sections as a dictionary.
+Primary lookup function:
+- `get_knowledge_base() -> dict[str, str]`
 """
 
 

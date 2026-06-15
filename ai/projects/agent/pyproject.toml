@@ -11,6 +11,7 @@ requires-python = ">=3.12"
 dependencies = [
     "numpy>=2.4.6",
     "pytest>=9.0.3",
+    "requests>=2.32.4",
     "sentence-transformers>=5.5.1",
 ]
 
