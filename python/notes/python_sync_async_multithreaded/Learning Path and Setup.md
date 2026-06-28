@@ -96,3 +96,18 @@ Understand:
 - how failure/cancellation propagates
 
 That is what interviewers test.
+
+---
+
+## 8. Mastery Extension Files (Advanced Track)
+
+After finishing the core notes, continue with:
+
+1. `00_concurrency_mastery_roadmap.md`
+2. `10_multiprocessing_and_process_pools.md`
+3. `11_reliability_timeouts_retries_backpressure.md`
+4. `12_concurrency_debugging_profiling_observability.md`
+5. `13_concurrency_design_patterns.md`
+6. `14_async_thread_process_integration.md`
+
+This sequence upgrades interview understanding into production architecture competence.

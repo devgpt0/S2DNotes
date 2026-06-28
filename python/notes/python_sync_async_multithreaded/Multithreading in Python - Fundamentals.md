@@ -265,3 +265,49 @@ Implement threaded log processor:
 - 3 consumer threads parse lines
 - shared result dict protected by lock
 - then refactor to queue-based message passing with less shared state
+
+---
+
+## 14. Missing Critical Concepts: Livelock, Starvation, and Priority Inversion
+
+These are different from deadlock:
+
+- deadlock: threads wait forever on each other.
+- livelock: threads keep changing state but make no progress.
+- starvation: a thread never gets enough execution/resources.
+- priority inversion: high-priority work blocked by lower-priority holder.
+
+Design rules:
+- keep critical sections short.
+- use fair queueing where required.
+- avoid unbounded retries under lock contention.
+
+## 15. Thread Lifecycle and Shutdown Discipline
+
+Production-safe shutdown checklist:
+1. publish stop signal (`Event` or queue sentinel).
+2. stop accepting new work.
+3. drain/flush in-flight work.
+4. `join()` threads with timeout and log stuck workers.
+
+Interview line:
+- graceful shutdown is correctness, not optional polish.
+
+## 16. Thread-Local Storage (`threading.local`)
+
+Useful when each thread needs isolated contextual state.
+
+```python
+import threading
+
+context = threading.local()
+
+
+def worker(value: str):
+    context.request_id = value
+    print(threading.current_thread().name, context.request_id)
+```
+
+Use carefully:
+- great for per-thread context
+- avoid hiding essential dependencies in implicit globals

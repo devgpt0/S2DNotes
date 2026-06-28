@@ -386,3 +386,163 @@ first_col = [row[0] for row in matrix]
 5. Solve nested-list matrix-style tasks
 6. Practice sort with `key`, `lambda`, `reverse`
 7. Practice 20+ output-prediction snippets
+
+## 19) Missing but Important: `deque` vs `list` for Queue Use-Cases
+
+`list` is great for stack-style operations (`append`, `pop()` from end).
+For queue front-removal (`pop(0)`), use `collections.deque`.
+
+```python
+from collections import deque
+
+q = deque([1, 2, 3])
+q.append(4)      # right side
+q.appendleft(0)  # left side
+first = q.popleft()
+print(first, q)
+```
+
+Interview takeaway:
+- frequent front operations -> `deque`
+- random index access -> `list`
+
+## 20) `bisect` for Maintaining Sorted Lists
+
+`bisect` helps keep sorted order without sorting each time.
+
+```python
+from bisect import insort
+
+arr = [10, 20, 40]
+insort(arr, 30)
+print(arr)  # [10, 20, 30, 40]
+```
+
+Use when:
+- data is mostly sorted
+- incremental inserts happen over time
+
+## 21) Heap-Based Patterns (`heapq`) for Top-K
+
+```python
+import heapq
+
+scores = [40, 10, 70, 20, 90, 60]
+top3 = heapq.nlargest(3, scores)
+print(top3)  # [90, 70, 60]
+```
+
+Why this belongs in list notes:
+- heap operations are list-backed and common in interview problems.
+
+## 22) Slice Assignment and In-Place Bulk Update
+
+```python
+nums = [1, 2, 3, 4, 5]
+nums[1:4] = [20, 30]
+print(nums)  # [1, 20, 30, 5]
+```
+
+Useful for:
+- controlled replacement
+- in-place transformation without creating new variable names
+
+## 23) List Performance Pitfalls in Real Systems
+
+- repeated `pop(0)` in large lists
+- repeated `in` checks in loops where set would be better
+- repeated sorting inside loops
+- building huge temporary lists when generator pipeline is enough
+
+## 24) Sorting Deep Dive: Stability, Multi-Key, and DSU Pattern
+
+Python uses Timsort (stable sort). Stability means if two elements compare equal,
+their relative order is preserved.
+
+```python
+records = [
+    {"name": "Ana", "dept": "ENG", "score": 92},
+    {"name": "Raj", "dept": "ENG", "score": 92},
+    {"name": "Mia", "dept": "HR", "score": 88},
+]
+
+# sort by score desc, then name asc
+out = sorted(records, key=lambda r: (-r["score"], r["name"]))
+```
+
+Interview points:
+- stable sort helps in chained sorts.
+- `list.sort()` is in-place and memory-efficient.
+- `sorted()` returns new list and works on any iterable.
+
+## 25) Extended Slicing and Slice Assignment
+
+```python
+nums = [0, 1, 2, 3, 4, 5, 6]
+print(nums[::2])      # [0, 2, 4, 6]
+print(nums[::-1])     # reversed copy
+
+nums[1:6:2] = [10, 30, 50]   # lengths must match when step != 1
+print(nums)
+```
+
+Common trap:
+- For stepped slice assignment, replacement length mismatch raises `ValueError`.
+
+## 26) List Internals: Dynamic Array Growth (Conceptual)
+
+`list` is a dynamic array:
+- O(1) index access.
+- append is amortized O(1) due to overallocation strategy.
+- middle insert/delete is O(n) because elements shift.
+
+This explains why:
+- list is excellent for random access and append-heavy workloads.
+- list is poor for queue front operations.
+
+## 27) In-Place Methods Return `None` (High-Value Pitfall)
+
+Methods like `sort`, `reverse`, `append`, `extend`, `insert`, `remove`, `clear`
+mutate list and return `None`.
+
+```python
+nums = [3, 1, 2]
+nums.sort()
+print(nums)  # [1, 2, 3]
+```
+
+Wrong pattern:
+```python
+# nums = nums.sort()   # nums becomes None
+```
+
+## 28) Advanced Interview Patterns with Lists
+
+1. Two pointers:
+   Sorted pair-sum, remove duplicates, partition logic.
+2. Sliding window:
+   Subarray/substring constraints.
+3. Prefix sums:
+   Range-sum and balance problems.
+4. Monotonic stack/list:
+   Next greater element style problems.
+5. Merge intervals:
+   Sort + linear scan.
+
+## 29) List vs Tuple vs Array vs Deque (Decision Grid)
+
+- list: general-purpose mutable sequence.
+- tuple: fixed-size record, hashable if contents hashable.
+- `array.array`: numeric typed compact storage.
+- `collections.deque`: fast append/pop both ends.
+
+Rule:
+- pick by access pattern, mutation pattern, and memory profile.
+
+## 30) Production Checklist for List Usage
+
+1. Avoid `pop(0)` in hot paths.
+2. Avoid needless full copies for large lists.
+3. Prefer comprehensions over manual append loops for clarity.
+4. Use `key=` sorting rather than custom comparator hacks.
+5. Benchmark only after identifying hotspots.

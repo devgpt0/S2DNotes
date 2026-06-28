@@ -451,3 +451,74 @@ A method declaration that subclasses must implement.
 5. Child classes provide implementation details.
 6. Abstraction lowers coupling and supports extensibility.
 7. Strong abstractions are foundation for scalable architecture and SOLID design.
+
+---
+
+## 13. Missing Critical Concept: Protocol-Based Abstraction
+
+ABCs provide explicit inheritance contracts. Protocols provide structural contracts.
+
+```python
+from typing import Protocol
+
+
+class Notifier(Protocol):
+    def send(self, message: str) -> None:
+        ...
+
+
+class SlackNotifier:
+    def send(self, message: str) -> None:
+        print(f"SLACK: {message}")
+
+
+def onboard(notifier: Notifier, username: str) -> None:
+    notifier.send(f"welcome {username}")
+```
+
+Why this matters:
+- lower coupling than forced class hierarchy.
+- excellent fit for dependency injection and testing.
+
+## 14. Composition Root (Where Dependencies Are Wired)
+
+A common missing design idea:
+- object creation and wiring should happen in one place (composition root).
+- business classes should receive dependencies, not construct them internally.
+
+```python
+class UserService:
+    def __init__(self, notifier):
+        self.notifier = notifier
+
+
+def build_user_service() -> UserService:
+    notifier = SlackNotifier()
+    return UserService(notifier)
+```
+
+Benefits:
+- easier testing
+- environment-specific wiring (dev/test/prod)
+- cleaner change management
+
+## 15. Ports and Adapters Mental Model (Practical Architecture)
+
+Treat abstraction as "port":
+- domain depends on port interfaces
+- concrete adapters implement ports (db/email/http/etc.)
+
+Interview-friendly line:
+- "Core logic depends inward on abstractions; details stay at the edges."
+
+## 16. Abstraction Smells and Fixes
+
+Smells:
+- abstraction leaked by exposing implementation-specific details.
+- too many tiny interfaces with no stable purpose.
+- base class with many optional/not-used methods.
+
+Fixes:
+- keep contracts minimal and behavior-focused.
+- split interfaces by caller needs.
+- move vendor-specific details to adapter layer.

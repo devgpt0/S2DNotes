@@ -268,3 +268,128 @@ Use list when:
 - `*args`: function-side positional packing into tuple.
 - `*t` at call-site: tuple unpacking into arguments.
 - Tuple protects structure, not inner mutable object state.
+
+## 20) `namedtuple` and `typing.NamedTuple` (Missing but Useful)
+
+When tuple position-only access becomes unclear, use named fields.
+
+```python
+from collections import namedtuple
+
+Point = namedtuple("Point", ["x", "y"])
+p = Point(10, 20)
+print(p.x, p.y)
+```
+
+Benefits:
+- keeps tuple immutability and lightweight behavior.
+- improves readability in records with fixed meaning.
+
+## 21) Tuple as Stable Composite Keys
+
+Tuples are ideal composite keys in dictionaries and sets.
+
+```python
+visits = {}
+key = ("user-1", "2026-06-28")
+visits[key] = visits.get(key, 0) + 1
+print(visits[key])
+```
+
+Use cases:
+- caching
+- grouped counters
+- matrix coordinates
+
+## 22) Hashability Edge Cases
+
+Tuple is hashable only if all elements are hashable.
+
+```python
+ok = (1, "a", (2, 3))
+# bad = (1, [2, 3])  # inner list makes tuple unhashable
+```
+
+## 23) Tuple vs Dataclass for Record Modeling
+
+Choose tuple when:
+- tiny immutable positional record is enough.
+
+Choose dataclass when:
+- named fields, defaults, validation, or methods are needed.
+
+Interview line:
+- tuples are minimal data carriers; dataclasses are richer domain models.
+
+## 24) Sequence Protocol Behavior with Tuples
+
+Tuples support sequence operations:
+- `len(t)`
+- indexing/slicing
+- iteration
+- membership (`in`)
+- concatenation/repetition (`+`, `*`)
+
+They do not support item assignment/deletion.
+
+## 25) Advanced Unpacking Patterns
+
+```python
+record = ("INV-1", "paid", 1200, "USD", "2026-06-28")
+invoice_id, status, amount, *_, date = record
+print(invoice_id, amount, date)
+```
+
+Why useful:
+- robust extraction from fixed-shape records.
+- clean handling of "middle fields I do not need now."
+
+## 26) Tuple in Pattern Matching (Interview Favorite)
+
+```python
+event = ("error", 504, "gateway timeout")
+
+match event:
+    case ("error", code, msg) if code >= 500:
+        print("server-side error:", msg)
+    case ("error", code, msg):
+        print("client-side error:", msg)
+    case _:
+        print("other event")
+```
+
+## 27) Tuple Memory and Performance Positioning
+
+In practice tuples are often:
+- slightly smaller in memory than lists.
+- a little faster to iterate for same elements.
+
+But major wins usually come from algorithm and data-shape decisions, not micro-optimizing tuple vs list alone.
+
+## 28) When Tuple Harms Readability
+
+Problem pattern:
+- long tuples with magic index usage (`row[6]`, `row[9]`).
+
+Refactor choices:
+- `namedtuple`
+- `dataclass`
+- small class/domain object
+
+Rule:
+- if readers need comments to remember index meaning, tuple is too implicit.
+
+## 29) Tuple-Centric Interview Problems
+
+1. Use tuple keys in frequency maps.
+2. Normalize pair keys (sorted tuple) for undirected relationships.
+3. Nested unpacking in loops and comprehensions.
+4. Distinguish hashable tuple vs tuple containing mutable object.
+
+## 30) Tuple Mastery Checklist
+
+1. Single-item tuple comma rule is automatic.
+2. Packing/unpacking is second nature.
+3. `*` extended unpacking is comfortable.
+4. Hashability rules are clear for keys.
+5. You can choose tuple vs namedtuple vs dataclass correctly.

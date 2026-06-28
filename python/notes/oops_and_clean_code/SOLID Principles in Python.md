@@ -288,3 +288,63 @@ Try redesigning a notification module with:
 Goal:
 - add new channel without changing existing business flow
 - keep each class focused
+
+---
+
+## 9. Missing Critical Concept: `dataclass` + SOLID
+
+`dataclass` helps SRP by separating data modeling from behavior-heavy services.
+
+```python
+from dataclasses import dataclass
+
+
+@dataclass(frozen=True, slots=True)
+class Order:
+    order_id: str
+    amount: float
+```
+
+Why this is useful:
+- concise domain models
+- immutability option (`frozen=True`) for safer designs
+- reduced accidental mutation side effects
+
+## 10. DIP in Real Projects: Constructor Injection + Test Doubles
+
+DIP becomes practical when dependencies are injected and easy to replace in tests.
+
+```python
+class FakeSender:
+    def __init__(self):
+        self.messages = []
+
+    def send(self, message: str) -> None:
+        self.messages.append(message)
+```
+
+Use case:
+- pass `FakeSender` to service in tests to assert behavior without external side effects.
+
+## 11. SOLID Tradeoffs and Overengineering Guard
+
+Do not over-apply SOLID:
+- tiny scripts may not need many interfaces/classes.
+- excessive abstraction increases cognitive load.
+
+Balanced rule:
+- start simple, then introduce abstractions where variation/churn appears.
+
+## 12. Common SOLID Violations to Spot in Review
+
+- one class doing validation + DB + email + logging (SRP violation)
+- long `if/elif` type switches scattered across code (OCP/LSP smell)
+- fat interfaces forcing no-op methods (ISP violation)
+- business service directly importing vendor SDK classes (DIP violation)
+
+## 13. SOLID + Testing Checklist
+
+1. Can high-level logic be tested without DB/network?
+2. Can implementations be swapped without changing caller?
+3. Are interfaces minimal and role-specific?
+4. Are object responsibilities explicit and non-overlapping?

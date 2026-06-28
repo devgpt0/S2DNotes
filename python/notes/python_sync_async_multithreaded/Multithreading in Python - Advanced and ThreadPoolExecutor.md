@@ -283,3 +283,86 @@ Build threaded file ingestion service:
 - collect failures and retry once
 - expose summary counts: processed/failed/retried
 
+---
+
+## 16. Coffman Deadlock Conditions (Critical Missing Concept)
+
+A deadlock can happen only when all four Coffman conditions hold:
+
+1. Mutual exclusion:
+   At least one resource is non-shareable (for example a lock).
+2. Hold and wait:
+   A thread holds one resource while waiting for another.
+3. No preemption:
+   Resources cannot be forcibly taken away.
+4. Circular wait:
+   A cycle exists (T1 waits on T2, T2 waits on T3, ... , Tn waits on T1).
+
+Interview-ready line:
+- break any one Coffman condition and deadlock is prevented by design.
+
+## 17. Deadlock Prevention Patterns (Design-Level)
+
+### A) Global lock ordering
+
+Always acquire locks in a consistent global order.
+
+```python
+def transfer(src_lock, dst_lock):
+    first, second = sorted((src_lock, dst_lock), key=id)
+    with first:
+        with second:
+            pass
+```
+
+### B) Try-lock with timeout and rollback
+
+Do not wait forever for second resource.
+
+### C) Minimize nested locking
+
+Keep lock scope narrow and avoid lock chaining where possible.
+
+### D) Prefer message passing
+
+Use `Queue` pipelines to reduce shared mutable state and lock count.
+
+## 18. Deadlock vs Livelock vs Starvation (Advanced Interview Clarity)
+
+- deadlock: no state progress, all blocked.
+- livelock: state changes occur, but no useful progress.
+- starvation: some threads progress; one or more threads are indefinitely delayed.
+
+Mitigations:
+- exponential/randomized backoff for retry-heavy contention.
+- fairness policies and bounded queueing.
+- workload partitioning to avoid "hot locks."
+
+## 19. Future Cancellation and Timeouts: What Actually Works
+
+Important detail:
+- `future.cancel()` only succeeds if task has not started.
+- running thread code cannot be force-killed safely from Python.
+
+Reliable approach:
+- make task body cooperative using stop flags/events.
+- enforce request-level timeouts and return partial status safely.
+
+## 20. Bounded Concurrency and Backpressure in Thread Pools
+
+`ThreadPoolExecutor` queue is unbounded by default in many usage patterns.
+Without controls, submitters can overwhelm memory.
+
+Patterns:
+- gate submissions with `Semaphore`.
+- use producer/consumer queue with fixed `maxsize`.
+- reject or defer non-critical jobs under load.
+
+## 21. Debugging Stuck Threaded Programs
+
+Use a repeatable checklist:
+1. log thread names and lock acquisition attempts.
+2. dump stack traces of all threads (`faulthandler`).
+3. inspect lock ordering violations.
+4. identify long critical sections and external I/O under lock.
+

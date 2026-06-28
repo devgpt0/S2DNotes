@@ -517,3 +517,99 @@ Final data: {'user_id': 101, 'status': 'ok'}
 2. Write a decorator that caches function results for same arguments.
 3. Write a decorator that validates all numeric arguments are positive.
 4. Refactor one script in your notes to use a logging decorator.
+
+## 18. Generators as Functions (Missing but Interview-Critical)
+
+A generator function uses `yield` and returns an iterator.
+
+```python
+def read_chunks(data: list[int], size: int):
+    for i in range(0, len(data), size):
+        yield data[i : i + size]
+
+
+for chunk in read_chunks([1, 2, 3, 4, 5], 2):
+    print(chunk)
+```
+
+Why it matters:
+- stream processing without loading everything at once.
+- cleaner pipelines than manual index loops.
+
+## 19. Function Contracts with Type Hints
+
+Type hints make function intent explicit and tooling-friendly.
+
+```python
+from collections.abc import Iterable
+
+
+def average(values: Iterable[float]) -> float:
+    data = list(values)
+    if not data:
+        raise ValueError("values cannot be empty")
+    return sum(data) / len(data)
+```
+
+Practical rule:
+- prioritize hints on public APIs and shared utility functions first.
+
+## 20. Callable Injection Pattern (Foundation for Clean Architecture)
+
+Functions can be dependencies too, not only classes.
+
+```python
+from collections.abc import Callable
+
+
+def process_order(
+    amount: float,
+    tax_fn: Callable[[float], float],
+) -> float:
+    return amount + tax_fn(amount)
+```
+
+Benefits:
+- small, testable behavior injection.
+- avoids unnecessary class ceremony.
+
+## 21. `functools.singledispatch` for Controlled Ad-hoc Polymorphism
+
+Useful when behavior varies by argument type.
+
+```python
+from functools import singledispatch
+
+
+@singledispatch
+def normalize(value):
+    return str(value)
+
+
+@normalize.register
+def _(value: int):
+    return value
+
+
+@normalize.register
+def _(value: list):
+    return [normalize(v) for v in value]
+```
+
+Interview note:
+- cleaner than long `isinstance` chains for type-based branching.
+
+## 22. High-Value Function Pitfalls
+
+- mutable default args retain state across calls.
+- late binding in closures inside loops.
+- forgetting to preserve metadata in decorators (`@wraps`).
+- catching broad exceptions inside utility decorators and hiding failure.
+
+## 23. Function Design Checklist (Production-Oriented)
+
+1. one clear responsibility.
+2. explicit input/output contract.
+3. safe error behavior.
+4. no hidden global side effects.
+5. composable with other functions.

@@ -459,3 +459,37 @@ When you see ANY question:
 * Object → reference copied
 
 ---
+
+## 4. IMPORT SYSTEM AND MODULE EXECUTION (CRITICAL CONCEPT)
+
+Import is executable behavior, not only a declaration.
+
+Core flow:
+1. Python checks `sys.modules` cache.
+2. If missing, loader finds and executes module top-level code.
+3. Module object is cached in `sys.modules`.
+4. Next import reuses cached module object.
+
+Implications:
+- top-level side effects run at first import time.
+- circular imports fail when module state is partially initialized.
+- import order can change runtime behavior if side effects exist.
+
+## 5. NAME RESOLUTION IN EXECUTION FRAMES (LEGB IN PRACTICE)
+
+Name lookup order:
+1. Local
+2. Enclosing
+3. Global
+4. Builtins
+
+Debug mindset:
+- unresolved name errors are often frame/namespace issues.
+- unexpected value usage is often shadowing (local name hides global/builtin).
+
+## 6. EXECUTION MODEL PITFALLS TO REVISE
+
+- module-level mutable state shared across imports.
+- circular imports from cross-module initialization logic.
+- hidden side effects at import time.
+- depending on implicit globals instead of explicit parameters.

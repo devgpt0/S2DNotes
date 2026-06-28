@@ -590,3 +590,124 @@ This explains:
 - `pop` removes an arbitrary element.
 - Use set operations (`|`, `&`, `-`, `^`) for clean logic.
 - Use sets for fast lookups and duplicate handling.
+
+## 24. Advanced Set Algebra for Real Problems
+
+Use set operations to model domain rules:
+
+```python
+all_users = {"u1", "u2", "u3", "u4"}
+active_users = {"u1", "u3"}
+banned_users = {"u4"}
+
+eligible = (all_users & active_users) - banned_users
+print(eligible)  # {'u1', 'u3'}
+```
+
+This pattern appears in access control, feature flags, and reconciliation jobs.
+
+## 25. `frozenset` as Dictionary Key (Often Missed)
+
+`frozenset` is immutable and hashable, so it can be a key.
+
+```python
+pricing = {
+    frozenset({"coffee", "sandwich"}): 199,
+    frozenset({"tea", "cookie"}): 99,
+}
+
+print(pricing[frozenset({"sandwich", "coffee"})])
+```
+
+Great when combination order should not matter.
+
+## 26. Set Comprehension with Conditions
+
+```python
+values = [-4, -1, 0, 3, 3, 5]
+positive_squares = {x * x for x in values if x > 0}
+print(positive_squares)  # {9, 25}
+```
+
+## 27. Missing Reliability and Performance Notes
+
+- set order is not a stable contract for business logic.
+- avoid repeatedly converting same list to set in tight loops; precompute once.
+- for ordered de-duplication, use `list(dict.fromkeys(seq))`.
+- worst-case hash collisions exist; design with defensive timeouts for untrusted input.
+
+## 28. Set vs List vs Dict Membership Decision
+
+- many membership checks + unique items -> `set`
+- membership + associated values -> `dict`
+- order-sensitive sequence operations -> `list`
+
+## 29. Set Operation Complexity Nuances
+
+Average-case complexity depends on operand sizes and operation type.
+
+Guideline:
+- `a & b` is usually optimized by iterating smaller set.
+- `a | b` touches both sets.
+- `a - b` iterates `a`, checks membership in `b`.
+
+For large data pipelines, choosing operand order can reduce runtime.
+
+## 30. In-Place Set Updates vs New Set Creation
+
+```python
+a = {1, 2, 3}
+b = {3, 4, 5}
+
+c = a & b       # new set
+a &= b          # mutate a
+print(a, c)
+```
+
+When to use:
+- immutable flow/readability: prefer new set.
+- memory-sensitive in-place transform: use update operators.
+
+## 31. Deterministic Output and Testing
+
+Set order is intentionally non-indexed and not for deterministic output.
+For logs/tests/UI output, sort explicitly:
+
+```python
+ids = {"u3", "u1", "u2"}
+print(sorted(ids))  # ['u1', 'u2', 'u3']
+```
+
+## 32. `frozenset` for Undirected Graph Edges
+
+Use `frozenset({u, v})` for order-independent pair keys.
+
+```python
+edges = {
+    frozenset({"A", "B"}),
+    frozenset({"B", "C"}),
+}
+print(frozenset({"B", "A"}) in edges)  # True
+```
+
+## 33. Missing Pitfalls in Real Projects
+
+- mutating source data while deriving sets can create stale logic.
+- repeatedly converting same list to set inside loop is costly.
+- confusing `{}` as empty set (it is dict).
+- relying on set ordering in business logic causes flaky behavior.
+
+## 34. Advanced Set Patterns for Interviews
+
+1. Distinct window checks in O(n).
+2. Longest consecutive sequence using set membership.
+3. Efficient dedupe and intersection across multiple feeds.
+4. Set-based permission models (allow/deny precedence).
+
+## 35. Production Readiness Checklist for Sets
+
+1. Validate elements are hashable.
+2. Use `discard` when missing keys are acceptable.
+3. Use explicit sorted order at boundaries (API/reporting).
+4. Choose in-place vs new-set operations intentionally.
+5. Treat set as fast membership tool, not ordered container.

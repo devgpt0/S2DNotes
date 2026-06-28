@@ -140,3 +140,102 @@ For any control-flow snippet:
 - match/case and guards
 - any/all based branching
 - Code-quality control-flow refactors
+
+## 15. Exception Hierarchy and Re-raise Patterns (Critical Missing Concept)
+
+Good exception handling is part of control flow design.
+
+Core rules:
+- Catch specific exceptions, not broad `except Exception` in business logic.
+- Add context when re-raising using `raise ... from error`.
+- Keep exception boundaries near I/O edges (API, file, DB, network).
+
+```python
+def load_user_age(raw: str) -> int:
+    try:
+        age = int(raw)
+    except ValueError as error:
+        raise ValueError("age must be integer text") from error
+
+    if age < 0:
+        raise ValueError("age cannot be negative")
+    return age
+```
+
+Interview point:
+- exceptions should represent exceptional paths, not regular branching in hot loops.
+
+## 16. Context Manager Control Flow (`with`) and Cleanup Guarantees
+
+`with` is structured control flow for resource safety.
+
+```python
+def first_line(path: str) -> str:
+    with open(path, "r", encoding="utf-8") as file:
+        return file.readline().strip()
+```
+
+Why this matters:
+- cleanup runs even when exceptions occur.
+- avoids leak-prone manual `open()/close()` patterns.
+
+Equivalent mental model:
+- `with` internally behaves like `try/finally` for deterministic cleanup.
+
+## 17. Iterator and Generator Flow Thinking
+
+Generators are lazy control flow; values are produced on demand.
+
+```python
+def non_empty_lines(path: str):
+    with open(path, "r", encoding="utf-8") as file:
+        for line in file:
+            line = line.strip()
+            if line:
+                yield line
+```
+
+Benefits:
+- memory-efficient for large files/streams.
+- composes cleanly with `any`, `all`, `sum`, `list`.
+
+## 18. Robust Retry Flow (Without Infinite Loops)
+
+Production code often needs bounded retries with backoff.
+
+```python
+import time
+
+
+def retry(operation, attempts: int = 3, delay: float = 0.2):
+    last_error = None
+    for i in range(attempts):
+        try:
+            return operation()
+        except TimeoutError as error:
+            last_error = error
+            if i < attempts - 1:
+                time.sleep(delay * (2 ** i))
+    raise RuntimeError("operation failed after retries") from last_error
+```
+
+Checklist:
+- bounded attempts
+- explicit retryable exceptions
+- backoff
+- final propagated error
+
+## 19. Critical Pitfalls Missing from Most Notes
+
+- `return` inside `finally` suppresses original exception/return value.
+- mutating collection while iterating can skip/duplicate processing.
+- broad `except` can hide programming errors.
+- `while True` without exit strategy creates reliability risk.
+
+## 20. Interview Upgrade Template for Control Flow Answers
+
+When explaining any flow-heavy code:
+1. state branch rules and precedence.
+2. trace normal path and exceptional path separately.
+3. call out cleanup guarantees (`finally`/`with`).
+4. mention failure policy (retry, timeout, fallback, fail-fast).

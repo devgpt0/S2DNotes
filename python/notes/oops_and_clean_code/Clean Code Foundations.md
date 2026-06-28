@@ -454,3 +454,56 @@ Deliverables:
 - short note: "3 clean code improvements I made"
 
 ---
+
+## 17. Missing Critical Concept: Boundary-First Design
+
+Clean code scales better when boundaries are explicit:
+- Domain logic (pure decisions)
+- Infrastructure (DB, HTTP, file, email)
+- Application orchestration (use-cases)
+
+Rule:
+- keep domain layer mostly pure and dependency-light.
+- push I/O concerns to boundary adapters.
+
+## 18. Error Taxonomy for Maintainable Code
+
+Avoid one generic error type for everything.
+
+Suggested categories:
+- validation errors (bad input)
+- domain errors (business rule violation)
+- infrastructure errors (network/db/service failure)
+
+Benefits:
+- clearer caller behavior.
+- better retry/fallback decisions.
+- cleaner monitoring and alerting.
+
+## 19. Testing Strategy Tied to Clean Code
+
+Three practical levels:
+1. unit tests for pure logic.
+2. integration tests for boundaries (DB/API/file).
+3. contract tests for abstraction implementations.
+
+Design feedback loop:
+- if tests are painful, code boundaries are usually unclear.
+
+## 20. Logging and Observability as Clean-Code Concerns
+
+Good clean code is debuggable.
+
+Checklist:
+- structured logs with identifiers (`request_id`, `user_id`, `job_id`).
+- avoid logging sensitive data.
+- log business events and failure reasons at boundaries.
+
+## 21. Refactoring Safety Net (Production)
+
+Before large refactors:
+1. capture current behavior with tests.
+2. refactor in micro-steps.
+3. run tests frequently.
+4. keep commits small and reversible.
+5. stop at "clear enough"; avoid endless abstraction.

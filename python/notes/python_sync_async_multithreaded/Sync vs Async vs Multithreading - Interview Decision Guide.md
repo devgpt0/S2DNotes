@@ -169,3 +169,38 @@ Take one feature (for example "download and process 500 URLs"):
 3. write thread-pool design
 4. compare complexity, runtime, and failure handling
 5. present final recommendation with reasons
+
+---
+
+## 13. Missing Critical Choice: Multiprocessing vs Threads
+
+When CPU work dominates, compare:
+- threads: shared memory, lower IPC overhead, lock complexity.
+- processes: true parallel CPU execution in standard CPython, isolated memory.
+
+Use multiprocessing/process pools when:
+- CPU-heavy transforms dominate latency.
+- safety from shared-state bugs is important.
+- per-worker memory overhead is acceptable.
+
+Use threads when:
+- workload is mostly blocking I/O.
+- dependency ecosystem is blocking and thread-safe.
+
+## 14. Hybrid Architecture Pattern (Most Real Systems)
+
+A strong production design often mixes models:
+- async ingress for network I/O
+- thread pool for blocking SDK calls
+- process pool for heavy CPU stage
+
+Interview upgrade line:
+- "I choose per-stage concurrency model based on bottleneck type."
+
+## 15. Concurrency Model Selection Checklist
+
+1. Is bottleneck waiting or compute?
+2. Is shared mutable state required?
+3. Can failures be isolated by worker boundary?
+4. What is shutdown/cancellation behavior?
+5. What metrics define success (latency p95, throughput, error rate)?

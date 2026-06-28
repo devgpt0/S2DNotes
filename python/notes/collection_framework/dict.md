@@ -882,3 +882,199 @@ hello
 **Answer:** It replaces long condition chains cleanly.
 
 **Reason:** Behavior is selected by key lookup, making code extensible.
+
+## 21) Critical Missing Concepts: Merge, Views, and Read-Only Mappings
+
+### Dictionary merge operators (`|` and `|=`)
+
+```python
+base = {"timeout": 30, "retry": 2}
+override = {"timeout": 60}
+final = base | override
+print(final)  # {'timeout': 60, 'retry': 2}
+```
+
+Rule:
+- right-hand side wins on duplicate keys.
+
+### Dynamic views are live
+
+```python
+d = {"a": 1}
+keys = d.keys()
+d["b"] = 2
+print(keys)  # dict_keys(['a', 'b'])
+```
+
+### Read-only view with `MappingProxyType`
+
+```python
+from types import MappingProxyType
+
+config = {"env": "prod"}
+readonly = MappingProxyType(config)
+print(readonly["env"])
+# readonly["env"] = "dev"  # TypeError
+```
+
+## 22) Hashing, Equality, and Key Design (Deep Interview Topic)
+
+For custom objects as dictionary keys:
+- objects used as keys must have stable hash/equality behavior.
+- mutable fields in hash/equality create subtle bugs.
+
+Guideline:
+- use immutable key objects (`tuple`, frozen dataclass) for reliable mapping keys.
+
+## 23) Common `dict` Reliability Patterns
+
+### Grouping with `setdefault` vs `defaultdict`
+
+```python
+records = [("HR", "Ana"), ("ENG", "Raj"), ("HR", "Mia")]
+
+grouped = {}
+for dept, name in records:
+    grouped.setdefault(dept, []).append(name)
+```
+
+Use `defaultdict(list)` when grouping-heavy logic is central.
+
+### Safe inversion where values can repeat
+
+```python
+d = {"a": 1, "b": 1, "c": 2}
+inv = {}
+for k, v in d.items():
+    inv.setdefault(v, []).append(k)
+print(inv)  # {1: ['a', 'b'], 2: ['c']}
+```
+
+## 24) Dictionary Mutation During Iteration: Safe Patterns
+
+Unsafe:
+- changing dictionary size while iterating directly over it.
+
+Safe:
+- iterate over `list(d.items())` when deletion/update by key is required.
+
+```python
+d = {"a": 1, "b": 0, "c": 2}
+for key, value in list(d.items()):
+    if value == 0:
+        del d[key]
+print(d)
+```
+
+## 25) Production Checklist for Dictionary Usage
+
+1. Choose immutable, explicit key schema.
+2. Avoid silent overwrites in merges.
+3. Use `get`/`setdefault`/`defaultdict` intentionally.
+4. Never mutate size during direct iteration.
+5. Validate nested-shallow-copy behavior before shipping.
+
+## 26) Dictionary View Operations as Set Algebra
+
+Dictionary views (`keys`, `items`) support set-like operations.
+
+```python
+a = {"x": 1, "y": 2}
+b = {"y": 20, "z": 3}
+
+print(a.keys() & b.keys())      # {'y'}
+print(a.keys() - b.keys())      # {'x'}
+print(a.items() & b.items())    # common key-value pairs
+```
+
+Useful for reconciliation and change detection.
+
+## 27) `__missing__` Hook and Custom Mapping Behavior
+
+Subclassing dict can customize missing-key behavior.
+
+```python
+class ZeroDict(dict):
+    def __missing__(self, key):
+        return 0
+
+
+counts = ZeroDict()
+counts["x"] += 1
+print(counts["x"])  # 1
+```
+
+Use carefully:
+- powerful for controlled defaults
+- can hide bugs if used too broadly
+
+## 28) Ordered Semantics and `OrderedDict` Today
+
+Normal dict preserves insertion order in modern Python.
+`OrderedDict` is still useful for:
+- order-sensitive methods (`move_to_end`, custom reordering flows)
+- explicit intent in legacy-sensitive codebases
+
+## 29) Counter Patterns Often Missed
+
+`Counter` supports algebra:
+
+```python
+from collections import Counter
+
+c1 = Counter("aabcc")
+c2 = Counter("bccd")
+print(c1 + c2)  # add counts
+print(c1 - c2)  # subtract, keep positive results
+print(c1 & c2)  # min intersection
+print(c1 | c2)  # max union
+```
+
+Great for inventory, token frequency, and diff-style problems.
+
+## 30) Advanced Merge and Update Strategies
+
+Choose strategy intentionally:
+- overwrite merge: `a | b`
+- conditional update: only fill missing keys
+- deep merge for nested dicts (custom function required)
+
+Reminder:
+- plain merge operators are shallow; nested mappings are not recursively merged.
+
+## 31) Dispatch Table Pattern with Safe Fallback
+
+```python
+def handle_create():
+    return "created"
+
+
+def handle_unknown():
+    return "unsupported action"
+
+
+handlers = {"create": handle_create}
+action = "create"
+result = handlers.get(action, handle_unknown)()
+print(result)
+```
+
+Clean alternative to long if/elif chains.
+
+## 32) Dict Internals and Collision Reality (Conceptual)
+
+Dict performance is average O(1), but not magic:
+- hash collisions increase probing work.
+- adversarial/untrusted input can degrade behavior.
+- memory overhead exists for hash-table speed.
+
+Engineering takeaway:
+- rely on dict for speed, but profile for very large/high-risk workloads.
+
+## 33) Production Dict Checklist (Advanced)
+
+1. key schema is stable and documented.
+2. merge behavior is explicit for duplicates.
+3. shallow-vs-deep copy behavior is tested.
+4. missing-key policy is intentional (`get`, `defaultdict`, `__missing__`).
+5. iteration + mutation logic avoids runtime hazards.

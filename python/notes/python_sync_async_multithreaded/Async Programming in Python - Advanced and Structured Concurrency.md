@@ -306,3 +306,61 @@ Build async crawling pipeline:
 - timeout each fetch
 - cancellation-safe shutdown on keyboard interrupt
 
+---
+
+## 15. Missing Critical Concept: Cancellation-Safe Coroutines
+
+Cancellation is cooperative and happens at await points.
+
+Design rules:
+- avoid swallowing `CancelledError` silently.
+- place cleanup in `finally`.
+- keep cancellation path idempotent.
+
+```python
+import asyncio
+
+
+async def worker():
+    try:
+        while True:
+            await asyncio.sleep(0.1)
+    except asyncio.CancelledError:
+        print("worker cancelled")
+        raise
+    finally:
+        print("cleanup complete")
+```
+
+## 16. Backpressure End-to-End (Beyond Queue `maxsize`)
+
+True backpressure requires limits at every stage:
+- ingress rate limit
+- bounded queue
+- bounded worker concurrency (`Semaphore`)
+- bounded retries
+
+Without end-to-end limits, one bounded queue alone is insufficient.
+
+## 17. Retry Policy in Async Systems
+
+Good retry design:
+- retry only retryable errors
+- jittered exponential backoff
+- total attempt deadline
+- circuit-breaker style guard for repeated downstream failure
+
+Avoid:
+- infinite retries
+- synchronized retries from many tasks ("retry storm")
+
+## 18. Structured Shutdown Recipe
+
+1. stop accepting new work.
+2. cancel or drain producers.
+3. let consumers finish/drain queue.
+4. await task group completion.
+5. close external resources.
+
+Interview line:
+- graceful async shutdown is part of correctness and data integrity.
