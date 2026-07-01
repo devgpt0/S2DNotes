@@ -1,71 +1,191 @@
-# 02 - HashMap Core
+# 02 - HashMap Core (Complete)
 
-## 1) Internal Idea
+## 1) Internal Model
 
-`HashMap` uses buckets (array slots).
+`HashMap` is hash-table based.
 
-For `put(key, value)`:
+For each key:
 
-1. Compute hash.
-2. Find bucket index.
-3. If key already exists, replace value.
-4. Else insert new entry.
+1. hash is computed
+2. bucket index is derived
+3. bucket is searched for matching key (`equals`)
+4. value inserted/updated/retrieved
 
-For `get(key)`:
+## 2) Core Complexity
 
-1. Compute hash.
-2. Go to bucket.
-3. Find matching key.
-4. Return value or `null`.
+Average case:
 
-## 2) Collision
+- `put`: `O(1)`
+- `get`: `O(1)`
+- `remove`: `O(1)`
 
-Collision means different keys land in same bucket index.
+Worst case can degrade if many collisions happen, but modern JDK uses tree bins to improve high-collision buckets.
 
-Important:
+## 3) Collision Concept
 
-- Same bucket does not mean same key.
-- `equals` decides real key match.
-- JDK uses tree bins for high-collision buckets (after thresholds) to improve worst-case behavior.
+Concept taught: Different keys can land in same bucket and still coexist.
 
-## 3) Resize and Load Factor
+```java
+record Key(int id) {
+    @Override
+    public int hashCode() { return 1; } // forced collision
+}
 
-Default values:
+Map<Key, String> map = new HashMap<>();
+map.put(new Key(1), "A");
+map.put(new Key(2), "B");
+map.put(new Key(3), "C");
+
+System.out.println(map.size());
+System.out.println(map.get(new Key(2)));
+```
+
+Expected output:
+
+```text
+3
+B
+```
+
+Explanation:
+
+- all keys collide in same bucket
+- retrieval still works using `equals`
+
+## 4) Resize, Capacity, Load Factor
+
+Defaults:
 
 - initial capacity: `16`
 - load factor: `0.75`
-- resize threshold: `capacity * loadFactor` (so 12 initially)
+- threshold: `capacity * loadFactor` (starts at `12`)
 
-When size crosses threshold, map resizes (usually doubles).
+When size crosses threshold, map resizes (usually doubles capacity).
 
-Resizing is expensive (rehash of existing entries), so pre-size when expected size is known.
-
-## 4) equals and hashCode Contract
-
-If custom objects are keys, always override both `equals` and `hashCode`.
-
-Rule:
-
-- if `a.equals(b)` is true, then `a.hashCode() == b.hashCode()` must be true.
-
-Practical key design:
-
-- keep keys immutable after insertion
-- avoid expensive hash computations in hot paths
-- include the same fields in both `equals` and `hashCode`
-
-## 5) Iteration Best Practice
-
-Use `entrySet()` when you need both key and value.
+Concept taught: Pre-sizing a map to reduce rehash cost.
 
 ```java
+int expectedEntries = 10_000;
+int capacity = (int) (expectedEntries / 0.75f) + 1;
+Map<String, Integer> map = new HashMap<>(capacity);
+
+System.out.println("created with capacity hint for " + expectedEntries + " entries");
+```
+
+Expected output:
+
+```text
+created with capacity hint for 10000 entries
+```
+
+## 5) Treeification in High Collision Buckets
+
+Important JDK thresholds (implementation detail, still interview-relevant):
+
+- treeify threshold: bucket size >= `8`
+- untreeify threshold: bucket size <= `6`
+- minimum capacity to treeify: `64`
+
+This improves performance when collisions are severe.
+
+## 6) `equals` / `hashCode` Contract
+
+If custom object is key, override both.
+
+Concept taught: Correct key behavior with immutable fields and contract-safe overrides.
+
+```java
+import java.util.Objects;
+
+final class UserKey {
+    private final String country;
+    private final long id;
+
+    UserKey(String country, long id) {
+        this.country = country;
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserKey other)) return false;
+        return id == other.id && Objects.equals(country, other.country);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(country, id);
+    }
+}
+
+Map<UserKey, String> users = new HashMap<>();
+users.put(new UserKey("IN", 101), "Ram");
+System.out.println(users.get(new UserKey("IN", 101)));
+```
+
+Expected output:
+
+```text
+Ram
+```
+
+## 7) Null Handling
+
+Concept taught: `HashMap` allows null key/value.
+
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put(null, 99);
+map.put("A", null);
+System.out.println(map.get(null));
+System.out.println(map.get("A"));
+```
+
+Expected output:
+
+```text
+99
+null
+```
+
+## 8) Iteration Best Practice
+
+Concept taught: Use `entrySet` when key and value both needed.
+
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put("A", 1);
+map.put("B", 2);
+
 for (Map.Entry<String, Integer> e : map.entrySet()) {
-    System.out.println(e.getKey() + " : " + e.getValue());
+    System.out.println(e.getKey() + " => " + e.getValue());
 }
 ```
 
-## 6) Null and Thread Safety
+Possible output:
 
-- allows one `null` key
-- allows multiple `null` values
-- not thread-safe for concurrent writes
+```text
+A => 1
+B => 2
+```
+
+## 9) Not Thread-Safe
+
+`HashMap` is unsafe for concurrent writes without external synchronization.
+
+Use:
+
+- `ConcurrentHashMap` for shared concurrent mutation
+- `Collections.synchronizedMap(...)` only for coarse-grained synchronization scenarios
+
+## 10) Common Mistakes
+
+- mutable keys (changing key fields after insertion)
+- overriding only `equals` or only `hashCode`
+- relying on iteration order of `HashMap`
+- using `containsValue` in hot path (`O(n)`)
+
+## 11) Summary
+
+`HashMap` is the default map for single-threaded/general use where order is not required. Correct key design is the most important factor for correctness and performance.

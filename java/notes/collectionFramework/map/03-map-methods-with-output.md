@@ -1,115 +1,283 @@
-# 03 - Map Methods With Printed Output
+# 03 - Map Methods With Output (Complete)
 
-Use this file as your method practice sheet.
+This chapter is a method lab: each snippet teaches one API family with expected output.
+
+## 1) `put` and Overwrite Return Value
+
+Concept taught: `put` returns old value for existing key, else `null`.
 
 ```java
-import java.util.*;
-
-public class MapMethodsDemo {
-    public static void main(String[] args) {
-        Map<String, Integer> map = new HashMap<>();
-
-        // put
-        System.out.println("put Ram->80: " + map.put("Ram", 80));
-        System.out.println("put Sita->92: " + map.put("Sita", 92));
-        System.out.println("put Ram->95 (old value returned): " + map.put("Ram", 95));
-
-        // get and getOrDefault
-        System.out.println("get Ram: " + map.get("Ram"));
-        System.out.println("get Shyam: " + map.get("Shyam"));
-        System.out.println("getOrDefault Shyam,0: " + map.getOrDefault("Shyam", 0));
-
-        // contains
-        System.out.println("containsKey Sita: " + map.containsKey("Sita"));
-        System.out.println("containsValue 92: " + map.containsValue(92));
-
-        // size and isEmpty
-        System.out.println("size: " + map.size());
-        System.out.println("isEmpty: " + map.isEmpty());
-
-        // putIfAbsent
-        System.out.println("putIfAbsent Sita->100 (existing value returned): " + map.putIfAbsent("Sita", 100));
-        System.out.println("putIfAbsent Laxman->88 (null returned): " + map.putIfAbsent("Laxman", 88));
-
-        // replace
-        System.out.println("replace Ram->99 (old value): " + map.replace("Ram", 99));
-        System.out.println("replace Ram 99->100 (success?): " + map.replace("Ram", 99, 100));
-
-        // remove
-        System.out.println("remove Sita: " + map.remove("Sita"));
-        System.out.println("remove Ram,999 (success?): " + map.remove("Ram", 999));
-
-        // computeIfAbsent
-        map.computeIfAbsent("IT", k -> 50);
-        System.out.println("after computeIfAbsent IT: " + map);
-
-        // computeIfPresent
-        map.computeIfPresent("IT", (k, v) -> v + 10);
-        System.out.println("after computeIfPresent IT+10: " + map);
-
-        // compute
-        map.compute("IT", (k, v) -> v == null ? 1 : v * 2);
-        System.out.println("after compute IT*2: " + map);
-
-        // merge
-        map.merge("IT", 5, Integer::sum);
-        map.merge("NEW", 1, Integer::sum);
-        System.out.println("after merge IT and NEW: " + map);
-
-        // keySet, values, entrySet
-        System.out.println("keys: " + map.keySet());
-        System.out.println("values: " + map.values());
-        System.out.println("entries: " + map.entrySet());
-
-        // replaceAll
-        map.replaceAll((k, v) -> v + 1);
-        System.out.println("after replaceAll +1: " + map);
-
-        // clear
-        map.clear();
-        System.out.println("after clear: " + map);
-        System.out.println("isEmpty after clear: " + map.isEmpty());
-    }
-}
+Map<String, Integer> map = new HashMap<>();
+System.out.println(map.put("Ram", 80));
+System.out.println(map.put("Sita", 92));
+System.out.println(map.put("Ram", 95));
+System.out.println(map);
 ```
 
-Expected output (order may vary in `HashMap` print):
+Expected output (order may vary):
 
 ```text
-put Ram->80: null
-put Sita->92: null
-put Ram->95 (old value returned): 80
-get Ram: 95
-get Shyam: null
-getOrDefault Shyam,0: 0
-containsKey Sita: true
-containsValue 92: true
-size: 2
-isEmpty: false
-putIfAbsent Sita->100 (existing value returned): 92
-putIfAbsent Laxman->88 (null returned): null
-replace Ram->99 (old value): 95
-replace Ram 99->100 (success?): true
-remove Sita: 92
-remove Ram,999 (success?): false
-after computeIfAbsent IT: {IT=50, Ram=100, Laxman=88}
-after computeIfPresent IT+10: {IT=60, Ram=100, Laxman=88}
-after compute IT*2: {IT=120, Ram=100, Laxman=88}
-after merge IT and NEW: {IT=125, NEW=1, Ram=100, Laxman=88}
-keys: [IT, NEW, Ram, Laxman]
-values: [125, 1, 100, 88]
-entries: [IT=125, NEW=1, Ram=100, Laxman=88]
-after replaceAll +1: {IT=126, NEW=2, Ram=101, Laxman=89}
-after clear: {}
-isEmpty after clear: true
+null
+null
+80
+{Ram=95, Sita=92}
 ```
 
-Important: `HashMap` does not guarantee print order.
-If you need stable order for teaching output, use `LinkedHashMap`.
+## 2) Read Methods
 
-## Method Families Cheat Note
+Concept taught: Difference between `get` and `getOrDefault`.
 
-- read: `get`, `getOrDefault`, `containsKey`, `containsValue`
+```java
+Map<String, Integer> map = Map.of("A", 10, "B", 20);
+System.out.println(map.get("A"));
+System.out.println(map.get("Z"));
+System.out.println(map.getOrDefault("Z", 0));
+```
+
+Expected output:
+
+```text
+10
+null
+0
+```
+
+## 3) Existence Checks
+
+Concept taught: `containsKey` is exact key existence; `containsValue` scans values.
+
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put("x", 1);
+map.put("y", 2);
+
+System.out.println(map.containsKey("x"));
+System.out.println(map.containsValue(2));
+```
+
+Expected output:
+
+```text
+true
+true
+```
+
+## 4) `putIfAbsent`
+
+Concept taught: Insert only when key missing.
+
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put("A", 1);
+
+System.out.println(map.putIfAbsent("A", 999));
+System.out.println(map.putIfAbsent("B", 2));
+System.out.println(map);
+```
+
+Expected output:
+
+```text
+1
+null
+{A=1, B=2}
+```
+
+## 5) `replace` Variants
+
+Concept taught: unconditional and conditional replace.
+
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put("A", 1);
+
+System.out.println(map.replace("A", 10));
+System.out.println(map.replace("A", 1, 99));
+System.out.println(map.replace("A", 10, 99));
+System.out.println(map);
+```
+
+Expected output:
+
+```text
+1
+false
+true
+{A=99}
+```
+
+## 6) `remove` Variants
+
+Concept taught: remove by key and remove by key+value.
+
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put("A", 1);
+map.put("B", 2);
+
+System.out.println(map.remove("A"));
+System.out.println(map.remove("B", 999));
+System.out.println(map.remove("B", 2));
+System.out.println(map);
+```
+
+Expected output:
+
+```text
+1
+false
+true
+{}
+```
+
+## 7) `computeIfAbsent`
+
+Concept taught: lazy value creation only when key absent.
+
+```java
+Map<String, List<String>> groups = new HashMap<>();
+groups.computeIfAbsent("teamA", k -> new ArrayList<>()).add("Ram");
+groups.computeIfAbsent("teamA", k -> new ArrayList<>()).add("Sita");
+
+System.out.println(groups);
+```
+
+Expected output:
+
+```text
+{teamA=[Ram, Sita]}
+```
+
+## 8) `computeIfPresent`
+
+Concept taught: update only if key exists.
+
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put("count", 5);
+map.computeIfPresent("count", (k, v) -> v + 1);
+map.computeIfPresent("missing", (k, v) -> 1);
+
+System.out.println(map);
+```
+
+Expected output:
+
+```text
+{count=6}
+```
+
+## 9) `compute`
+
+Concept taught: full control for insert/update/delete based on old value.
+
+```java
+Map<String, Integer> map = new HashMap<>();
+map.compute("x", (k, v) -> v == null ? 1 : v + 1);
+map.compute("x", (k, v) -> v == null ? 1 : v + 1);
+map.compute("x", (k, v) -> null); // removes key
+
+System.out.println(map);
+```
+
+Expected output:
+
+```text
+{}
+```
+
+## 10) `merge`
+
+Concept taught: best API for counters and aggregations.
+
+```java
+Map<String, Integer> freq = new HashMap<>();
+freq.merge("java", 1, Integer::sum);
+freq.merge("java", 1, Integer::sum);
+freq.merge("python", 1, Integer::sum);
+
+System.out.println(freq);
+```
+
+Expected output:
+
+```text
+{python=1, java=2}
+```
+
+## 11) Views: `keySet`, `values`, `entrySet`
+
+Concept taught: backed views reflect map changes.
+
+```java
+Map<String, Integer> map = new LinkedHashMap<>();
+map.put("A", 1);
+map.put("B", 2);
+
+Set<String> keys = map.keySet();
+Collection<Integer> values = map.values();
+Set<Map.Entry<String, Integer>> entries = map.entrySet();
+
+System.out.println(keys);
+System.out.println(values);
+System.out.println(entries);
+
+map.put("C", 3);
+System.out.println(keys);
+```
+
+Expected output:
+
+```text
+[A, B]
+[1, 2]
+[A=1, B=2]
+[A, B, C]
+```
+
+## 12) `replaceAll`
+
+Concept taught: bulk value transformation.
+
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put("A", 10);
+map.put("B", 20);
+map.replaceAll((k, v) -> v + 5);
+System.out.println(map);
+```
+
+Possible output:
+
+```text
+{A=15, B=25}
+```
+
+## 13) `forEach`
+
+Concept taught: concise iteration over entries.
+
+```java
+Map<String, Integer> map = new LinkedHashMap<>();
+map.put("Ram", 95);
+map.put("Sita", 92);
+map.forEach((k, v) -> System.out.println(k + " -> " + v));
+```
+
+Expected output:
+
+```text
+Ram -> 95
+Sita -> 92
+```
+
+## 14) Method Family Recap
+
+- read/query: `get`, `getOrDefault`, `containsKey`, `containsValue`, `size`, `isEmpty`
 - write: `put`, `putIfAbsent`, `replace`, `remove`, `clear`, `replaceAll`
 - compute/update: `computeIfAbsent`, `computeIfPresent`, `compute`, `merge`
-- views: `keySet`, `values`, `entrySet` (backed views)
+- traversal/views: `forEach`, `keySet`, `values`, `entrySet`
+
+## 15) Summary
+
+If you master `put/get/remove` + `merge` + `computeIfAbsent`, you can solve most real map problems cleanly.

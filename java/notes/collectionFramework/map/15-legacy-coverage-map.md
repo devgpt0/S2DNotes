@@ -1,42 +1,71 @@
-# 15 - Legacy Coverage Map
+# 15 - Legacy Coverage Map (Map Module)
 
-This file maps earlier map notes to the unified comprehensive map path.
+This file maps old and fragmented notes to the current complete `map` learning path.
 
-## 1) `01-map-basics.md` Coverage
+## 1) Basics Coverage
 
-- fundamentals, uniqueness, map vs list/set -> `01-map-basics.md`
+- map fundamentals, uniqueness, null overview, map vs list/set -> `01-map-basics.md`
+- first program and API families -> `01-map-basics.md`
 
-## 2) `02-hashmap-core.md` Coverage
+## 2) HashMap Core Coverage
 
-- buckets, collision, resize, defaults, `equals/hashCode` -> `02-hashmap-core.md`
-- deeper performance + key design -> `11-performance-and-memory.md`
+- internals: hashing, buckets, collisions -> `02-hashmap-core.md`
+- load factor/capacity/resize strategy -> `02-hashmap-core.md`, `11-performance-and-memory.md`
+- key contracts (`equals/hashCode`) -> `02-hashmap-core.md`, `06-pitfalls-and-best-practices.md`
 
-## 3) `03-map-methods-with-output.md` Coverage
+## 3) API Method Coverage
 
-- method behavior with outputs -> `03-map-methods-with-output.md`
-- additional pattern usage -> `05-common-patterns.md`, `12-map-design-patterns.md`
+- read/write/query APIs -> `03-map-methods-with-output.md`
+- compute/merge APIs -> `03-map-methods-with-output.md`, `12-map-design-patterns.md`
+- backed views and iteration -> `03-map-methods-with-output.md`, `13-debugging-and-testing-maps.md`
 
-## 4) `04-map-implementations.md` Coverage
+## 4) Implementation Selection Coverage
 
-- when-to-use matrix + null rules + complexity -> `04-map-implementations.md`
-- ordered/sorted/sequenced behavior -> `08-ordered-sorted-and-sequenced-views.md`
+- map selection matrix -> `04-map-implementations.md`
+- ordered vs sorted behavior -> `08-ordered-sorted-and-sequenced-views.md`
+- specialized map recommendations -> `10-specialized-maps-and-immutability.md`
 
-## 5) `05-common-patterns.md` Coverage
+## 5) Pattern Coverage
 
-- frequency, grouping, two-sum, LRU -> `05-common-patterns.md`
-- advanced map design patterns -> `12-map-design-patterns.md`
+- counting/grouping/top-k/two-sum -> `05-common-patterns.md`, `14-map-practice-problems.md`
+- multi-level aggregation -> `05-common-patterns.md`, `12-map-design-patterns.md`
+- LRU cache pattern -> `05-common-patterns.md`, `01-linkedhashmap-core.md`
 
-## 6) `06-pitfalls-and-best-practices.md` Coverage
+## 6) Reliability Coverage
 
-- key mistakes, null handling, contracts -> `06-pitfalls-and-best-practices.md`
-- debugging/testing discipline -> `13-debugging-and-testing-maps.md`
+- pitfalls and runtime bugs -> `06-pitfalls-and-best-practices.md`
+- debugging and test strategies -> `13-debugging-and-testing-maps.md`
+- thread-safety and atomic updates -> `09-thread-safety-and-concurrency.md`
 
-## 7) `07-interview-revision.md` Coverage
+## 7) Performance Coverage
 
-- quick revision -> `07-interview-revision.md`
-- graded practice -> `14-map-practice-problems.md`
+- complexity and memory tradeoffs -> `11-performance-and-memory.md`
+- pre-sizing and key hash quality -> `02-hashmap-core.md`, `11-performance-and-memory.md`
 
-## 8) Implementation Core Files Coverage
+## 8) Interview + Practice Coverage
 
-- `01-linkedhashmap-core.md` to `08-hashtable-core.md` are preserved and indexed in `map.md`
-- specialized map deep dive summary -> `10-specialized-maps-and-immutability.md`
+- rapid revision and speaking templates -> `07-interview-revision.md`
+- graded practice from beginner to expert -> `14-map-practice-problems.md`
+
+## 9) Specialized Deep-Dive Coverage
+
+- `01-linkedhashmap-core.md`
+- `02-treemap-core.md`
+- `03-concurrenthashmap-core.md`
+- `04-weakhashmap-core.md`
+- `05-identityhashmap-core.md`
+- `06-enummap-core.md`
+- `07-immutable-map-core.md`
+- `08-hashtable-core.md`
+
+These files are retained as focused implementation references.
+
+## 10) Module Status
+
+`map` module now includes:
+
+- complete conceptual progression
+- implementation deep dives
+- snippet-by-snippet teaching intent
+- expected outputs and explanations
+- practice + interview readiness

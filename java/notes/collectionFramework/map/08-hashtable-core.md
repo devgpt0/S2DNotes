@@ -1,38 +1,93 @@
-# 08 - Hashtable Core
+# 08 - Hashtable Core (Complete)
 
 ## 1) Internal Idea
 
-`Hashtable` is the legacy synchronized hash-based map.
+`Hashtable` is a legacy synchronized hash map.
 
-- thread-safe with coarse-grained synchronization
-- older API, mostly replaced by `ConcurrentHashMap`
+- hash-table based storage
+- synchronized at method level
+- mostly replaced by `ConcurrentHashMap`
 
-## 2) Time Complexity
+## 2) Complexity
 
-- average `O(1)` for `put/get/remove`
-- slower under contention vs `ConcurrentHashMap`
+Average:
+
+- `put/get/remove`: `O(1)`
+
+But synchronization overhead and coarse locking reduce throughput under contention.
 
 ## 3) Basic Usage
 
-```java
-import java.util.Hashtable;
-import java.util.Map;
+Concept taught: Core `Hashtable` operations.
 
-public class HashtableCoreDemo {
-    public static void main(String[] args) {
-        Map<Integer, String> table = new Hashtable<>();
-        table.put(1, "A");
-        table.put(2, "B");
-        System.out.println(table);
-    }
+```java
+Map<Integer, String> table = new Hashtable<>();
+table.put(1, "A");
+table.put(2, "B");
+System.out.println(table.get(1));
+System.out.println(table);
+```
+
+Expected output:
+
+```text
+A
+{2=B, 1=A}
+```
+
+Order not guaranteed.
+
+## 4) Null Restrictions
+
+Concept taught: `Hashtable` rejects null keys and values.
+
+```java
+Map<Integer, String> table = new Hashtable<>();
+boolean keyError = false;
+boolean valError = false;
+
+try { table.put(null, "X"); } catch (NullPointerException ex) { keyError = true; }
+try { table.put(1, null); } catch (NullPointerException ex) { valError = true; }
+
+System.out.println(keyError);
+System.out.println(valError);
+```
+
+Expected output:
+
+```text
+true
+true
+```
+
+## 5) Legacy Iteration APIs
+
+`Hashtable` historically used `Enumeration`, but modern code should prefer entry iteration.
+
+Concept taught: Modern entry iteration still works with `Hashtable`.
+
+```java
+Map<Integer, String> table = new Hashtable<>();
+table.put(1, "A");
+table.put(2, "B");
+for (Map.Entry<Integer, String> e : table.entrySet()) {
+    System.out.println(e.getKey() + "=" + e.getValue());
 }
 ```
 
-## 4) Rules
+Possible output:
 
-- no `null` key
-- no `null` value
+```text
+2=B
+1=A
+```
 
-## 5) When To Use
+## 6) `Hashtable` vs `ConcurrentHashMap`
 
-- only when working with legacy APIs that specifically require `Hashtable`
+- both thread-safe
+- `ConcurrentHashMap` has better scalability and atomic helpers (`compute`, `merge`)
+- prefer `Hashtable` only for legacy API compatibility
+
+## 7) Summary
+
+Understand `Hashtable` for legacy maintenance, but use `ConcurrentHashMap` for new concurrent code.

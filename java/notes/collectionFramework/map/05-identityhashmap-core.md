@@ -1,42 +1,73 @@
-# 05 - IdentityHashMap Core
+# 05 - IdentityHashMap Core (Complete)
 
 ## 1) Internal Idea
 
 `IdentityHashMap` compares keys by reference identity (`==`), not by `equals`.
 
-So two objects with same value can be treated as different keys.
+That means two logically equal objects can still be treated as different keys.
 
-## 2) Time Complexity
+## 2) Complexity
 
-- average `O(1)` for `put/get/remove`
+Average hash-map style operations:
 
-## 3) Basic Usage
+- `put/get/remove`: `O(1)` average
+
+## 3) Identity Behavior Demo
+
+Concept taught: Equal-content objects can become different keys due to identity semantics.
 
 ```java
-import java.util.IdentityHashMap;
-import java.util.Map;
+Map<String, Integer> map = new IdentityHashMap<>();
+String a = new String("x");
+String b = new String("x");
 
-public class IdentityHashMapCoreDemo {
-    public static void main(String[] args) {
-        Map<String, Integer> map = new IdentityHashMap<>();
+map.put(a, 1);
+map.put(b, 2);
 
-        String a = new String("x");
-        String b = new String("x");
-
-        map.put(a, 1);
-        map.put(b, 2);
-
-        System.out.println(map.size()); // 2 (different references)
-    }
-}
+System.out.println(map.size());
+System.out.println(map.get(a));
+System.out.println(map.get(b));
 ```
 
-## 4) Rules
+Expected output:
 
-- break from normal `Map` equality intuition
-- use carefully and rarely
+```text
+2
+1
+2
+```
 
-## 5) When To Use
+## 4) Contrast with `HashMap`
 
-- object graph algorithms
-- framework internals where identity semantics are required
+Concept taught: Same data with `HashMap` collapses to one key due to `equals`.
+
+```java
+Map<String, Integer> map = new HashMap<>();
+String a = new String("x");
+String b = new String("x");
+map.put(a, 1);
+map.put(b, 2);
+System.out.println(map.size());
+System.out.println(map.get("x"));
+```
+
+Expected output:
+
+```text
+1
+2
+```
+
+## 5) Real Use Cases
+
+- object graph traversal bookkeeping (visited by identity)
+- framework internals and proxy tracking
+- serialization/DI internals where object instance identity matters
+
+## 6) Warning
+
+Do not use `IdentityHashMap` for normal business keys (IDs, names, codes). It violates normal map equality expectations for most teams.
+
+## 7) Summary
+
+Use `IdentityHashMap` only when identity semantics are explicitly required by design.

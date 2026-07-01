@@ -1,44 +1,129 @@
-# 09 - Thread Safety and Concurrency
+# 09 - Thread Safety and Concurrency (Map)
 
-## 1) Non-Thread-Safe by Default
+## 1) Non-Thread-Safe Maps by Default
 
-`HashMap`, `LinkedHashMap`, `TreeMap` are not thread-safe.
+These are not safe for concurrent writes without external synchronization:
 
-Concurrent writes without protection can corrupt behavior.
+- `HashMap`
+- `LinkedHashMap`
+- `TreeMap`
 
-## 2) ConcurrentHashMap Essentials
+## 2) `ConcurrentHashMap` Essentials
 
-- safe concurrent read/write
+- thread-safe concurrent read/write
+- no null keys/values
 - high throughput under contention
-- null key/value not allowed
-- weakly consistent iterators
+- weakly consistent iterators (no fail-fast guarantee like normal map iterators)
+
+Concept taught: Atomic counter updates with `merge` in concurrent map.
 
 ```java
 ConcurrentHashMap<String, Integer> freq = new ConcurrentHashMap<>();
 freq.merge("java", 1, Integer::sum);
-freq.computeIfAbsent("go", k -> 0);
+freq.merge("java", 1, Integer::sum);
+System.out.println(freq);
 ```
 
-## 3) Atomic Compound Operations
+Expected output:
 
-Prefer built-ins over manual check-then-act:
+```text
+{java=2}
+```
+
+## 3) Avoid Manual Check-Then-Act
+
+Unsafe pattern (race-prone):
+
+Concept taught: Demonstrates 3) Avoid Manual Check-Then-Act in practice.
 
 ```java
-map.putIfAbsent(key, value);
-map.compute(key, (k, v) -> v == null ? 1 : v + 1);
-map.merge(key, 1, Integer::sum);
+// if (!map.containsKey(k)) map.put(k, v);
 ```
 
-## 4) Synchronized Wrapper
+Use atomic methods instead.
+
+Concept taught: `putIfAbsent` avoids race in insert-if-missing.
 
 ```java
-Map<String, Integer> sync = Collections.synchronizedMap(new HashMap<>());
+ConcurrentHashMap<String, String> m = new ConcurrentHashMap<>();
+m.putIfAbsent("token", "A");
+m.putIfAbsent("token", "B");
+System.out.println(m.get("token"));
 ```
 
-Use when you must keep specific map type but need coarse synchronization.
+Expected output:
 
-## 5) Quick Decision
+```text
+A
+```
 
-- read/write concurrent map: `ConcurrentHashMap`
-- very frequent iteration + rare writes on list-like structures: `CopyOnWrite...` patterns (not map)
-- legacy API requirement: `Hashtable`
+## 4) `compute` / `merge` for Atomic Updates
+
+Concept taught: Atomic read-modify-write in one method call.
+
+```java
+ConcurrentHashMap<String, Integer> m = new ConcurrentHashMap<>();
+m.compute("x", (k, v) -> v == null ? 1 : v + 1);
+m.compute("x", (k, v) -> v == null ? 1 : v + 1);
+System.out.println(m);
+```
+
+Expected output:
+
+```text
+{x=2}
+```
+
+## 5) Synchronized Wrapper Option
+
+Concept taught: Coarse-grained synchronization with wrapper map.
+
+```java
+Map<String, Integer> syncMap = Collections.synchronizedMap(new HashMap<>());
+syncMap.put("A", 1);
+System.out.println(syncMap.get("A"));
+```
+
+Expected output:
+
+```text
+1
+```
+
+If iterating, you must synchronize externally on same lock.
+
+Concept taught: Correct synchronized iteration over synchronized wrapper.
+
+```java
+Map<String, Integer> syncMap = Collections.synchronizedMap(new HashMap<>());
+syncMap.put("A", 1);
+syncMap.put("B", 2);
+
+synchronized (syncMap) {
+    for (Map.Entry<String, Integer> e : syncMap.entrySet()) {
+        System.out.println(e.getKey() + "=" + e.getValue());
+    }
+}
+```
+
+Possible output:
+
+```text
+A=1
+B=2
+```
+
+## 6) `Hashtable` vs `ConcurrentHashMap`
+
+- `Hashtable`: legacy, synchronized whole-method style
+- `ConcurrentHashMap`: modern, higher concurrency and richer atomic APIs
+
+## 7) Decision Guide
+
+- shared mutable map across threads -> `ConcurrentHashMap`
+- low-concurrency legacy code needing minimal change -> synchronized wrapper
+- new concurrent code -> avoid `Hashtable`
+
+## 8) Summary
+
+Concurrency safety in maps is about choosing the right map and using atomic methods (`putIfAbsent`, `compute`, `merge`) instead of race-prone multi-step logic.

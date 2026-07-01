@@ -1,29 +1,60 @@
 # 04 - Map Implementations (When To Use Which)
 
-## 1) Quick Selection Table
+## 1) Selection Table
 
 | Type | Order | Typical Complexity | Null Key | Null Value | Thread Safety | Best Fit |
 |---|---|---|---|---|---|---|
-| `HashMap` | no guarantee | avg `O(1)` | one allowed | allowed | no | general-purpose fast lookup |
-| `LinkedHashMap` | insertion/access order | avg `O(1)` | one allowed | allowed | no | predictable order, LRU base |
-| `TreeMap` | sorted by key | `O(log n)` | not allowed | allowed | no | sorted reports, range queries |
-| `ConcurrentHashMap` | no guarantee | avg `O(1)` | not allowed | not allowed | yes | concurrent read/write |
-| `WeakHashMap` | no guarantee | avg `O(1)` | allowed | allowed | no | lifecycle-bound metadata |
-| `IdentityHashMap` | no guarantee | avg `O(1)` | allowed | allowed | no | identity (`==`) semantics |
-| `EnumMap` | enum declaration order | near `O(1)` | not allowed | allowed | no | enum-key maps |
-| `Hashtable` | no guarantee | avg `O(1)` | not allowed | not allowed | legacy synchronized | legacy APIs |
-| `Map.of/copyOf` | iteration order defined by factory contract | read-only | not allowed | not allowed | safe to share | constants, defensive returns |
+| `HashMap` | no order guarantee | avg `O(1)` | one | yes | no | default fast lookup |
+| `LinkedHashMap` | insertion/access order | avg `O(1)` | one | yes | no | deterministic iteration, LRU base |
+| `TreeMap` | sorted by key | `O(log n)` | no | yes | no | sorted/range queries |
+| `ConcurrentHashMap` | no stable order | avg `O(1)` | no | no | yes | concurrent mutable maps |
+| `WeakHashMap` | no order guarantee | avg `O(1)` | yes | yes | no | lifecycle-bound metadata |
+| `IdentityHashMap` | no order guarantee | avg `O(1)` | yes | yes | no | identity (`==`) key semantics |
+| `EnumMap` | enum declaration order | near `O(1)` | no | yes | no | enum-key maps |
+| `Hashtable` | no order guarantee | avg `O(1)` | no | no | legacy sync | legacy compatibility |
+| `Map.of/copyOf` | immutable | read-only | no | no | safe share | constants/defensive returns |
 
-## 2) HashMap
+## 2) `HashMap` Example
 
-- fastest common default
-- no iteration order contract
-- collision + resize behavior matters for large workloads
+Concept taught: Unordered fast key-value storage.
 
-## 3) LinkedHashMap
+```java
+Map<String, Integer> map = new HashMap<>();
+map.put("c", 3);
+map.put("a", 1);
+map.put("b", 2);
+System.out.println(map);
+```
 
-- predictable iteration
-- optional access order for LRU behavior
+Possible output:
+
+```text
+{a=1, b=2, c=3}
+```
+
+Order is not guaranteed; printed order may differ.
+
+## 3) `LinkedHashMap` Example
+
+Concept taught: Insertion-order iteration.
+
+```java
+Map<Integer, String> map = new LinkedHashMap<>();
+map.put(3, "C");
+map.put(1, "A");
+map.put(2, "B");
+System.out.println(map);
+```
+
+Expected output:
+
+```text
+{3=C, 1=A, 2=B}
+```
+
+## 4) `LinkedHashMap` Access-Order Mode
+
+Concept taught: Access-order map for LRU-like behavior.
 
 ```java
 LinkedHashMap<Integer, String> m = new LinkedHashMap<>(16, 0.75f, true);
@@ -31,47 +62,142 @@ m.put(1, "A");
 m.put(2, "B");
 m.put(3, "C");
 m.get(2);
-System.out.println(m); // {1=A, 3=C, 2=B}
+System.out.println(m);
 ```
 
-## 4) TreeMap
+Expected output:
 
-- sorted keys via natural order or comparator
-- supports navigation: `ceilingKey`, `floorKey`, `higherKey`, `subMap`
+```text
+{1=A, 3=C, 2=B}
+```
 
-## 5) ConcurrentHashMap
+## 5) `TreeMap` Example
 
-- high concurrency without locking whole map
-- atomic compound helpers: `putIfAbsent`, `compute`, `merge`
-- weakly consistent iteration
+Concept taught: Sorted-key map with navigation methods.
 
-## 6) WeakHashMap
+```java
+TreeMap<Integer, String> tm = new TreeMap<>();
+tm.put(20, "B");
+tm.put(10, "A");
+tm.put(30, "C");
 
-- keys are weak references
-- entries may disappear after GC when key has no strong reference
+System.out.println(tm);
+System.out.println(tm.floorKey(25));
+System.out.println(tm.ceilingKey(25));
+```
 
-## 7) IdentityHashMap
+Expected output:
 
-- key equality is `==`, not `equals`
-- use only when identity semantics are explicitly needed
+```text
+{10=A, 20=B, 30=C}
+20
+30
+```
 
-## 8) EnumMap
+## 6) `ConcurrentHashMap` Example
 
-- best map when key domain is one enum type
-- memory efficient and very fast
+Concept taught: Thread-safe atomic update methods.
 
-## 9) Immutable Maps
+```java
+ConcurrentHashMap<String, Integer> freq = new ConcurrentHashMap<>();
+freq.merge("java", 1, Integer::sum);
+freq.merge("java", 1, Integer::sum);
+System.out.println(freq);
+```
 
-- factories: `Map.of`, `Map.ofEntries`, `Map.copyOf`
-- reject null keys/values
-- reject duplicate keys at creation
+Expected output:
 
-## 10) Java 21 SequencedMap
+```text
+{java=2}
+```
 
-Ordered map operations to know:
+## 7) `EnumMap` Example
 
-- `firstEntry()`
-- `lastEntry()`
-- `pollFirstEntry()`
-- `pollLastEntry()`
-- `reversed()`
+Concept taught: Best map when key domain is an enum.
+
+```java
+enum Status { NEW, IN_PROGRESS, DONE }
+Map<Status, Integer> count = new EnumMap<>(Status.class);
+count.put(Status.NEW, 5);
+count.put(Status.DONE, 2);
+System.out.println(count);
+```
+
+Expected output:
+
+```text
+{NEW=5, DONE=2}
+```
+
+## 8) `IdentityHashMap` Example
+
+Concept taught: Key identity (`==`) instead of logical equality (`equals`).
+
+```java
+Map<String, Integer> map = new IdentityHashMap<>();
+String a = new String("x");
+String b = new String("x");
+map.put(a, 1);
+map.put(b, 2);
+System.out.println(map.size());
+```
+
+Expected output:
+
+```text
+2
+```
+
+## 9) `WeakHashMap` Example
+
+Concept taught: Entries can disappear when key has no strong reference.
+
+```java
+Map<Object, String> map = new WeakHashMap<>();
+Object key = new Object();
+map.put(key, "meta");
+System.out.println("before GC: " + map.size());
+
+key = null;
+System.gc();
+
+System.out.println("after GC: " + map.size());
+```
+
+Possible output:
+
+```text
+before GC: 1
+after GC: 0
+```
+
+GC timing is nondeterministic.
+
+## 10) Immutable Map Factory
+
+Concept taught: Create read-only map safely.
+
+```java
+Map<String, Integer> m = Map.of("A", 1, "B", 2);
+System.out.println(m);
+// m.put("C", 3); // UnsupportedOperationException
+```
+
+Expected output:
+
+```text
+{A=1, B=2}
+```
+
+## 11) Practical Decision Guide
+
+- need fastest general map -> `HashMap`
+- need predictable iteration/LRU base -> `LinkedHashMap`
+- need sorted keys/range queries -> `TreeMap`
+- need concurrent mutation -> `ConcurrentHashMap`
+- key type is enum -> `EnumMap`
+- need immutable constant map -> `Map.of/copyOf`
+
+## 12) Summary
+
+Choose map type from requirements: ordering, sorting, null rules, concurrency, and memory profile.

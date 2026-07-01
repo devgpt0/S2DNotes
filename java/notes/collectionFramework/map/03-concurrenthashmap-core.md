@@ -1,43 +1,101 @@
-# 03 - ConcurrentHashMap Core
+# 03 - ConcurrentHashMap Core (Complete)
 
 ## 1) Internal Idea
 
-`ConcurrentHashMap` is thread-safe for concurrent reads and writes.
+`ConcurrentHashMap` is built for safe concurrent mutation.
 
-- high concurrency without whole-map lock
-- supports atomic operations (`putIfAbsent`, `compute`, `merge`)
+- supports high concurrency
+- avoids coarse whole-map synchronization
+- provides atomic compound APIs
 
-## 2) Time Complexity
+## 2) Complexity
 
-- average `O(1)` for `put/get/remove`
+Average:
 
-## 3) Basic Usage
+- `put/get/remove`: `O(1)`
+
+Under contention, behavior remains safe and scalable compared to legacy synchronized maps.
+
+## 3) Null Restrictions
+
+- null key: not allowed
+- null value: not allowed
+
+This prevents ambiguity in concurrent reads.
+
+## 4) Basic Concurrent API Usage
+
+Concept taught: Thread-safe update operations.
 
 ```java
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-public class ConcurrentHashMapCoreDemo {
-    public static void main(String[] args) {
-        Map<String, Integer> freq = new ConcurrentHashMap<>();
-
-        freq.put("java", 1);
-        freq.putIfAbsent("python", 0);
-        freq.compute("java", (k, v) -> v == null ? 1 : v + 1);
-        freq.merge("go", 1, Integer::sum);
-
-        System.out.println(freq);
-    }
-}
+ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
+map.put("java", 1);
+map.putIfAbsent("python", 0);
+map.compute("java", (k, v) -> v == null ? 1 : v + 1);
+map.merge("go", 1, Integer::sum);
+System.out.println(map);
 ```
 
-## 4) Rules
+Possible output:
 
-- does not allow `null` key
-- does not allow `null` value
-- iterators are weakly consistent (no `ConcurrentModificationException` in normal concurrent iteration)
+```text
+{python=0, java=2, go=1}
+```
 
-## 5) When To Use
+## 5) Atomic Counter Pattern
 
-- shared mutable maps in multithreaded apps
-- counters and caches updated by many threads
+Concept taught: `merge` for lock-free style counting per key.
+
+```java
+ConcurrentHashMap<String, Long> hits = new ConcurrentHashMap<>();
+hits.merge("/api/users", 1L, Long::sum);
+hits.merge("/api/users", 1L, Long::sum);
+System.out.println(hits.get("/api/users"));
+```
+
+Expected output:
+
+```text
+2
+```
+
+## 6) Weakly Consistent Iteration
+
+Iterators do not throw `ConcurrentModificationException` under normal concurrent updates; they reflect state seen during traversal (not strict snapshot).
+
+Concept taught: Iteration remains safe during concurrent modification.
+
+```java
+ConcurrentHashMap<Integer, String> map = new ConcurrentHashMap<>();
+map.put(1, "A");
+map.put(2, "B");
+
+for (Map.Entry<Integer, String> e : map.entrySet()) {
+    if (e.getKey() == 1) map.put(3, "C");
+    System.out.println(e.getKey() + "=" + e.getValue());
+}
+System.out.println(map);
+```
+
+Possible output:
+
+```text
+1=A
+2=B
+3=C
+{1=A, 2=B, 3=C}
+```
+
+## 7) Why Not `HashMap` + Manual Locks Everywhere
+
+`ConcurrentHashMap` simplifies correctness and often performs better than ad-hoc locking patterns.
+
+## 8) When to Use
+
+- shared counters
+- shared caches (with custom policies)
+- concurrent state maps in servers and worker pools
+
+## 9) Summary
+
+Use `ConcurrentHashMap` whenever multiple threads mutate/read the same map and you need atomic update helpers.

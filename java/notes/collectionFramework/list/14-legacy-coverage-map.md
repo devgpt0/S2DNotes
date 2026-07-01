@@ -1,57 +1,100 @@
-# 14 - Legacy Coverage Map
+# 14 - Legacy Coverage Map (List Module)
 
-This file maps old notes to unified notes so legacy files can be deleted safely.
+This file maps old or fragmented list notes to the current complete module so cleanup/refactor can be done safely.
 
-## 1) `ArrayListNotes.md` Coverage
+## 1) Coverage for `ArrayList` Legacy Notes
 
-- core idea + complexity -> `02-arraylist-core.md`
-- iteration patterns -> `06-list-iteration-patterns.md`
-- method behaviors (`in-place`, `read`, `view/new`) -> `02-arraylist-core.md`
-- sorting examples -> `07-sorting-searching-and-binarysearch.md`
-- immutable/mutable conversion -> `02-arraylist-core.md`, `09-immutability-and-defensive-copy.md`
-- `Arrays.asList` behavior -> `02-arraylist-core.md`, `09-immutability-and-defensive-copy.md`
-- declarations/raw type warning -> `02-arraylist-core.md`, `11-common-bugs-and-best-practices.md`
-- size vs capacity, `ensureCapacity`, `trimToSize` -> `02-arraylist-core.md`
-- Java 21 first/last methods complexity -> `02-arraylist-core.md`
+Mapped to:
 
-## 2) `LinkedListNotes.md` Coverage
+- `01-list-basics.md`: list contract, mutability, method families
+- `02-arraylist-core.md`: internals, complexity, capacity, overload traps
+- `06-list-iteration-patterns.md`: iteration choices
+- `07-sorting-searching-and-binarysearch.md`: sorting/searching integration
+- `09-immutability-and-defensive-copy.md`: `Arrays.asList`, immutable snapshots
+- `10-performance-and-memory.md`: workload-based performance selection
+- `11-common-bugs-and-best-practices.md`: runtime bug patterns
 
-- doubly linked node concept -> `03-linkedlist-core.md`
-- complexity and usage guidance -> `03-linkedlist-core.md`
-- all common methods + occurrences -> `03-linkedlist-core.md`
-- quick construction with `Arrays.asList` -> `03-linkedlist-core.md`
-- `removeAll` example -> `03-linkedlist-core.md`
-- in-place vs new object -> `03-linkedlist-core.md`
+## 2) Coverage for `LinkedList` Legacy Notes
 
-## 3) `VectorListNotes.md` Coverage
+Mapped to:
 
-- vector properties, complexity, methods -> `04-vector-and-stack-core.md`
-- Java 21 list additions -> `04-vector-and-stack-core.md`
-- `reversed()` view behavior -> `04-vector-and-stack-core.md`
-- capacity behavior and constructors -> `04-vector-and-stack-core.md`
-- thread-safety caveats + concurrent example -> `04-vector-and-stack-core.md`
+- `03-linkedlist-core.md`: node model, deque operations, complexity
+- `06-list-iteration-patterns.md`: iterator/listIterator usage
+- `10-performance-and-memory.md`: cache/memory and operation tradeoffs
+- `11-common-bugs-and-best-practices.md`: index-loop pitfalls
 
-## 4) `StackNotes.md` Coverage
+## 3) Coverage for `Vector` / `Stack` Legacy Notes
 
-- LIFO concept + Stack APIs (`push/pop/peek/search`) -> `04-vector-and-stack-core.md`
-- method behavior and complexity -> `04-vector-and-stack-core.md`
-- LinkedList/ArrayList as stack patterns -> `04-vector-and-stack-core.md`
-- modern `ArrayDeque` recommendation -> `04-vector-and-stack-core.md`
-- common mistakes and import correction -> `04-vector-and-stack-core.md`
+Mapped to:
 
-## 5) `CopyOnWriteArrayListNotes.md` Coverage
+- `04-vector-and-stack-core.md`: legacy rationale, APIs, capacity behavior, modern replacement strategy
+- `10-performance-and-memory.md`: synchronization and overhead notes
+- `11-common-bugs-and-best-practices.md`: thread-safety misconceptions
 
-- why it exists vs ArrayList/LinkedList/Vector -> `05-copyonwritearraylist-core.md`
-- copy-on-write internals and costs -> `05-copyonwritearraylist-core.md`
-- iterator snapshot behavior and caveats -> `05-copyonwritearraylist-core.md`
-- in-place vs copy/view methods -> `05-copyonwritearraylist-core.md`
-- Java 21 method support + complexities -> `05-copyonwritearraylist-core.md`
-- concurrent demo + common mistakes -> `05-copyonwritearraylist-core.md`
+## 4) Coverage for `CopyOnWriteArrayList` Legacy Notes
 
-## 6) `ComparatorsAndComparablesNotes.md` Coverage
+Mapped to:
 
-- difference table + when to use -> `13-comparable-vs-comparator.md`
-- corrected beginner snippet -> `13-comparable-vs-comparator.md`
-- complete comparable/comparator examples -> `13-comparable-vs-comparator.md`
-- compare contract, comparator utilities, chaining/reversal -> `13-comparable-vs-comparator.md`
-- sorting APIs, comparator contract, mistakes, practice tasks -> `13-comparable-vs-comparator.md`
+- `05-copyonwritearraylist-core.md`: snapshot semantics, cost model, concurrent examples
+- `06-list-iteration-patterns.md`: fail-fast vs snapshot iteration
+- `10-performance-and-memory.md`: write amplification and allocation impact
+
+## 5) Coverage for Sorting / Comparator Legacy Notes
+
+Mapped to:
+
+- `07-sorting-searching-and-binarysearch.md`: stable sort, comparator-aware binary search
+- `13-comparable-vs-comparator.md`: contract, chaining, null handling, mistakes
+- `12-interview-and-practice.md`: interview drill and solved problems
+
+## 6) Coverage for List + Lambda / Streams Notes
+
+Mapped to:
+
+- `08-list-with-lambda-and-streams.md`: map/filter/reduce/grouping/partitioning/flatMap
+- `06-list-iteration-patterns.md`: stream vs loop iteration strategy
+- `12-interview-and-practice.md`: applied stream problems
+
+## 7) Coverage for Immutability / API Contract Notes
+
+Mapped to:
+
+- `09-immutability-and-defensive-copy.md`: mutable vs fixed vs unmodifiable vs immutable
+- `11-common-bugs-and-best-practices.md`: unsupported operation and exposure bugs
+- `01-list-basics.md`: mutability overview at foundation level
+
+## 8) Coverage for Performance / Tuning Notes
+
+Mapped to:
+
+- `10-performance-and-memory.md`: complexity table, memory model, JMH guidance
+- `02-arraylist-core.md`: capacity tuning
+- `03-linkedlist-core.md`: traversal tradeoffs
+- `05-copyonwritearraylist-core.md`: read-heavy concurrency economics
+
+## 9) Recommended Study Order
+
+1. `01-list-basics.md`
+2. `02-arraylist-core.md`
+3. `03-linkedlist-core.md`
+4. `04-vector-and-stack-core.md`
+5. `05-copyonwritearraylist-core.md`
+6. `06-list-iteration-patterns.md`
+7. `07-sorting-searching-and-binarysearch.md`
+8. `08-list-with-lambda-and-streams.md`
+9. `09-immutability-and-defensive-copy.md`
+10. `10-performance-and-memory.md`
+11. `11-common-bugs-and-best-practices.md`
+12. `13-comparable-vs-comparator.md`
+13. `12-interview-and-practice.md`
+14. `14-legacy-coverage-map.md`
+
+## 10) Module Status
+
+Current `list` module is now complete for beginner-to-advanced learning:
+
+- concept coverage
+- implementation tradeoffs
+- code snippets with expected outputs
+- interview + practice readiness
+- migration mapping from legacy fragments

@@ -1,173 +1,218 @@
-# 04 - Vector and Stack Core
+# 04 - Vector and Stack Core (Complete)
 
-## 1) Vector
+## 1) Why These Are Called Legacy
 
-`Vector` is a legacy synchronized dynamic array.
+`Vector` and `Stack` are older collection classes from early Java versions.
 
-- thread-safe via method-level synchronization
-- slower than `ArrayList` in single-threaded usage
+- `Vector` is a synchronized dynamic array.
+- `Stack` extends `Vector` and models LIFO.
 
-Use mostly for legacy compatibility.
+They still work, but modern code usually prefers:
 
-Core complexity:
+- `ArrayList` over `Vector`
+- `ArrayDeque` over `Stack`
 
-- `get/set`: `O(1)`
-- `add` end: `O(1)` amortized
-- `add/remove` middle: `O(n)`
-- `remove(value)`: `O(n)`
-- `contains`: `O(n)`
-- `indexOf/lastIndexOf`: `O(n)`
+## 2) `Vector` Internals and Behavior
 
-Capacity helpers:
+Like `ArrayList`, `Vector` stores elements in an array and grows when full.
 
-```java
-vector.ensureCapacity(50);
-vector.trimToSize();
-int cap = vector.capacity();
-```
+Differences:
 
-Common operations:
+- methods are synchronized (thread-safe per method)
+- extra locking overhead in single-threaded workloads
+- has legacy APIs like `elements()` (Enumeration)
+
+### 2.1 Basic `Vector` Example
+
+Concept taught: Demonstrates 2.1 Basic `Vector` Example in practice.
 
 ```java
 Vector<Integer> vector = new Vector<>();
-vector.add(3);
-vector.add(5);
-vector.add(6);
-vector.add(7);
-vector.remove(2);
-vector.add(2, 4);
-vector.set(2, 6);
-int x = vector.get(3);
-int n = vector.size();
-boolean e = vector.isEmpty();
-boolean ok = vector.contains(3);
-int i1 = vector.indexOf(3);
-int i2 = vector.lastIndexOf(3);
-Object[] arr = vector.toArray();
-vector.clear();
+vector.add(10);
+vector.add(20);
+vector.add(1, 15);
+System.out.println(vector);
+
+vector.remove(Integer.valueOf(20));
+System.out.println(vector);
 ```
 
-Java 21 list operations:
+Expected output:
+
+```text
+[10, 15, 20]
+[10, 15]
+```
+
+### 2.2 Capacity-Oriented APIs
+
+Concept taught: Demonstrates 2.2 Capacity-Oriented APIs in practice.
 
 ```java
-vector.addFirst(10);
-vector.addLast(20);
-int first = vector.getFirst();
-int last = vector.getLast();
-vector.removeFirst();
-vector.removeLast();
-List<Integer> rev = vector.reversed(); // view
+Vector<Integer> v = new Vector<>(2, 3); // initialCapacity=2, capacityIncrement=3
+v.add(1);
+v.add(2);
+System.out.println(v.capacity());
+v.add(3); // triggers growth by increment
+System.out.println(v.capacity());
 ```
 
-- `reversed()` returns reverse-order view, not copied list.
-- changes in original are reflected in view.
+Expected output:
 
-Capacity behavior:
+```text
+2
+5
+```
 
-- default initial capacity: `10`
-- when full, capacity usually grows about `2x`
-- constructors:
+Notes:
+
+- second constructor argument controls growth step
+- if not set, growth policy is implementation-dependent
+
+### 2.3 Java 21+ Sequenced Methods
+
+Concept taught: Demonstrates 2.3 Java 21+ Sequenced Methods in practice.
 
 ```java
-Vector<Integer> v1 = new Vector<>(20);
-Vector<Integer> v2 = new Vector<>(10, 5); // capacityIncrement
+Vector<String> v = new Vector<>(List.of("B", "C"));
+v.addFirst("A");
+v.addLast("D");
+System.out.println(v.getFirst());
+System.out.println(v.getLast());
+System.out.println(v.reversed());
 ```
 
-## 2) Stack
+Expected output:
 
-`Stack` extends `Vector` (legacy LIFO stack).
+```text
+A
+D
+[D, C, B, A]
+```
+
+## 3) Thread-Safety Reality for `Vector`
+
+`Vector` synchronizes individual method calls, but compound actions are still not atomic.
+
+Concept taught: Demonstrates 3) Thread-Safety Reality for `Vector` in practice.
+
+```java
+if (!vector.contains(50)) {
+    vector.add(50);
+}
+```
+
+Two threads can still interleave this block and insert duplicates.
+
+For high-contention concurrent logic, modern alternatives (`ConcurrentHashMap`, queues, explicit locks, etc.) are usually better design choices.
+
+## 4) `Stack` Core APIs
+
+`Stack` methods:
+
+- `push(e)`
+- `pop()`
+- `peek()`
+- `search(e)` (1-based from top)
+- `empty()`/`isEmpty()`
+
+Concept taught: Demonstrates 4) `Stack` Core APIs in practice.
 
 ```java
 Stack<Integer> st = new Stack<>();
 st.push(10);
 st.push(20);
-int top = st.peek();
-int pos = st.search(10); // 1-based from top, -1 if absent
-boolean empty = st.isEmpty();
-System.out.println(st.pop()); // 20
+st.push(30);
+
+System.out.println(st.peek());
+System.out.println(st.search(10));
+System.out.println(st.pop());
+System.out.println(st);
 ```
 
-Method behavior:
+Expected output:
 
-- in-place: `push`, `pop`, `clear`
-- read: `peek`, `search`, `isEmpty`, `size`
+```text
+30
+3
+30
+[10, 20]
+```
 
 Complexity:
 
-- `push`: `O(1)` amortized
-- `pop`: `O(1)`
-- `peek`: `O(1)`
-- `isEmpty`: `O(1)`
-- `search`: `O(n)`
+- push/pop/peek: generally `O(1)` amortized for push
+- search: `O(n)`
 
-## 3) Modern Recommendation
+## 5) Why `ArrayDeque` Is Preferred for Stack
 
-Prefer `Deque` implementation (`ArrayDeque`) instead of `Stack` for new code.
+Concept taught: Demonstrates 5) Why `ArrayDeque` Is Preferred for Stack in practice.
 
 ```java
-Deque<Integer> st2 = new ArrayDeque<>();
-st2.push(10);
-st2.push(20);
-System.out.println(st2.pop()); // 20
+Deque<Integer> stack = new ArrayDeque<>();
+stack.push(10);
+stack.push(20);
+System.out.println(stack.peek());
+System.out.println(stack.pop());
+System.out.println(stack);
 ```
 
-LinkedList as stack (keep same end for LIFO):
+Expected output:
 
-```java
-LinkedList<Integer> ls = new LinkedList<>();
-ls.addLast(1);           // push
-int top2 = ls.getLast(); // peek
-int x2 = ls.removeLast();// pop
+```text
+20
+20
+[10]
 ```
 
-ArrayList as manual stack:
+Advantages:
+
+- cleaner stack/deque semantics
+- better modern API fit
+- no legacy baggage from `Vector`
+
+## 6) Enumeration vs Iterator
+
+`Vector` supports legacy `Enumeration`:
+
+Concept taught: Demonstrates 6) Enumeration vs Iterator in practice.
 
 ```java
-ArrayList<Integer> arr = new ArrayList<>();
-arr.add(10);
-int top3 = arr.get(arr.size() - 1);
-int x3 = arr.remove(arr.size() - 1);
-```
-
-Guard against empty list before `get/remove(size - 1)`.
-
-## 4) Thread Safety Reality
-
-- `Vector`/`Stack` synchronize individual methods.
-- Compound operations are still not atomic by default.
-
-Example non-atomic compound action:
-
-```java
-if (!vector.contains(5)) {
-    vector.add(5);
+Enumeration<Integer> en = v.elements();
+while (en.hasMoreElements()) {
+    System.out.println(en.nextElement());
 }
 ```
 
-This is not atomic as a pair.
+But in modern Java, use `Iterator`/enhanced for loops for consistency across collections.
 
-Concurrent add demo:
+## 7) Common Mistakes
+
+- importing `java.utils.*` (wrong) instead of `java.util.*`
+- using `Stack` for new production code when `ArrayDeque` is better
+- assuming synchronized methods make all multi-step logic thread-safe
+- confusing `search` return indexing (it is 1-based from top)
+
+## 8) Migration Tip
+
+Legacy code often has:
+
+Concept taught: Demonstrates 8) Migration Tip in practice.
 
 ```java
-Vector<Integer> vector = new Vector<>();
-Thread t1 = new Thread(() -> {
-    for (int i = 0; i < 1000; i++) vector.add(i);
-});
-Thread t2 = new Thread(() -> {
-    for (int i = 0; i < 1000; i++) vector.add(i);
-});
-t1.start();
-t2.start();
+Vector<String> list = new Vector<>();
+Stack<Integer> st = new Stack<>();
 ```
 
-Notes:
+Modern equivalent (if no strict legacy constraint):
 
-- `Stack`: legacy thread-safe behavior per method, with locking overhead
-- `LinkedList`, `ArrayList`, `ArrayDeque`: not thread-safe by default
-- for heavy-read concurrent list scenarios, prefer `CopyOnWriteArrayList`
-- for most non-concurrent list scenarios, prefer `ArrayList`
+Concept taught: Demonstrates 8) Migration Tip in practice.
 
-Common mistakes:
+```java
+List<String> list = new ArrayList<>();
+Deque<Integer> st = new ArrayDeque<>();
+```
 
-- wrong import `java.utils.*` (correct is `java.util.*`)
-- mixing list ends in stack simulation breaks LIFO (`addLast` with `removeFirst`)
+## 9) Summary
+
+Keep `Vector`/`Stack` for legacy compatibility and understanding old codebases. For new code, choose modern collections unless a compatibility contract requires these classes.

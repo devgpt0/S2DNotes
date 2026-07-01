@@ -1,42 +1,70 @@
-# 06 - EnumMap Core
+# 06 - EnumMap Core (Complete)
 
 ## 1) Internal Idea
 
-`EnumMap` is a specialized map for enum keys.
+`EnumMap` is specialized for one enum key type.
 
-- internally array-like by enum ordinal
-- very fast and memory efficient
+- key domain fixed to enum constants
+- internally optimized (array-like indexing by enum ordinal)
+- usually faster and lighter than `HashMap<Enum, V>`
 
-## 2) Time Complexity
+## 2) Complexity
 
-- near `O(1)` for `put/get/remove`
-- iteration follows enum declaration order
+- `put/get/remove`: near `O(1)`
+- iteration order: enum declaration order
 
 ## 3) Basic Usage
 
+Concept taught: Enum-key map with deterministic declaration-order iteration.
+
 ```java
-import java.util.EnumMap;
-import java.util.Map;
+enum Status { NEW, IN_PROGRESS, DONE }
 
-public class EnumMapCoreDemo {
-    enum Status { NEW, IN_PROGRESS, DONE }
-
-    public static void main(String[] args) {
-        Map<Status, Integer> counts = new EnumMap<>(Status.class);
-        counts.put(Status.NEW, 5);
-        counts.put(Status.DONE, 2);
-
-        System.out.println(counts); // {NEW=5, DONE=2}
-    }
-}
+Map<Status, Integer> counts = new EnumMap<>(Status.class);
+counts.put(Status.NEW, 5);
+counts.put(Status.DONE, 2);
+counts.put(Status.IN_PROGRESS, 3);
+System.out.println(counts);
 ```
 
-## 4) Rules
+Expected output:
 
-- key type must be one enum class
-- `null` keys not allowed
+```text
+{NEW=5, IN_PROGRESS=3, DONE=2}
+```
 
-## 5) When To Use
+## 4) Counter Pattern
 
-- whenever key domain is enum constants
-- ideal replacement for `HashMap<Enum, V>`
+Concept taught: Efficient status counter map.
+
+```java
+enum Status { NEW, IN_PROGRESS, DONE }
+List<Status> items = List.of(Status.NEW, Status.DONE, Status.NEW, Status.IN_PROGRESS);
+Map<Status, Integer> freq = new EnumMap<>(Status.class);
+for (Status s : items) {
+    freq.merge(s, 1, Integer::sum);
+}
+System.out.println(freq);
+```
+
+Expected output:
+
+```text
+{NEW=2, IN_PROGRESS=1, DONE=1}
+```
+
+## 5) Rules
+
+- key type must be exactly one enum class
+- null key not allowed
+- null value allowed
+
+## 6) When to Use
+
+- finite state/status counters
+- permission/flag configuration by enum
+- switch-like map behavior with fast lookups
+
+## 7) Summary
+
+If your keys are enum constants, `EnumMap` should usually be your first choice.
