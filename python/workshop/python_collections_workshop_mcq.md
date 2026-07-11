@@ -1,4 +1,4 @@
-# Python Collections Workshop: 50 MCQs
+# Python Collections Workshop: 200 MCQs
 
 Focus topics:
 - `list`
@@ -6,7 +6,7 @@ Focus topics:
 - `dict`
 - `set`
 
-## Code-Based MCQs (1-30)
+## Code-Based MCQs (1-120)
 
 ### Q1
 ```python
@@ -341,7 +341,7 @@ B. `['a', 'pear', 'kiwi', 'banana']`
 C. `['a', 'kiwi', 'pear', 'banana']`  
 D. `['pear', 'a', 'banana', 'kiwi']`
 
-## Conceptual MCQs (31-50)
+## Conceptual MCQs (121-200)
 
 ### Q31
 Which statement about Python lists is correct?
@@ -536,3 +536,4 @@ D. `list`
 48. B  
 49. A  
 50. C
+
