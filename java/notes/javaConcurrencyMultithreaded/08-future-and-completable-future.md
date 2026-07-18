@@ -1,5 +1,9 @@
 # 08 - Future and CompletableFuture
 
+## Beginner Meaning
+
+A `Future` is a receipt for work that may finish later. You can wait for its value, observe failure, or request cancellation. `CompletableFuture` also lets you describe what should happen after that value arrives.
+
 ## 1) `Future`
 
 ```java

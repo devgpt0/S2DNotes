@@ -1,5 +1,11 @@
 # 01 - Generics, Type Erasure, and Wildcards
 
+## Beginner Meaning
+
+Generics put a type label on reusable code. `List<String>` means “this list accepts strings.” The compiler can then reject an integer before the program runs.
+
+Read the chapter in this order: basic `<T>` first, bounds second, wildcards/PECS third, and type erasure last.
+
 ## 1) Why Generics Exist
 
 Generics provide compile-time type safety and remove most manual casts.

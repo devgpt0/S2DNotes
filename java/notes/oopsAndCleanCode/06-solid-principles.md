@@ -2,6 +2,14 @@
 
 SOLID is a set of design signals, not a requirement to create an interface for every class.
 
+Read SOLID as five questions, not five rules to apply everywhere:
+
+1. Does this class have one cohesive job?
+2. Can a real variation be added without repeatedly editing stable policy?
+3. Can every subtype safely replace its parent contract?
+4. Does a caller depend only on operations it needs?
+5. Does high-level policy depend on replaceable boundaries rather than concrete infrastructure?
+
 ## 1) Single Responsibility
 
 A class should have one cohesive reason to change.

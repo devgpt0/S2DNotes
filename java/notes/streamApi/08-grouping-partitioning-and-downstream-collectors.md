@@ -1,5 +1,11 @@
 # 08 - Grouping, Partitioning, and Downstream Collectors
 
+## Beginner Meaning
+
+Grouping creates buckets using a key, such as employees by department. Partitioning is a special two-bucket grouping: values that match a condition and values that do not.
+
+A downstream collector says what to do inside each bucket, such as collect names or sum salaries.
+
 ## 1) Grouping
 
 ```java

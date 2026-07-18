@@ -1,5 +1,11 @@
 # 03 - Annotations and Reflection
 
+## Beginner Meaning
+
+An annotation is a structured label attached to code. Reflection is Java code looking at classes, methods, and fields while the program is running. Frameworks such as Spring use both to discover components and configuration.
+
+Ordinary business code should still call methods normally. Reflection is mainly framework/tool infrastructure.
+
 ## 1) Annotation Metadata
 
 Annotations attach structured metadata to program elements.

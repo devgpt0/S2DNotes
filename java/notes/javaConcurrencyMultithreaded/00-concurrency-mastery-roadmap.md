@@ -2,6 +2,8 @@
 
 These notes target Java 21 or newer. They cover synchronous, asynchronous, concurrent, multithreaded, and parallel programming, followed by the concurrency patterns used in production systems.
 
+Beginner mental model: imagine several workers sharing one kitchen. Concurrency problems happen when workers change the same order or use the same tool without coordination. Learn one thread first, then visibility/locks, then executors/futures, and only then the design patterns.
+
 ## Learning Order
 
 1. [Execution models](01-sync-async-concurrent-and-parallel.md)

@@ -1,5 +1,9 @@
 # 07 - Collectors
 
+## Beginner Meaning
+
+A collector gathers the values coming out of a stream. Think of it as the final container or summary: a list, set, map, joined string, group, count, or numeric statistics.
+
 ## 1) Lists, Sets, and Specific Collections
 
 ```java

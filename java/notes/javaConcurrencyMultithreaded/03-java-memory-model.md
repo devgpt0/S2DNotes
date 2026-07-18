@@ -2,6 +2,12 @@
 
 The Java Memory Model defines when writes by one thread become visible to another and which reorderings are legal.
 
+## Start with the Problem
+
+Two threads may use different CPU caches and run instructions in optimized orders. Without a rule such as a lock, volatile access, thread start/join, or concurrent collection handoff, one thread is not guaranteed to observe another thread's latest write.
+
+“Happens-before” does not mean wall-clock time. It is a Java guarantee that earlier work becomes visible to later work.
+
 ## 1) Atomicity, Visibility, and Ordering
 
 - Atomicity: an operation appears indivisible.

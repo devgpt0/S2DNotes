@@ -1,5 +1,13 @@
 # 06 - JPA Entities, Repositories, and Transactions
 
+## Beginner Meaning
+
+- Entity: Java object mapped to a database table.
+- Repository: interface used to load and save entities.
+- Transaction: one business operation whose database changes commit together or roll back together.
+
+Learn plain SQL and database keys before relying on JPA annotations.
+
 ## 1) Entity
 
 ```java

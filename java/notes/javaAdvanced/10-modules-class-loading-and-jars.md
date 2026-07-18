@@ -1,5 +1,9 @@
 # 10 - Modules, Class Loading, and JARs
 
+## Beginner Meaning
+
+A `.class` file contains compiled bytecode. A class loader finds that bytecode and defines the class inside the JVM. A JAR is a ZIP-based package containing classes and resources. Java modules add stronger dependency and package-access rules on top.
+
 ## 1) Class Loading
 
 Loading finds bytecode, linking verifies and prepares it, and initialization runs static initialization.

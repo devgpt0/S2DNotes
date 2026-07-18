@@ -1,690 +1,183 @@
-# ☕ JAVA — LEVEL 1 NOTES: DATA TYPES & MEMORY BEHAVIOR
+# Java Data Types and Memory - Beginner to Interview Level
 
----
+A data type tells Java **which values are allowed and which operations are valid**.
 
-# 🔷 1. WHAT ARE DATA TYPES (INTERVIEW VIEW)
+Java has primitive types and reference types.
 
-## 🧠 Definition
+## 1) Primitive Types
 
-A data type defines:
-
-> **what kind of data is stored + how much memory + how it behaves**
-
----
-
-## 🔹 Two Categories
-
-```text
-1. Primitive Types
-2. Reference Types
-```
-
----
-
-# 🔷 2. PRIMITIVE DATA TYPES
-
----
-
-## 🔹 List (Must Know)
-
-```text
-Integer Types:  int, long, short, byte
-Floating Point: float, double
-Character:      char
-Boolean:        boolean
-```
-
----
-
-## 🔹 Memory Behavior
-
-```text
-✅ Stored directly in STACK
-✅ Fixed size
-✅ No object involved
-✅ Fast access
-```
-
----
-
-## 🧠 Example
+| Type | Example | Meaning |
+|---|---|---|
+| `byte` | `byte level = 10;` | signed 8-bit integer |
+| `short` | `short year = 2026;` | signed 16-bit integer |
+| `int` | `int count = 100;` | signed 32-bit integer |
+| `long` | `long views = 3_000_000_000L;` | signed 64-bit integer |
+| `float` | `float ratio = 1.5F;` | 32-bit floating point |
+| `double` | `double price = 10.5;` | 64-bit floating point |
+| `char` | `char grade = 'A';` | UTF-16 code unit |
+| `boolean` | `boolean active = true;` | true or false |
 
 ```java
-int a = 10;
+int count = 10;
+double average = 2.5;
+boolean ready = true;
+System.out.println(count + ", " + average + ", " + ready);
+// Output: 10, 2.5, true
 ```
 
-```text
-Stack:
-a = 10
-(value stored directly)
-```
+## 2) Reference Types
 
----
-
-## 🔹 Key Properties
-
-| Property | Primitive  |
-| -------- | ---------- |
-| Storage  | Stack      |
-| Size     | Fixed      |
-| Speed    | Fast       |
-| Copy     | Value copy |
-| Null?    | ❌          |
-
----
-
-# 🔷 3. REFERENCE DATA TYPES
-
----
-
-## 🔹 Examples
-
-```text
-String, Array, Class objects, Wrapper classes
-(Integer, Double, Boolean, etc.)
-```
-
----
-
-## 🔹 Memory Behavior
-
-```text
-Stack → stores REFERENCE (memory address)
-Heap → stores ACTUAL OBJECT
-```
-
----
-
-## 🧠 Example
+Classes, interfaces, records, enums, arrays, and strings are reference types.
 
 ```java
-String s = "hello";
+String name = "Asha";
+int[] scores = {80, 90};
+List<String> skills = List.of("Java", "SQL");
+System.out.println(name);
+System.out.println(Arrays.toString(scores));
+System.out.println(skills);
+// Output:
+// Asha
+// [80, 90]
+// [Java, SQL]
 ```
 
-```text
-Stack:           Heap:
-s ─────►         ["hello"]
-(address)        (actual string object)
-```
+A reference can also be `null`, meaning it identifies no object.
 
----
-
-## 🔹 Key Properties
-
-| Property | Reference      |
-| -------- | -------------- |
-| Storage  | Stack + Heap   |
-| Variable | Holds address  |
-| Copy     | Reference copy |
-| Mutable? | Depends        |
-| Size     | Dynamic        |
-| Null?    | ✅              |
-
----
-
-# 🔷 4. PRIMITIVE vs REFERENCE (CORE INTERVIEW TABLE)
-
-| Feature          | Primitive    | Reference      |
-| ---------------- | ------------ | -------------- |
-| Stored in        | Stack        | Heap (object)  |
-| Variable holds   | Value        | Address        |
-| Assignment       | Value copy   | Reference copy |
-| Null allowed     | ❌            | ✅              |
-| Default value    | 0,false      | null           |
-| Mutable          | N/A          | Depends        |
-
----
-
-# 🔷 5. MEMORY BEHAVIOR RULES (INTERVIEW CORE)
-
----
-
-## 🔥 Rule 1: Primitive = Independent
+## 3) Primitive vs Reference
 
 ```java
-int a = 10;
-int b = a;
-b = 20;
+int primitive = 10;
+String reference = "Java";
+System.out.println(primitive);
+System.out.println(reference.length());
+// Output:
+// 10
+// 4
 ```
 
-💭 Explanation:
-* `a = 10` → value 10 in stack
-* `b = a` → **copies the value** (not reference)
-* Each variable has its own copy
-* Changing `b` does NOT affect `a`
+Primitives are values and have no instance methods. A reference lets code access the identified object's behavior.
 
-👉 Output: `a = 10, b = 20`
+## 4) Memory Model Without Misleading Shortcuts
 
----
+- each thread has method-call frames containing execution state and local variables
+- objects are normally managed in heap memory
+- fields are stored as part of their object/class storage
+- a reference's physical representation is a JVM implementation detail
+- JIT escape analysis may remove allocations or place data differently
 
-## 🔥 Rule 2: Reference = Shared
+Therefore, “all primitives are on the stack and all objects are on the heap” is not always correct. Focus on value behavior and reachability unless diagnosing a specific JVM.
+
+## 5) Default Values
+
+Fields receive defaults; local variables do not.
 
 ```java
-Person p1 = new Person();
-Person p2 = p1;
+final class Defaults {
+    int number;
+    boolean flag;
+    String text;
+}
+Defaults value = new Defaults();
+System.out.println(value.number);
+System.out.println(value.flag);
+System.out.println(value.text);
+// Output:
+// 0
+// false
+// null
 ```
 
-💭 Explanation:
-* `new Person()` → object created in heap
-* `p2 = p1` → **copies the reference** (address)
-* Both point to **same object**
-* Changes affect both
+## 6) Widening and Narrowing
 
-👉 Both see same object
-
----
-
-## 🔥 Rule 3: `new` = New Object
+Widening to a larger compatible primitive type is usually automatic. Narrowing requires an explicit cast and may lose information.
 
 ```java
-p2 = new Person();
+int number = 130;
+long wider = number;
+byte narrower = (byte) number;
+System.out.println(wider);
+System.out.println(narrower);
+// Output:
+// 130
+// -126
 ```
 
-💭 Explanation:
-* `new` always creates a **new object in heap**
-* `p2` now points to different object
-* Breaks the link with `p1`
+The byte value wrapped because 130 is outside byte range.
 
-👉 Now they reference different objects
+## 7) Numeric Promotion
 
----
-
-## 🔥 Rule 4: Default Values
-
-| Type       | Default | Storage |
-| ---------- | ------- | ------- |
-| int        | 0       | Stack   |
-| double     | 0.0     | Stack   |
-| boolean    | false   | Stack   |
-| char       | '\0'    | Stack   |
-| String     | null    | Stack   |
-| Object     | null    | Stack   |
-
----
-
-# 🔷 6. STRING MEMORY (VERY IMPORTANT FOR INTERVIEWS)
-
----
-
-## 🔹 String Literals → String Pool
+Arithmetic on `byte`, `short`, and `char` normally promotes values to `int`.
 
 ```java
-String a = "hello";
-String b = "hello";
+byte left = 10;
+byte right = 20;
+int total = left + right;
+System.out.println(total);
+// Output: 30
 ```
 
-```text
-a ─┐
-   ├──► "hello" (pooled string in heap)
-b ─┘
-```
-
-💭 Why?
-* JVM optimizes memory by reusing identical strings
-* String literals go to **string pool**
-* Both point to SAME object
-
-👉 `a == b` returns **true**
-
----
-
-## 🔹 `new String()` → Heap Allocation
+## 8) Integer Division and Overflow
 
 ```java
-String c = new String("hello");
+System.out.println(5 / 2);
+System.out.println(5 / 2.0);
+System.out.println(Integer.MAX_VALUE + 1);
+// Output:
+// 2
+// 2.5
+// -2147483648
 ```
 
-```text
-c ─────► new "hello" (separate object in heap)
-```
+Use `Math.addExact` when silent overflow is unacceptable.
 
-💭 Why?
-* `new` always creates a **new object**
-* Bypasses the string pool
-* Different from literal
+## 9) Floating-Point Precision
 
-👉 `a == c` returns **false** (different objects)
-
-👉 `a.equals(c)` returns **true** (same content)
-
----
-
-## 🧠 Rule
-
-| Syntax | Storage | Behavior |
-| --- | --- | --- |
-| `String s = "hi"` | String pool | Reused/shared |
-| `String s = new String("hi")` | Heap | Always new object |
-
----
-
-# 🔷 7. ARRAYS (REFERENCE TYPE)
-
----
-
-## 🔹 Example
+Binary floating-point cannot exactly represent every decimal fraction.
 
 ```java
-int[] arr = new int[3];
+System.out.println(0.1 + 0.2);
+System.out.println(new BigDecimal("0.1").add(new BigDecimal("0.2")));
+// Output:
+// 0.30000000000000004
+// 0.3
 ```
 
-```text
-Stack:           Heap:
-arr ─────►       [0, 0, 0]
-(address)        (array object)
-```
+Use integer minor units or `BigDecimal` for exact money calculations. Construct `BigDecimal` from strings or exact integers.
 
----
+## 10) Wrapper Types and Boxing
 
-## 🔹 Key Points
-
-* **Array itself is an object** → stored in heap
-* **Array reference** → stored in stack
-* **Elements** → stored inside the array object
-* In array of primitives: values stored in heap (inside array)
-* In array of objects: references stored in array
-
----
-
-## 🧠 Example with Objects
+Every primitive has a wrapper: `Integer`, `Long`, `Double`, `Boolean`, and so on.
 
 ```java
-Person[] people = new Person[2];
-people[0] = new Person();
+Integer boxed = 10; // boxing
+int primitive = boxed; // unboxing
+System.out.println(primitive);
+// Output: 10
 ```
 
-```text
-Stack:            Heap:
-people ─────►     [ref1, null]
-                   ↓
-                  [name=...]
-```
+Unboxing null throws `NullPointerException`. Collections use reference types, so `List<Integer>` stores wrapper objects rather than primitive `int` values.
 
----
+## 11) Equality
 
-## 🔹 Array Assignment
+`==` compares primitive values or reference identity. `equals` normally compares object content according to the class contract.
 
 ```java
-int[] a = {1, 2};
-int[] b = a;
+String first = new String("Java");
+String second = new String("Java");
+System.out.println(first == second);
+System.out.println(first.equals(second));
+// Output:
+// false
+// true
 ```
 
-💭 Explanation:
-* `a` and `b` reference **same array object**
-* `b[0] = 99` affects original
+## 12) Garbage Collection and Reachability
 
-👉 Both see the same array
+An object can be collected when it is no longer strongly reachable. Setting one reference to null does not guarantee collection if another reference still reaches the object.
 
----
+Garbage collection handles memory, not external resources. Close files, sockets, and database connections explicitly.
 
-# 🔷 8. WRAPPER CLASSES (BOXING/UNBOXING)
+## Interview Checklist
 
----
-
-## 🔹 Difference
-
-```java
-int x = 10;       // primitive
-Integer y = 10;   // wrapper object
-```
-
-| Aspect | Primitive | Wrapper |
-| --- | --- | --- |
-| Storage | Stack | Heap |
-| Type | Value | Object |
-| Null | ❌ | ✅ |
-| Speed | Fast | Slow |
-| Use | Simple values | Collections |
-
----
-
-## 🔹 Autoboxing (Auto Conversion)
-
-```java
-Integer x = 10;  // automatically wrapped
-int y = x;       // automatically unwrapped
-```
-
-💭 Explanation:
-* JVM automatically converts between primitive and wrapper
-* `int` → `Integer` when needed
-* `Integer` → `int` when needed
-
----
-
-## 🧠 Interview Implication
-
-* Wrapper adds memory overhead
-* Used in collections: `ArrayList<Integer>`
-* Equality: `==` checks reference; `.equals()` checks value
-
----
-
-# 🔷 9. NULL BEHAVIOR
-
----
-
-## 🔹 Null Assignment
-
-```java
-String s = null;
-```
-
-💭 Variable `s` doesn't reference any object
-
----
-
-## 🔹 NullPointerException (NPE)
-
-```java
-String s = null;
-s.length();  // ❌ NullPointerException
-```
-
-💭 Trying to access method on null (no object)
-
----
-
-## 🧠 Rule
-
-* Only reference types can be null
-* Primitives cannot be null
-* Accessing null object → runtime error
-
----
-
-# 🔷 10. TYPE CASTING
-
----
-
-## 🔹 Primitive Casting
-
-```java
-int a = 10;
-double b = (double) a;  // 10.0
-```
-
----
-
-## 🔹 Reference Casting
-
-```java
-Object obj = new String("hello");
-String s = (String) obj;  // cast to String
-```
-
----
-
-## ⚠️ Interview Note
-
-* Casting doesn't change object
-* Just tells compiler type for access
-* Wrong cast → ClassCastException
-
----
-
-# 🔷 11. INTERVIEW MENTAL MODEL (STEP-BY-STEP)
-
----
-
-When analyzing code:
-
----
-
-## 🧠 Step 1: Identify Type
-
-* Primitive or Reference?
-
----
-
-## 🧠 Step 2: Identify Storage
-
-* Primitive → Stack
-* Reference → Stack (ref) + Heap (object)
-
----
-
-## 🧠 Step 3: Identify Operation
-
-* Assignment → value copy or reference copy?
-* `new` involved?
-* String literal or `new String()`?
-
----
-
-## 🧠 Step 4: Track References
-
-* Which variables point to same object?
-* Different objects?
-
----
-
-## 🧠 Step 5: Predict Output
-
-* Based on memory model
-
----
-
-# 🔷 12. COMMON INTERVIEW PATTERNS
-
----
-
-## 🔥 Pattern 1: Primitive Independence
-
-```java
-int a = 5;
-int b = a;
-a = 10;
-// a = 10, b = 5 (independent)
-```
-
----
-
-## 🔥 Pattern 2: Reference Sharing
-
-```java
-String[] s1 = {"a"};
-String[] s2 = s1;
-// s1 and s2 reference same array
-```
-
----
-
-## 🔥 Pattern 3: String Pool
-
-```java
-String a = "code";
-String b = "code";
-String c = new String("code");
-// a == b (true), a == c (false)
-```
-
----
-
-## 🔥 Pattern 4: Array Mutation
-
-```java
-int[] a = {1};
-int[] b = a;
-b[0] = 99;
-// a[0] = 99 (same array affected)
-```
-
----
-
-## 🔥 Pattern 5: Wrapper vs Primitive
-
-```java
-Integer a = 10;
-Integer b = 10;
-// a == b might be true (caching)
-// But don't rely on it for large numbers
-```
-
----
-
-# 🔷 13. COMMON MISTAKES (VERY IMPORTANT)
-
----
-
-### ❌ Mistake 1: "String is primitive"
-
-👉 WRONG
-✔️ String is an object (reference type)
-
----
-
-### ❌ Mistake 2: "Assignment copies object"
-
-👉 WRONG
-✔️ Assignment either:
-  * Copies value (primitives)
-  * Copies reference (objects)
-
----
-
-### ❌ Mistake 3: "Array is primitive"
-
-👉 WRONG
-✔️ Array is an object reference type
-
----
-
-### ❌ Mistake 4: "All string references are pooled"
-
-👉 WRONG
-✔️ Only string literals are pooled
-✔️ `new String()` creates separate object
-
----
-
-### ❌ Mistake 5: "Integer == comparison always works"
-
-👉 WRONG
-✔️ `==` compares references
-✔️ Use `.equals()` for integer value comparison
-
----
-
-# 🔷 14. FINAL MENTAL MODEL (CONDENSED)
-
----
-
-### 🧠 5 Golden Rules (Data Types Edition)
-
-1. **Primitive** → value stored in stack (fast, independent)
-2. **Reference** → address in stack, object in heap (shared)
-3. **Assignment** → value copy (primitive) OR reference copy (object)
-4. **`new`** → always creates new object in heap
-5. **String literals** → pooled; `new String()` → separate object
-
----
-
-# 🎯 LEVEL 1 TARGET
-
-You should be able to:
-
-✅ Identify primitive vs reference instantly
-✅ Predict memory behavior
-✅ Explain string pool basics
-✅ Understand array as reference type
-✅ Explain wrapper classes vs primitives
-✅ Predict output using memory model
-
----
-
-**Ready for assignments?** Go to `assignement/test` folder!
-
-**Next Level:** Level 2 = Integer caching, string intern(), array mutation traps, wrapper comparison pitfalls
-
----
-
-## Level 2
-
-### Mental Model
-Type decides representation; representation decides memory behavior. Primitive operations copy bits, reference operations copy addresses.
-
-### Solve Steps
-1. Classify each value as primitive or reference.
-2. Check boxing/unboxing boundaries.
-3. Track String pool and Integer cache scenarios.
-4. Predict equality with == (identity/value by type) vs equals (content).
-
-## Level 3
-
-### Mental Model
-The JVM memory system is optimized for object lifetime patterns. Correctness depends on reference visibility; performance depends on allocation and GC pressure.
-
-### Solve Steps
-1. Estimate allocation frequency in loops and helpers.
-2. Identify long-lived vs short-lived objects.
-3. Reduce temporary object churn when needed.
-4. In concurrent code, reason with visibility and atomicity explicitly.
-
----
-
-### Level 2 Questions
-1. For `int a=10; int b=a; b=20;`, explain memory behavior line-by-line.
-2. For `Integer x=127; Integer y=127;` vs `Integer x=128; Integer y=128;`, predict `==` results.
-3. Why is `==` unsafe for String value comparison in general?
-
-### Level 3 Questions
-1. How do allocation rate and object lifetime influence GC pressure?
-2. Why is reducing temporary object churn often more useful than micro-optimizing one line?
-3. In concurrent code, which memory questions must be answered before trusting observed output?
-
----
-
-## 🔷 2. EXECUTION MODEL
-
-Understand how this topic runs in actual program flow:
-
-- Read statement
-- Resolve type/object/reference
-- Execute operation (assignment, mutation, call, return)
-- Update memory state (stack/heap bindings)
-- Re-check final output from updated state
-
-
----
-
-## 🔷 3. INTERVIEW MENTAL MODEL (STEP-BY-STEP)
-
-When you see ANY question:
-
----
-
-### 🧠 Step 1: Identify variable type
-
-* Primitive? → value
-* Object? → reference
-
----
-
-### 🧠 Step 2: Where is it stored?
-
-* Primitive → stack
-* Object → heap (via reference)
-
----
-
-### 🧠 Step 3: Assignment behavior
-
-* Primitive → copy value
-* Object → copy reference
-
----
-
-### 🧠 Step 4: Operation type
-
-* Field change → mutation
-* `new` → new object (reassignment)
-
----
-
-### 🧠 Step 5: Function call
-
-* Always pass-by-value
-* Object → reference copied
-
----
+Know all eight primitives, defaults, widening/narrowing, promotion, overflow, floating-point precision, wrappers/autoboxing, null unboxing, reference equality, object equality, and the difference between language behavior and JVM storage details.

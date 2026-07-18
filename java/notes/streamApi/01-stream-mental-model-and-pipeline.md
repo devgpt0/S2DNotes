@@ -1,5 +1,9 @@
 # 01 - Stream Mental Model and Pipeline
 
+## Start with a Loop
+
+A stream is another way to express a data-processing loop. Instead of manually saying “take the next item,” you describe steps such as filter, transform, and collect. Use whichever version is easier to read.
+
 ## 1) Source, Intermediate Operations, Terminal Operation
 
 ```java

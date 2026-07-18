@@ -1,5 +1,9 @@
 # 08 - Spring Security
 
+## Beginner Meaning
+
+Security answers two separate questions: “Who is calling?” and “Is that caller allowed to do this?” Spring Security applies these checks through a filter chain before protected controller code runs.
+
 ## 1) Authentication vs Authorization
 
 - Authentication establishes who the caller is.

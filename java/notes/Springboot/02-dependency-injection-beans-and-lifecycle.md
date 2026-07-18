@@ -1,5 +1,9 @@
 # 02 - Dependency Injection, Beans, and Lifecycle
 
+## Beginner Meaning
+
+A dependency is another object a class needs. Dependency injection means the class receives that object instead of constructing or finding it secretly. A Spring bean is simply an object whose creation and lifecycle are managed by Spring.
+
 ## 1) Constructor Injection
 
 ```java

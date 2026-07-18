@@ -1,5 +1,11 @@
 # 09 - JVM, Memory, Garbage Collection, and JIT
 
+## Beginner Meaning
+
+The JVM runs bytecode and manages memory for Java objects. Garbage collection finds objects the program can no longer reach and reuses their memory. The JIT compiler speeds up code that runs often.
+
+You do not manually free Java objects, but you must still close files, sockets, and database connections.
+
 ## 1) Runtime Memory Model
 
 - Heap stores objects and arrays.

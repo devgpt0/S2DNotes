@@ -1,5 +1,9 @@
 # 10 - Parallel Streams
 
+## Beginner Rule
+
+Keep a stream sequential unless measurement shows that parallel execution helps. Parallel streams split work across threads, so operations must be independent and the final reduction must be safe to combine in any grouping.
+
 ## 1) Parallel Execution
 
 ```java

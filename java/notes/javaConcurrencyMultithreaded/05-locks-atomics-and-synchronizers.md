@@ -1,5 +1,9 @@
 # 05 - Locks, Atomics, and Synchronizers
 
+## Beginner Meaning
+
+A lock is like the single key to a room: only the thread holding the key enters the protected section. An atomic variable performs one small state change safely without a normal lock. A synchronizer coordinates groups of threads for a specific purpose such as waiting or limiting permits.
+
 ## 1) `ReentrantLock`
 
 ```java

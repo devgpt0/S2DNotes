@@ -2,6 +2,15 @@
 
 These notes target Spring Boot 4.1.0 with Java 21. Spring Initializr reported `4.1.0.RELEASE` as the current stable version when these notes were written.
 
+Spring Boot is not a replacement for Java fundamentals. Before starting, be comfortable with classes, interfaces, exceptions, collections, HTTP basics, SQL, and constructor injection.
+
+Study in levels:
+
+- Beginner: chapters 1-5 (start an app and build a validated REST API).
+- Developer: chapters 6-14 (database, security, testing, operations, external services).
+- Senior: chapters 15-20 and 25 (internals, transactions, reactive, messaging, distributed systems).
+- AI specialization: chapters 21-24 after understanding normal Spring services and security.
+
 ## Learning Order
 
 1. [Getting started and project structure](01-getting-started-and-project-structure.md)
@@ -19,6 +28,16 @@ These notes target Spring Boot 4.1.0 with Java 21. Spring Initializr reported `4
 13. [Events, messaging, and consistency](13-events-messaging-and-consistency.md)
 14. [Production deployment and operations](14-production-deployment-and-operations.md)
 15. [Architecture, interview revision, and practice](15-architecture-interview-and-practice.md)
+16. [Spring internals, auto-configuration, AOP, and web pipeline](16-spring-internals-aop-and-web-pipeline.md)
+17. [Advanced transactions and persistence pitfalls](17-advanced-transactions-and-persistence-pitfalls.md)
+18. [WebFlux and reactive programming](18-webflux-and-reactive-programming.md)
+19. [Kafka and reliable messaging](19-kafka-and-reliable-messaging.md)
+20. [Microservices and distributed systems](20-microservices-and-distributed-systems.md)
+21. [Spring AI fundamentals and ChatClient](21-spring-ai-fundamentals-and-chat-client.md)
+22. [Spring AI structured output, tools, and memory](22-spring-ai-structured-output-tools-and-memory.md)
+23. [Spring AI RAG and vector stores](23-spring-ai-rag-and-vector-stores.md)
+24. [Spring AI MCP, testing, observability, and security](24-spring-ai-mcp-testing-observability-and-security.md)
+25. [Spring Batch, Modulith, and advanced ecosystem](25-spring-batch-modulith-and-ecosystem.md)
 
 ## Production Shape
 

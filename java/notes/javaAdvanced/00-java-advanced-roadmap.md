@@ -2,6 +2,12 @@
 
 These notes assume Java 21 or newer and a working knowledge of Java fundamentals and collections.
 
+Do not start here on day one. First complete fundamentals, OOP, collections, and basic streams. Then study these chapters in three groups:
+
+- Developer level: generics, exceptions, files, strings, dates, JDBC, and testing.
+- Advanced level: reflection, records/sealed types, networking, and virtual threads.
+- Expert level: JVM/GC, modules/class loading, security, and migration.
+
 ## Learning Order
 
 1. [Generics and type erasure](01-generics-type-erasure-and-wildcards.md)
@@ -16,6 +22,11 @@ These notes assume Java 21 or newer and a working knowledge of Java fundamentals
 10. [Modules, class loading, and JARs](10-modules-class-loading-and-jars.md)
 11. [Virtual threads and asynchronous work](11-virtual-threads-and-completable-future.md)
 12. [Security, interview revision, and practice](12-security-interview-and-practice.md)
+13. [JDBC and transaction fundamentals](13-jdbc-and-transaction-fundamentals.md)
+14. [Testing with JUnit and Mockito](14-testing-junit-and-mockito.md)
+15. [HTTP client, networking, and I/O boundaries](15-http-client-and-networking.md)
+16. [Reference types, GC, and memory diagnosis](16-reference-types-gc-and-memory-diagnosis.md)
+17. [Java evolution and migration](17-java-evolution-and-migration.md)
 
 ## How to Study
 

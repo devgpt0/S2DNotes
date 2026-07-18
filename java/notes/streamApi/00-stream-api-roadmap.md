@@ -2,6 +2,8 @@
 
 Streams describe data-processing pipelines. They do not store elements and they do not replace collections.
 
+Beginner mental model: a collection is a box of values. A stream is a conveyor belt that lets values pass through steps such as filter, transform, and collect. Learn ordinary loops first; then compare the loop with the equivalent stream.
+
 ## Learning Order
 
 1. [Stream mental model and pipeline](01-stream-mental-model-and-pipeline.md)
