@@ -1,5 +1,13 @@
 # 07 - Queries, Pagination, Locking, and Performance
 
+## What, Why, and How
+
+**What:** Query design decides which rows/columns are loaded, their order, and how concurrent updates are protected.
+
+**Why:** Correct entity mappings can still create N+1 queries, unbounded memory use, unstable pages, or lost updates.
+
+**How:** Project required fields, paginate with stable allow-listed sorting, inspect generated SQL/plans, index access paths, and choose locking from real contention behavior.
+
 ## 1) Pagination
 
 ```java

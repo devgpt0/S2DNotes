@@ -25,6 +25,7 @@ Begin with chapters 1-5. Study SOLID and clean code next. Learn design patterns 
 15. [GoF behavioral patterns](15-gof-behavioral-patterns.md)
 16. [Enterprise and architectural patterns](16-enterprise-and-architectural-patterns.md)
 17. [Pattern selection and anti-patterns](17-pattern-selection-and-antipatterns.md)
+18. [Common OOP snippets and solved questions](18-common-code-snippets-and-solved-questions.md)
 
 ## Design Rule
 

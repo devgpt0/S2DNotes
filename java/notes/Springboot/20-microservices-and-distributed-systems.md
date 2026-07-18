@@ -6,6 +6,8 @@ A method call inside one process either returns or throws directly. A network ca
 
 Microservices add independent deployment and ownership, but also add network failure, delayed data, duplicate messages, and operational cost. A modular monolith is the better starting point for many systems.
 
+**How to decide:** Extract a service only when a cohesive capability needs independent ownership, scaling, reliability, data, or release cadence. Design timeout, idempotency, consistency, observability, and migration before extraction.
+
 ## Service Boundary
 
 A service should own a cohesive business capability and its data. Splitting by technical layer creates chatty distributed coupling.

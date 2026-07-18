@@ -1,5 +1,13 @@
 # 09 - Testing
 
+## What, Why, and How
+
+**What:** Tests verify behavior through plain Java units, Spring slices, infrastructure integration, and full journeys.
+
+**Why:** Starting the whole application for every test is slow, while mocking everything misses configuration, SQL, security, and serialization failures.
+
+**How:** Use the smallest test that proves behavior, keep time/data deterministic, use Testcontainers for infrastructure semantics, and test failure/authorization/rollback paths.
+
 ## 1) Test Pyramid
 
 - unit tests for domain and service logic

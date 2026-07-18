@@ -1,5 +1,13 @@
 # 12 - Calling External HTTP Services
 
+## What, Why, and How
+
+**What:** An HTTP client adapter translates a typed application call into a remote request and validates the response.
+
+**Why:** Network calls can fail partially, return invalid data, or complete after the caller times out. Scattered calls create inconsistent error/security handling.
+
+**How:** Create one typed client per dependency, configure trusted base URL and deadlines, validate data, retry only safe transient operations, isolate capacity, and publish metrics.
+
 ## 1) `RestClient`
 
 Spring Boot configures a `RestClient.Builder` that can be customized centrally.

@@ -6,6 +6,10 @@ MCP is a standard way for an AI application to discover and call external tools,
 
 Treat every MCP capability like a public API: authenticate, authorize, validate input, limit access, and audit important actions.
 
+**Why use MCP:** It standardizes discovery and invocation so AI hosts can integrate capabilities without one custom protocol per tool provider.
+
+**How to use it:** Select the correct transport, expose a minimal capability set, secure every call, cap work/output, test adversarial inputs, and observe latency/failures without logging sensitive prompts.
+
 ## MCP Server Starter
 
 ```xml

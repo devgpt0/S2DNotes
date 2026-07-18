@@ -44,6 +44,7 @@ This folder is a revision checklist, not the beginner teaching course. If a word
 11. [Rapid question bank](11-rapid-java-interview-question-bank.md)
 12. [Project, leadership, and behavioral interviews](12-project-leadership-and-behavioral-interviews.md)
 13. [Coverage audit and topic map](13-coverage-audit-and-topic-map.md)
+14. [Common coding-round patterns and solved questions](14-common-coding-round-patterns-and-solutions.md)
 
 ## Preparation Rule
 

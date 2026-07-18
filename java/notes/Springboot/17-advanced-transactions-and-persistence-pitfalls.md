@@ -4,6 +4,10 @@
 
 Imagine a bank transfer with two updates. Both must succeed together. A transaction is the database boundary that commits both or rolls both back. Propagation describes what a transactional method should do when another transaction already exists.
 
+**Why it matters:** Incorrect boundaries cause partial changes, long locks, lost updates, unexpected commits, and connection-pool exhaustion.
+
+**How to apply it:** Put the transaction on the public service use case, keep it short, understand rollback/propagation, enforce constraints in the database, and verify behavior with integration tests.
+
 ## Propagation
 
 - `REQUIRED`: join an existing transaction or create one

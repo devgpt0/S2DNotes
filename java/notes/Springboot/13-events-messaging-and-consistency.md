@@ -1,5 +1,13 @@
 # 13 - Events, Messaging, and Consistency
 
+## What, Why, and How
+
+**What:** An event states a fact that happened. Local events decouple Spring components; broker events decouple processes and may be durable.
+
+**Why:** Some work belongs after a transaction or in another service. Decoupling also creates duplicate delivery, ordering, and consistency decisions.
+
+**How:** Publish immutable facts, use after-commit listeners for suitable local work, use an outbox for reliable external publication, and make consumers idempotent.
+
 ## 1) In-Process Domain Event
 
 ```java

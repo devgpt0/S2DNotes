@@ -25,6 +25,7 @@ Beginner mental model: imagine several workers sharing one kitchen. Concurrency 
 17. [Concurrency failures and diagnosis](17-deadlock-livelock-starvation-and-diagnosis.md)
 18. [Testing, interview revision, and practice](18-testing-interview-and-practice.md)
 19. [Concurrency pattern coverage map](19-concurrency-design-pattern-coverage-map.md)
+20. [Common concurrency snippets and solved questions](20-common-code-snippets-and-solved-questions.md)
 
 ## Core Rules
 

@@ -8,6 +8,10 @@ Spring AI gives Java interfaces and Spring Boot configuration for calling AI mod
 
 Model output is generated, not guaranteed truth. Validate it before using it in business decisions.
 
+**Why use Spring AI:** It provides portable model APIs, Boot configuration, advisors, tool calling, memory, vector-store, observation, and MCP integrations.
+
+**How to begin:** Configure one provider through environment secrets, inject the auto-configured builder, set a bounded system prompt, add deadlines/limits, and evaluate output quality and safety.
+
 ## Dependency Management
 
 ```xml

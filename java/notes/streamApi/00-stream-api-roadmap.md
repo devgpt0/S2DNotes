@@ -18,6 +18,7 @@ Beginner mental model: a collection is a box of values. A stream is a conveyor b
 10. [Parallel streams](10-parallel-streams.md)
 11. [Debugging, errors, and performance](11-debugging-errors-and-performance.md)
 12. [Recipes, interview questions, and practice](12-recipes-interview-and-practice.md)
+13. [Common stream snippets and solved questions](13-common-code-snippets-and-solved-questions.md)
 
 ## Core Rule
 

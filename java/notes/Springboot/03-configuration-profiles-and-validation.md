@@ -1,5 +1,13 @@
 # 03 - Configuration, Profiles, and Validation
 
+## What, Why, and How
+
+**What:** External configuration supplies values that differ by deployment, such as endpoints, limits, and feature settings.
+
+**Why:** Rebuilding code for every environment is unsafe. Typed validated configuration makes invalid values fail during startup instead of during a request.
+
+**How:** Group related values in `@ConfigurationProperties`, validate them, supply values through environment/secret systems, and use profiles only for genuine environment-specific choices.
+
 ## 1) Type-Safe Configuration
 
 ```java

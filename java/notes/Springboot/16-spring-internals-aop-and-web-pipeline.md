@@ -6,6 +6,8 @@ At beginner level, Spring appears to “magically” create objects and apply an
 
 Read this chapter only after you can build and test a basic REST service.
 
+**How to use this knowledge:** When an annotation appears ineffective, follow the actual bean, proxy, method visibility, self-invocation, request filter, handler, and exception path instead of treating Spring as magic.
+
 ## Application Context and Bean Lifecycle
 
 Spring reads bean definitions, creates infrastructure processors, instantiates beans, injects dependencies, invokes lifecycle callbacks, and may wrap beans in proxies.

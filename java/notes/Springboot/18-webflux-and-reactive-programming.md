@@ -8,6 +8,10 @@ Normal blocking code waits for a result on the current thread. Reactive code des
 
 Learn ordinary MVC first. Reactive code is not automatically faster.
 
+**Why use it:** It can serve many waiting I/O operations with a small event-loop model when every dependency is non-blocking.
+
+**How to use it:** Return `Mono`/`Flux` without blocking or manually subscribing, compose errors/timeouts/cancellation, and keep blocking libraries off event-loop threads.
+
 ## `Mono` and `Flux`
 
 ```java

@@ -6,6 +6,10 @@ A producer writes records to a topic. Kafka divides the topic into partitions. C
 
 The most important beginner rule: delivery can happen more than once, so processing must be idempotent.
 
+**Why use Kafka:** It provides durable ordered partition logs, replay, and independent consumer groups for asynchronous integration.
+
+**How to use it:** Choose stable keys/partitions, publish versioned events, acknowledge only after durable handling, monitor lag, and define retry/dead-letter behavior.
+
 ## Core Model
 
 - topic contains ordered partitions

@@ -19,6 +19,7 @@ This module teaches the foundation of Java Collections Framework from beginner t
 13. [13-design-choice-cheatsheet.md](./13-design-choice-cheatsheet.md)
 14. [14-legacy-and-modern-evolution.md](./14-legacy-and-modern-evolution.md)
 15. [15-legacy-coverage-map.md](./15-legacy-coverage-map.md)
+16. [Common code snippets and solved questions](../16-common-code-snippets-and-solved-questions.md)
 
 ## Learning Goals
 

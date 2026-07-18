@@ -4,6 +4,10 @@
 
 Security answers two separate questions: “Who is calling?” and “Is that caller allowed to do this?” Spring Security applies these checks through a filter chain before protected controller code runs.
 
+**Why use it:** Authentication and authorization are easy to implement inconsistently. Spring Security centralizes proven protocols, request rules, method checks, password encoding, and browser protections.
+
+**How to use it:** Deny by default, configure a `SecurityFilterChain`, validate trusted identity-provider tokens/sessions, use least-privilege authorities, and enforce resource ownership in business operations.
+
 ## 1) Authentication vs Authorization
 
 - Authentication establishes who the caller is.

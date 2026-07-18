@@ -1,5 +1,13 @@
 # 05 - Errors and Problem Details
 
+## What, Why, and How
+
+**What:** Error handling converts known failures into consistent HTTP Problem Details while unexpected failures reach the application error boundary.
+
+**Why:** Clients need stable actionable responses, while stack traces, SQL, secrets, and internal class names must stay private.
+
+**How:** Throw specific exceptions where the failure is understood, map them once in `@RestControllerAdvice`, and log unexpected failures once with safe correlation context.
+
 ## 1) Domain Error
 
 ```java

@@ -1,5 +1,13 @@
 # 11 - Caching, Scheduling, and Async Work
 
+## What, Why, and How
+
+- **Cache:** reuse an expensive result; define size, expiry, invalidation, and consistency.
+- **Schedule:** start work from time; define multi-instance coordination and restart behavior.
+- **Async:** move bounded in-process work to another executor; define capacity, rejection, failure observation, and durability.
+
+These features can improve latency or decouple work, but careless use creates stale data, duplicate jobs, lost tasks, or exhausted resources.
+
 ## 1) Caching
 
 ```java

@@ -8,6 +8,10 @@
 
 The application remains responsible for validation, permissions, and data isolation.
 
+**Why use them:** Structured output integrates with typed code, tools provide current/private capabilities, and memory supports multi-turn context.
+
+**How to use them:** Validate mapped records, expose only least-privilege tools, authorize inside each tool, bind memory to an authenticated conversation owner, and limit retained context.
+
 ## Structured Output
 
 ```java

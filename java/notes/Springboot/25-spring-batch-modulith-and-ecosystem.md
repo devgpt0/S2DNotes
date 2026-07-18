@@ -1,5 +1,13 @@
 # 25 - Spring Batch, Modulith, and Advanced Ecosystem
 
+## What, Why, and How
+
+- **Batch:** restartable bulk processing when a request is the wrong lifecycle. Model job/step state and idempotent chunks.
+- **Modulith:** enforce/test module boundaries while keeping one deployment and local transactions.
+- **Integration:** implement message channels, routers, transformers, and adapters for integration flows.
+- **Cloud:** add only the distributed configuration/gateway/discovery/resilience capability the platform actually needs.
+- **GraphQL:** expose a typed client-selected graph while enforcing batching, authorization, and query limits.
+
 ## Spring Batch
 
 Spring Batch handles restartable, observable bulk processing through jobs, steps, readers, processors, writers, and a job repository.

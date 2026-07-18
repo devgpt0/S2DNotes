@@ -18,5 +18,6 @@ Start here if you have never written Java. Read chapters in order and run every 
 9. [Object, pass-by-value, and parameter behavior](09-object-pass-by-value-and-parameters.md)
 10. [Compilation, classpath, JARs, and build basics](10-compilation-classpath-jars-and-build-basics.md)
 11. [Fundamental interview traps and practice](11-fundamental-interview-traps-and-practice.md)
+12. [Common code snippets and solved coding questions](12-common-code-snippets-and-solved-questions.md)
 
 These chapters cover the recurring entry-level and mid-level questions expected before collections, streams, concurrency, and Spring.

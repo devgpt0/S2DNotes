@@ -38,6 +38,9 @@ Study in levels:
 23. [Spring AI RAG and vector stores](23-spring-ai-rag-and-vector-stores.md)
 24. [Spring AI MCP, testing, observability, and security](24-spring-ai-mcp-testing-observability-and-security.md)
 25. [Spring Batch, Modulith, and advanced ecosystem](25-spring-batch-modulith-and-ecosystem.md)
+26. [Complete REST application step by step](26-complete-rest-application-step-by-step.md)
+27. [Spring Boot practicals and interview answers](27-spring-boot-practicals-and-interview-answers.md)
+28. [Common Spring Boot code snippets and solved questions](28-common-code-snippets-and-solved-questions.md)
 
 ## Production Shape
 

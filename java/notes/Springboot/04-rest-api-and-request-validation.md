@@ -1,5 +1,13 @@
 # 04 - REST APIs and Strict Request Validation
 
+## What, Why, and How
+
+**What:** A REST controller translates HTTP requests into typed application calls and translates results back to HTTP.
+
+**Why:** Thin controllers keep HTTP/JSON concerns away from business rules. DTO validation rejects malformed input before it reaches the domain.
+
+**How:** Define request/response records, annotate constraints, accept them with `@Valid`, call a service, choose correct status/headers, and map known failures centrally.
+
 ## 1) Request and Response DTOs
 
 ```java

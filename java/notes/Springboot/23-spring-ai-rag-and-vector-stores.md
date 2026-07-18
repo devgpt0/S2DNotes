@@ -12,6 +12,10 @@ Retrieval-Augmented Generation retrieves relevant trusted documents and supplies
 
 RAG does not train the model. It supplies current context for one request.
 
+**Why use it:** Models may lack current or private knowledge. Retrieval supplies approved source material without retraining.
+
+**How to use it:** Build a versioned ingestion pipeline, attach tenant/security metadata, filter during retrieval, cite supporting chunks, and evaluate retrieval plus answer quality on a fixed dataset.
+
 ## PGvector Dependencies
 
 ```xml

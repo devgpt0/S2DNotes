@@ -8,6 +8,10 @@
 
 Learn plain SQL and database keys before relying on JPA annotations.
 
+**Why use JPA:** It maps object state to SQL operations and provides a persistence context, dirty checking, and repository integration. It does not remove the need to understand queries, indexes, constraints, and transactions.
+
+**How to use it:** Model valid entities, enforce database constraints, expose focused repositories, wrap one complete use case in a service transaction, fetch required data, and map entities to API DTOs.
+
 ## 1) Entity
 
 ```java

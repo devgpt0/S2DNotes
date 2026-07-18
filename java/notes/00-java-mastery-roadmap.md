@@ -18,6 +18,7 @@ Do not try to learn every interview term on the first reading. The notes are des
 6. [Concurrency and multithreading](javaConcurrencyMultithreaded/00-concurrency-mastery-roadmap.md)
 7. [Spring Boot, Spring ecosystem, and Spring AI](Springboot/00-spring-boot-roadmap.md)
 8. [Interview preparation from 0 to 15 years](interviewMastery/00-java-developer-interview-roadmap-0-to-15-years.md)
+9. [Master index of common coding and interview questions](03-common-interview-code-index.md)
 
 ## Coverage
 

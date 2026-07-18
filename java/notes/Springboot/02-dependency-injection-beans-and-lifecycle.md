@@ -4,6 +4,10 @@
 
 A dependency is another object a class needs. Dependency injection means the class receives that object instead of constructing or finding it secretly. A Spring bean is simply an object whose creation and lifecycle are managed by Spring.
 
+**Why use it:** Dependencies become visible, replaceable in tests, consistently configured, and managed through one lifecycle.
+
+**How to use it:** Put required collaborators in the constructor, register implementations with a stereotype or `@Bean`, and add an interface only when a real boundary or variation exists.
+
 ## 1) Constructor Injection
 
 ```java

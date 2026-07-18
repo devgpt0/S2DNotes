@@ -1,5 +1,13 @@
 # 01 - Getting Started and Project Structure
 
+## What, Why, and How
+
+**What:** Spring Framework creates and connects application objects. Spring Boot adds auto-configuration, starter dependencies, an embedded server, and production tooling.
+
+**Why:** Without Boot, every project repeatedly configures compatible libraries, web servers, serialization, and startup. Boot provides working defaults while allowing deliberate overrides.
+
+**How:** Generate a project with Spring Initializr, keep the application class in the root package, add focused starters, run the Maven wrapper, and let classpath plus configuration drive auto-configuration.
+
 ## 1) Requirements
 
 - Java 21+

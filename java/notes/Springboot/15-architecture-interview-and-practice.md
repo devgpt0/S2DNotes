@@ -1,5 +1,13 @@
 # 15 - Architecture, Interview Revision, and Practice
 
+## What, Why, and How the Layers Connect
+
+**What:** Controller owns HTTP translation; service owns a use case/transaction; domain protects rules; repositories/clients/messages adapt infrastructure.
+
+**Why:** Each concern changes for a different reason and can be tested without loading unrelated infrastructure.
+
+**How:** Trace every feature from validated request through authorization, service/domain, transaction/infrastructure, response, tests, metrics, and deployment behavior.
+
 ## 1) Request Flow
 
 ```text

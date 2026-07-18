@@ -1,5 +1,13 @@
 # 14 - Production Deployment and Operations
 
+## What, Why, and How
+
+**What:** Delivery turns verified source into an immutable artifact, deploys it safely, and configures limits, observability, recovery, and rollback.
+
+**Why:** Local success does not prove production configuration, resources, migrations, shutdown, or dependency behavior.
+
+**How:** Build once, test/scan/sign, use external secrets, run least-privileged, migrate compatibly, configure probes/graceful shutdown, and promote with rollback signals.
+
 ## 1) Build an Executable JAR
 
 ```powershell

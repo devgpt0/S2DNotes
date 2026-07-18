@@ -1,5 +1,13 @@
 # 10 - Actuator, Metrics, and Observability
 
+## What, Why, and How
+
+**What:** Actuator exposes operational endpoints. Logs describe events, metrics summarize behavior, and traces connect work across services.
+
+**Why:** Production problems require evidence about traffic, errors, latency, saturation, and dependency behavior.
+
+**How:** Expose only required secured endpoints, instrument bounded technical/business signals, propagate trace context, and alert on sustained user-impacting behavior.
+
 ## 1) Actuator Dependency
 
 ```xml

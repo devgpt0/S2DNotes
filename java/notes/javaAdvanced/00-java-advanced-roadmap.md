@@ -27,6 +27,7 @@ Do not start here on day one. First complete fundamentals, OOP, collections, and
 15. [HTTP client, networking, and I/O boundaries](15-http-client-and-networking.md)
 16. [Reference types, GC, and memory diagnosis](16-reference-types-gc-and-memory-diagnosis.md)
 17. [Java evolution and migration](17-java-evolution-and-migration.md)
+18. [Common advanced Java snippets and solved questions](18-common-code-snippets-and-solved-questions.md)
 
 ## How to Study
 
