@@ -105,3 +105,24 @@ Use a merge helper only where accepting/combining classes is part of the compone
 [data-theme="dark"] { --app-brand: oklch(72% .14 260); }
 /* Result: bg-brand/text-brand utilities follow runtime theme custom properties. */
 ```
+
+## High-Use Responsive and Variant Pattern
+
+```tsx
+const CARD_STYLES = {
+  normal: "border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900",
+  featured: "border-brand bg-brand/5 dark:bg-brand/10",
+} as const;
+
+function CardGrid({ featured }: { featured: boolean }) {
+  const tone = featured ? CARD_STYLES.featured : CARD_STYLES.normal;
+  return <section className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,18rem),1fr))] gap-4">
+    <article className={`flex flex-col rounded-xl border p-5 ${tone}`}>
+      <h2 className="text-lg font-semibold">Java Foundations</h2>
+      <p className="mt-2 text-slate-600 dark:text-slate-300">Learn with runnable examples.</p>
+    </article>
+  </section>;
+}
+```
+
+Complete class strings keep source detection reliable. The intrinsic grid handles responsive layout; the finite map keeps variants extendable and reviewable.

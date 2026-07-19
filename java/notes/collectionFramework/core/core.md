@@ -1,5 +1,7 @@
 # Java Collection Framework Core - Complete Learning Path
 
+If collections are new to you, first read [Java collections in simple words](../00-collections-in-simple-words.md). It helps you choose between List, Set, Map, Queue, and Deque before the detailed chapters.
+
 This module teaches the foundation of Java Collections Framework from beginner to advanced.
 
 ## Study Order

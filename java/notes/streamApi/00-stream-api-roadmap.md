@@ -1,5 +1,7 @@
 # Java Stream API - Complete Learning Roadmap
 
+New to streams? Begin with [Streams in simple words](00a-streams-in-simple-words.md). It teaches the source-step-result model before the detailed operations.
+
 Streams describe data-processing pipelines. They do not store elements and they do not replace collections.
 
 Beginner mental model: a collection is a box of values. A stream is a conveyor belt that lets values pass through steps such as filter, transform, and collect. Learn ordinary loops first; then compare the loop with the equivalent stream.

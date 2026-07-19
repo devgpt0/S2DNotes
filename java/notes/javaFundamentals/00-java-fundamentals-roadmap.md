@@ -2,6 +2,8 @@
 
 Start here if you have never written Java. Read chapters in order and run every example. The early chapters explain one idea at a time; interview traps come last.
 
+First read [Java fundamentals in simple words](00a-fundamentals-in-simple-words.md). It shows the full picture with small examples before the detailed rules.
+
 ## Existing Foundations
 
 1. [Variables and references](variables%20model.md)

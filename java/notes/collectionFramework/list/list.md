@@ -2,6 +2,8 @@
 
 This module is designed to take you from beginner to expert in Java `List`.
 
+If this is your first collection, read [Collections in simple words](../00-collections-in-simple-words.md) first.
+
 ## Study Order
 
 1. [01-list-basics.md](./01-list-basics.md)

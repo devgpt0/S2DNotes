@@ -128,3 +128,24 @@ function parseCourse(value: unknown): Course {
 console.log(parseCourse({ id: "html", title: "HTML" }).title);
 // Console output: HTML
 ```
+
+## High-Use Typed Variant and Responsive-Behavior Pattern
+
+```typescript
+type Tone = "primary" | "secondary" | "danger";
+const TONE_CLASSES = {
+  primary: "button button--primary",
+  secondary: "button button--secondary",
+  danger: "button button--danger",
+} satisfies Record<Tone, string>;
+
+function buttonClass(tone: Tone): string {
+  return TONE_CLASSES[tone];
+}
+
+const wideLayout = window.matchMedia("(min-width: 48rem)");
+console.log(buttonClass("primary"), wideLayout.matches);
+// Result: every finite variant is required at compile time; media-query behavior remains a boolean browser value.
+```
+
+Prefer CSS for layout. Use the typed media query only when application behavior—not merely appearance—must change.

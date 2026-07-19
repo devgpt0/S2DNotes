@@ -130,3 +130,19 @@ Owned source reviewed, variants finite, theme contrast tested, refs/props preser
 - Test touch, soft keyboard, 200% zoom, RTL, forced colors, reduced motion, autofill, and password managers.
 - Query tests by role/name/label rather than generated classes or primitive implementation details.
 - Use a component showcase to review every state/variant/theme when team scale justifies it.
+
+## High-Use Responsive Domain Component
+
+```tsx
+function CourseGrid({ courses }: { courses: readonly Course[] }) {
+  if (courses.length === 0) return <p>No courses found.</p>;
+  return <section aria-label="Courses" className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,18rem),1fr))] gap-4">
+    {courses.map(course => <Card key={course.id} className="flex h-full flex-col">
+      <CardHeader><CardTitle>{course.title}</CardTitle><CardDescription>{course.description}</CardDescription></CardHeader>
+      <CardFooter className="mt-auto"><Button asChild variant="outline"><a href={`/courses/${encodeURIComponent(course.id)}`}>Open course</a></Button></CardFooter>
+    </Card>)}
+  </section>;
+}
+```
+
+This composes owned primitives into a reusable domain component, uses CSS for responsiveness, preserves link semantics through `asChild`, and keeps identity stable with domain IDs.

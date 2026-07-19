@@ -105,3 +105,18 @@ $light: (surface: #fff, text: #17202a, brand: royalblue);
 .layout { display: grid; @include from(48rem) { grid-template-columns: 16rem minmax(0, 1fr); } }
 // Compiled result: content-based 48rem enhancement; no misleading "tablet" abstraction.
 ```
+
+## High-Use Public Module Pattern
+
+```scss
+// components/_index.scss
+@forward "button";
+@forward "card";
+
+// main.scss
+@use "components";
+
+.card-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--space-4); }
+```
+
+`@forward` creates one intentional public Sass entry point. Keep component selectors usable on their own; use Sass modules for authoring organization and CSS custom properties for runtime extension.

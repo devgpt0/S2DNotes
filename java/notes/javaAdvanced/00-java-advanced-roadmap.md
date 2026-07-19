@@ -1,5 +1,7 @@
 # Java Advanced - Complete Learning Roadmap
 
+Begin with [Advanced Java in simple words](00a-advanced-java-in-simple-words.md). It shows how the topics connect before the detailed rules and internals.
+
 These notes assume Java 21 or newer and a working knowledge of Java fundamentals and collections.
 
 Do not start here on day one. First complete fundamentals, OOP, collections, and basic streams. Then study these chapters in three groups:

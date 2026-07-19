@@ -2,6 +2,8 @@
 
 This module teaches Java `Queue` and `Deque` from beginner to advanced, including concurrent queues.
 
+If this is your first collection, read [Collections in simple words](../00-collections-in-simple-words.md) first.
+
 ## Study Order
 
 1. [01-queue-deque-basics.md](./01-queue-deque-basics.md)

@@ -2,6 +2,8 @@
 
 This module is designed for first-time learners and goes up to expert-level usage.
 
+Lambdas are easier after List, Set, and Map basics. If collection words are unfamiliar, read [Collections in simple words](../00-collections-in-simple-words.md) first.
+
 ## Study Order
 
 1. [01-why-lambda.md](./01-why-lambda.md)

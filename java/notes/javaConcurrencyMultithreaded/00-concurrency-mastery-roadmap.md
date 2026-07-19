@@ -1,5 +1,7 @@
 # Java Concurrency and Multithreading - Complete Roadmap
 
+Concurrency is difficult when vocabulary arrives before the problem. Begin with [Concurrency in simple words](00a-concurrency-in-simple-words.md), then follow the numbered chapters.
+
 These notes target Java 21 or newer. They cover synchronous, asynchronous, concurrent, multithreaded, and parallel programming, followed by the concurrency patterns used in production systems.
 
 Beginner mental model: imagine several workers sharing one kitchen. Concurrency problems happen when workers change the same order or use the same tool without coordination. Learn one thread first, then visibility/locks, then executors/futures, and only then the design patterns.

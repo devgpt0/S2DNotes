@@ -159,3 +159,28 @@ function SubmitButton() {
 - Include loading, error, empty, offline, conflict, cancellation, and retry states.
 - Use React DevTools “why rendered,” browser Performance, Network initiators, and async stacks together.
 - Common root causes: wrong key, mutated state, stale closure, missing cleanup, duplicate derived state, or invalid server data.
+
+## High-Use Responsive Composition Pattern
+
+```tsx
+type PanelProps = Readonly<{
+  id: string;
+  title: string;
+  action?: ReactNode;
+  children: ReactNode;
+}>;
+
+function Panel({ id, title, action, children }: PanelProps) {
+  return <section className="panel" aria-labelledby={id}>
+    <header className="panel__header"><h2 id={id}>{title}</h2>{action}</header>
+    <div className="panel__body">{children}</div>
+  </section>;
+}
+```
+
+```css
+.panel__header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; }
+.panel__body { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 1rem; }
+```
+
+Composition keeps the API extendable; CSS handles responsive placement without render-time viewport checks. Callers pass a stable, document-unique heading ID.

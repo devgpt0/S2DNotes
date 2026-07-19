@@ -117,3 +117,20 @@ Validate markup, inspect landmarks/names, tab through controls, submit invalid f
 <a href="https://external.example/resource" target="_blank" rel="noopener noreferrer">Open external resource <span class="sr-only">(opens in a new tab)</span></a>
 <!-- Browser/accessibility result: isolated new tab with an announced behavior cue. -->
 ```
+
+## High-Use Responsive and Extendable Snippet
+
+```html
+<article>
+  <picture>
+    <source media="(min-width: 60rem)" srcset="course-wide-1200.webp 1200w, course-wide-1800.webp 1800w" sizes="80vw">
+    <img src="course-640.webp" srcset="course-640.webp 640w, course-960.webp 960w" sizes="(min-width: 40rem) 50vw, 100vw" width="960" height="640" loading="lazy" decoding="async" alt="Learner building a course project">
+  </picture>
+  <h2>Java Foundations</h2>
+  <p>Learn one concept at a time with runnable output.</p>
+  <a href="/courses/java">View course <span class="sr-only">Java Foundations</span></a>
+</article>
+<!-- Result: responsive image selection, stable layout dimensions, lazy below-fold loading, and reusable semantic card content. -->
+```
+
+Use CSS for layout and visual variants. Keep the HTML contract stable: meaningful heading, content, and action still work without styling or JavaScript.

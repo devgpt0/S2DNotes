@@ -128,3 +128,16 @@ html { scrollbar-gutter: stable; }
 .table-scroll { overflow: auto; overscroll-behavior: contain; max-block-size: 70dvh; }
 /* Browser result: reduced width shift when scrollbar appears and contained table scrolling. */
 ```
+
+## High-Use Responsive Component Pattern
+
+```css
+.card-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: var(--space-4, 1rem); }
+.card { container-type: inline-size; display: flex; flex-direction: column; padding: var(--card-space, 1rem); border: 1px solid var(--border); border-radius: var(--radius, 0.75rem); }
+.card__content { display: grid; gap: 1rem; min-inline-size: 0; }
+.card__action { margin-block-start: auto; }
+@container (min-width: 24rem) { .card__content { grid-template-columns: auto minmax(0, 1fr); } }
+/* Result: reusable cards fit any parent, accept token overrides, align actions, and do not overflow narrow containers. */
+```
+
+This pattern is extendable through custom properties and composition. Add variants with explicit data attributes, not selectors tied to page position.

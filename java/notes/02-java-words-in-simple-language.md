@@ -13,6 +13,31 @@ Use this glossary whenever a chapter introduces an unfamiliar term.
 - **argument:** actual value passed to a method
 - **return value:** result sent back by a method
 - **scope:** region where a name can be used
+- **declaration:** introduces a name and its type, such as `int count`
+- **initialization:** supplies a variable's first value
+- **assignment:** replaces the value held by a variable
+- **literal:** a value written directly in code, such as `42`, `true`, or `"Java"`
+- **operator:** symbol that performs work, such as `+`, `==`, or `&&`
+- **compile-time error:** invalid code rejected before the program runs
+- **runtime exception:** failure that occurs while validly compiled code is running
+- **API:** public types and operations another piece of code is allowed to use
+
+## Words Used in Declarations
+
+- **keyword:** reserved Java word with a fixed language meaning, such as `class` or `return`
+- **modifier:** keyword that changes access or behavior, such as `public`, `static`, or `final`
+- **public:** accessible from any package when the enclosing type is also accessible
+- **private:** accessible only inside the declaring top-level class and its nested members
+- **protected:** accessible in the same package and through subclass rules
+- **static:** belongs to the class rather than to one object
+- **final variable:** can be assigned only once; the referenced object may still be mutable
+- **final method:** cannot be overridden
+- **final class:** cannot be extended
+- **void:** a method completes without returning a value
+- **return:** ends a method and optionally sends a value to its caller
+- **new:** creates an object or array and produces its reference
+- **this:** the current object
+- **super:** the superclass part of the current object or its constructor/member
 
 ## Object-Oriented Words
 
@@ -27,6 +52,11 @@ Use this glossary whenever a chapter introduces an unfamiliar term.
 - **polymorphism:** different implementations can be used through one contract
 - **interface:** a contract describing a capability
 - **immutable:** cannot change after construction
+- **override:** subtype supplies an implementation for an inherited instance-method contract
+- **overload:** several methods share a name but have different parameter lists
+- **abstract:** incomplete type or method intended to be completed by a subtype
+- **record:** concise class for data-focused values with generated accessors and value contracts
+- **sealed type:** explicitly restricts which types may extend or implement it
 
 ## Runtime Words
 
@@ -39,6 +69,10 @@ Use this glossary whenever a chapter introduces an unfamiliar term.
 - **garbage collection:** automatic recovery of unreachable object memory
 - **JIT:** compiler that optimizes frequently executed code while the JVM runs
 - **reference:** value that identifies an object; not an application-visible raw address
+- **exception:** object describing an abnormal condition that changes normal control flow
+- **checked exception:** exception the compiler requires code to catch or declare
+- **unchecked exception:** `RuntimeException` family failure not forced into a method signature
+- **resource:** something that must be released, such as a file, socket, or database connection
 
 ## Collection and Stream Words
 
@@ -62,6 +96,10 @@ Use this glossary whenever a chapter introduces an unfamiliar term.
 - **lock:** allows controlled exclusive access to shared state
 - **deadlock:** tasks wait forever in a cycle
 - **backpressure:** slow/reject producers when consumers cannot keep up
+- **synchronized:** uses an object's monitor to provide mutual exclusion and visibility guarantees
+- **volatile:** provides visibility and ordering for one field, but does not make compound actions atomic
+- **happens-before:** Java Memory Model ordering that guarantees visibility of earlier actions
+- **virtual thread:** lightweight JVM-managed thread suited to large numbers of blocking tasks
 
 ## Spring Words
 
@@ -96,3 +134,21 @@ Use this glossary whenever a chapter introduces an unfamiliar term.
 - **tool calling:** model requests that application code execute an approved function
 - **MCP:** standard protocol for exposing tools, resources, and prompts to AI clients
 - **prompt injection:** untrusted text attempts to override intended instructions
+
+## How to Decode an Unfamiliar Line
+
+Read from the declared result outward:
+
+```java
+final List<String> names = new ArrayList<>();
+System.out.println(names.isEmpty());
+// Output: true
+```
+
+- `final`: `names` cannot later point to a different list.
+- `List<String>`: the variable accepts a `List` whose elements are `String` values.
+- `names`: variable name.
+- `new ArrayList<>()`: creates the mutable list object; `<>` asks Java to infer `String`.
+- `isEmpty()`: calls a method that returns whether the list has no elements.
+
+If a chapter uses a word not listed here, first look for its definition immediately before the example. Then add the word to your own glossary in one sentence.

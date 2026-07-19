@@ -1,5 +1,7 @@
 # OOP and Clean Code - Complete Learning Roadmap
 
+If OOP is new to you, begin with [OOP and clean code in simple words](00a-oop-in-simple-words.md). It explains why each idea exists before introducing formal rules and patterns.
+
 Object-oriented programming organizes behavior around objects with responsibilities. Clean code makes those responsibilities easy to understand, test, and change.
 
 In simple words: an object keeps related data and actions together. For example, a bank account keeps its balance private and exposes safe operations such as `deposit` and `withdraw`.

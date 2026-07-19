@@ -2,6 +2,8 @@
 
 This module is designed from beginner to expert for Java `Map`.
 
+If this is your first collection, read [Collections in simple words](../00-collections-in-simple-words.md) first.
+
 ## Study Order
 
 1. [01-map-basics.md](./01-map-basics.md)

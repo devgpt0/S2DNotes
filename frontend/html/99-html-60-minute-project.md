@@ -179,6 +179,13 @@ html-course-registration/
 </html>
 ```
 
+Concepts learned from `index.html`:
+
+- landmarks and headings create a readable document and accessibility outline
+- native table, details, form, and validation behavior work without JavaScript
+- labels, descriptions, fieldsets, and autocomplete make form intent explicit
+- GET submission places values in the URL, so it is unsuitable for secrets or real state-changing registration
+
 ## Step 2: Create `success.html`
 
 ```html
@@ -200,6 +207,12 @@ html-course-registration/
   </body>
 </html>
 ```
+
+Concepts learned from `success.html`:
+
+- a separate result page gives form navigation a clear destination
+- `noindex` prevents a generic confirmation page from becoming a search result
+- the return link completes the navigation flow without JavaScript
 
 ## Step 3: Run the Project
 

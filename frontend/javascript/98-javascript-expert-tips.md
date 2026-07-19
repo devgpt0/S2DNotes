@@ -142,3 +142,27 @@ const square = memoizeOne(value => value * value);
 console.log(square(4), square(4));
 // Console output: 16 16; cache remains bounded to one argument/result.
 ```
+
+## High-Use Lifecycle and Responsive-Behavior Pattern
+
+```javascript
+export function mountNavigation(root, media = matchMedia("(min-width: 48rem)")) {
+  if (!(root instanceof HTMLElement)) throw new TypeError("navigation root is required");
+  const controller = new AbortController();
+  const button = root.querySelector("button[aria-expanded]");
+  if (!(button instanceof HTMLButtonElement)) throw new Error("navigation toggle is missing");
+
+  const closeOnWideLayout = (event) => {
+    if (event.matches) button.setAttribute("aria-expanded", "false");
+  };
+  button.addEventListener("click", () => {
+    button.setAttribute("aria-expanded", String(button.getAttribute("aria-expanded") !== "true"));
+  }, { signal: controller.signal });
+  media.addEventListener("change", closeOnWideLayout, { signal: controller.signal });
+
+  return () => controller.abort();
+}
+// Result: one mount function validates dependencies, attaches related listeners, and returns complete cleanup.
+```
+
+Use CSS for visual responsiveness. Use `matchMedia` only when behavior genuinely changes, and always release listeners when the feature unmounts.

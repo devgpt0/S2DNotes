@@ -1,5 +1,7 @@
 # Spring Boot - Complete Learning Roadmap
 
+If Spring is new to you, first read [Spring Boot in simple words](00a-spring-boot-in-simple-words.md). It explains the request flow and common annotations before the detailed chapters.
+
 These notes target Spring Boot 4.1.0 with Java 21. Spring Initializr reported `4.1.0.RELEASE` as the current stable version when these notes were written.
 
 Spring Boot is not a replacement for Java fundamentals. Before starting, be comfortable with classes, interfaces, exceptions, collections, HTTP basics, SQL, and constructor injection.

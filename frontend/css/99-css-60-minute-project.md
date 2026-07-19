@@ -139,6 +139,12 @@ css-course-dashboard/
 </html>
 ```
 
+Concepts learned from `index.html`:
+
+- semantic source order remains useful before any CSS is loaded
+- component classes describe roles without changing native control meaning
+- progress, table headers, skip navigation, and landmarks provide accessible structure
+
 ## Step 2: Create `styles.css`
 
 ```css
@@ -253,6 +259,13 @@ css-course-dashboard/
 
 /* Browser result: intrinsic card wrapping, container-aware content, dark mode, visible focus, and safe table scrolling. */
 ```
+
+Concepts learned from `styles.css`:
+
+- layers control broad precedence without specificity escalation
+- intrinsic Grid and container queries respond to available space instead of named devices
+- tokens keep themes extendable while logical properties support different writing directions
+- focus, dark mode, reduced motion, forced colors, and overflow are functional requirements, not decoration
 
 ## Step 3: Run the Project
 

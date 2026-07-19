@@ -1,5 +1,7 @@
 # Frontend Development - Beginner to Expert Roadmap
 
+Use the dedicated [Chrome browser understanding, diagnostics, and performance roadmap](browser/00-chrome-browser-roadmap.md) alongside every module. It explains what the browser does and how to measure problems instead of guessing.
+
 This course assumes no frontend experience. Study in order because each module uses ideas from the previous one.
 
 ## Learning Order

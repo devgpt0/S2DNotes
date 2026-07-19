@@ -2,6 +2,8 @@
 
 This module teaches Java `Set` from basics to advanced implementations and patterns.
 
+If this is your first collection, read [Collections in simple words](../00-collections-in-simple-words.md) first.
+
 ## Study Order
 
 1. [01-set-basics.md](./01-set-basics.md)
