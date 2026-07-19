@@ -10,6 +10,8 @@ This course assumes no frontend experience. Study in order because each module u
 4. [Tailwind CSS](tailwind/00-tailwind-roadmap.md) - utility-first styling using Tailwind CSS 4
 5. [JavaScript](javascript/00-javascript-roadmap.md) - language, DOM, asynchronous code, browser APIs, and performance
 6. [TypeScript](typescript/00-typescript-roadmap.md) - safe JavaScript with static types, targeting TypeScript 7
+7. [React](react/00-react-roadmap.md) - React 19 components, rendering, hooks, async UI, testing, and architecture
+8. [shadcn/ui](shadcn/00-shadcn-roadmap.md) - source-owned accessible components, Tailwind theming, forms, and production composition
 
 ## How to Study
 
@@ -36,5 +38,14 @@ JavaScript can read or change the DOM/CSSOM while the page runs.
 - Tailwind CSS 4.3.x
 - Sass 1.101.x
 - TypeScript 7.x
+- React 19.2.x
+- shadcn CLI 4.13.x
 
 Core HTML, CSS, and JavaScript notes use web standards rather than framework-specific behavior.
+
+## Every Module Ends the Same Way
+
+- `98-*-expert-tips.md`: production tips plus code patterns experts commonly use
+- `99-*-project.md`: a focused 30-60 minute project combining the module's interview-important concepts
+
+Complete the project without copying, then compare your result with the supplied steps and completion checklist.

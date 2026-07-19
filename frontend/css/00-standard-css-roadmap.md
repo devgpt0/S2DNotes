@@ -4,6 +4,7 @@ CSS controls presentation and layout. Learn standard CSS before SCSS or Tailwind
 
 ## Chapters
 
+0. [CSS concepts in simple words](00a-css-concepts-in-simple-words.md)
 1. [Syntax, cascade, specificity, inheritance, and layers](01-syntax-cascade-specificity-inheritance-and-layers.md)
 2. [Box model, sizing, units, colors, and typography](02-box-model-sizing-units-colors-and-typography.md)
 3. [Display, positioning, overflow, and stacking](03-display-positioning-overflow-and-stacking.md)
@@ -15,6 +16,8 @@ CSS controls presentation and layout. Learn standard CSS before SCSS or Tailwind
 9. [Custom properties, logical properties, functions, and architecture](09-modern-css-and-architecture.md)
 10. [Browser rendering, compatibility, performance, and DevTools](10-browser-rendering-compatibility-and-performance.md)
 11. [Practical activities and interview answers](11-css-practical-and-interview-answers.md)
+12. [Expert CSS tips and browser optimization](98-css-expert-tips.md)
+13. [60-minute responsive dashboard project](99-css-60-minute-project.md)
 
 ## Main Rule
 

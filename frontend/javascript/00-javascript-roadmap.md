@@ -4,6 +4,7 @@ JavaScript adds behavior to web pages and also runs outside browsers. These note
 
 ## Chapters
 
+0. [JavaScript concepts in simple words](00a-javascript-concepts-in-simple-words.md)
 1. [Runtime, variables, values, and types](01-runtime-variables-values-and-types.md)
 2. [Operators, equality, coercion, and control flow](02-operators-equality-coercion-and-control-flow.md)
 3. [Functions, scope, closures, and `this`](03-functions-scope-closures-and-this.md)
@@ -16,6 +17,8 @@ JavaScript adds behavior to web pages and also runs outside browsers. These note
 10. [Browser APIs, storage, security, observers, and workers](10-browser-apis-storage-security-observers-and-workers.md)
 11. [Performance, memory, testing, and debugging](11-performance-memory-testing-and-debugging.md)
 12. [Practical activities and interview answers](12-javascript-practical-and-interview-answers.md)
+13. [Expert JavaScript tips and browser patterns](98-javascript-expert-tips.md)
+14. [60-minute task board project](99-javascript-60-minute-project.md)
 
 ## First Rule
 

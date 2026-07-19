@@ -4,6 +4,7 @@ HTML gives a web page meaning and structure. It is not a programming language an
 
 ## Chapters
 
+0. [HTML concepts in simple words](00a-html-concepts-in-simple-words.md)
 1. [Document structure, text, and elements](01-document-structure-text-and-elements.md)
 2. [Semantic HTML and accessibility](02-semantic-html-and-accessibility.md)
 3. [Links, images, paths, and responsive media](03-links-images-paths-and-responsive-media.md)
@@ -11,6 +12,8 @@ HTML gives a web page meaning and structure. It is not a programming language an
 5. [Tables, media, metadata, and SEO](05-tables-media-metadata-and-seo.md)
 6. [How browsers load HTML, performance, and security](06-browser-loading-performance-and-security.md)
 7. [Practical activities and interview answers](07-html-practical-and-interview-answers.md)
+8. [Expert HTML tips and production checklist](98-html-expert-tips.md)
+9. [60-minute accessible course registration project](99-html-60-minute-project.md)
 
 ## Learning Goal
 

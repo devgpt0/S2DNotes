@@ -6,6 +6,7 @@ These notes target TypeScript 7.x with strict mode. Learn JavaScript first.
 
 ## Chapters
 
+0. [TypeScript concepts in simple words](00a-typescript-concepts-in-simple-words.md)
 1. [Setup, inference, annotations, and strict mode](01-setup-inference-annotations-and-strict-mode.md)
 2. [Unions, literals, narrowing, unknown, and never](02-unions-literals-narrowing-unknown-and-never.md)
 3. [Object types, interfaces, aliases, and structural typing](03-object-types-interfaces-aliases-and-structural-typing.md)
@@ -15,6 +16,8 @@ These notes target TypeScript 7.x with strict mode. Learn JavaScript first.
 7. [DOM, Fetch, async code, and runtime validation](07-dom-fetch-async-and-runtime-validation.md)
 8. [Configuration, builds, libraries, testing, and migration](08-configuration-builds-testing-and-migration.md)
 9. [Practical activities and interview answers](09-typescript-practical-and-interview-answers.md)
+10. [Expert TypeScript tips and type-design patterns](98-typescript-expert-tips.md)
+11. [60-minute typed expense tracker project](99-typescript-60-minute-project.md)
 
 ## Core Rule
 
