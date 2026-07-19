@@ -68,7 +68,7 @@ Type erasure, `any` vs unknown, union vs intersection, interface vs alias, struc
 
 ```typescript
 type State = { status: "idle" } | { status: "loading" } | { status: "success"; value: string } | { status: "error"; message: string };
-function label(state: State): string {
+const label = (state: State): string => {
   switch (state.status) {
     case "idle": return "Start";
     case "loading": return "Loading";
@@ -76,7 +76,7 @@ function label(state: State): string {
     case "error": return state.message;
     default: return state satisfies never;
   }
-}
+};
 console.log(label({ status: "success", value: "Ready" }));
 // Console output: Ready; adding a new state fails compilation until handled.
 ```
@@ -85,10 +85,10 @@ console.log(label({ status: "success", value: "Ready" }));
 
 ```typescript
 type Result<T, E> = { ok: true; value: T } | { ok: false; error: E };
-function parsePositive(value: string): Result<number, string> {
+const parsePositive = (value: string): Result<number, string> => {
   const parsed = Number(value);
   return Number.isFinite(parsed) && parsed > 0 ? { ok: true, value: parsed } : { ok: false, error: "Expected positive number" };
-}
+};
 console.log(parsePositive("5"));
 // Console output: {ok: true, value: 5}
 ```
@@ -110,7 +110,7 @@ Use brands at validated construction boundaries; the assertion itself is not val
 
 ```typescript
 type Events = { "course:created": { id: string }; "course:deleted": { id: string; reason: string } };
-function emit<Name extends keyof Events>(name: Name, payload: Events[Name]): void { console.log(name, payload); }
+const emit = <Name extends keyof Events>(name: Name, payload: Events[Name]): void => { console.log(name, payload); };
 emit("course:created", { id: "html" });
 // Console output: course:created {id: "html"}; mismatched payloads fail type checking.
 ```
@@ -119,12 +119,14 @@ emit("course:created", { id: "html" });
 
 ```typescript
 type Course = Readonly<{ id: string; title: string }>;
-function parseCourse(value: unknown): Course {
+const parseCourse = (value: unknown): Course => {
   if (typeof value !== "object" || value === null) throw new TypeError("course must be an object");
-  const item = value as Record<string, unknown>;
-  if (typeof item.id !== "string" || typeof item.title !== "string") throw new TypeError("invalid course fields");
-  return { id: item.id, title: item.title };
-}
+  if (!("id" in value) || typeof value.id !== "string"
+    || !("title" in value) || typeof value.title !== "string") {
+    throw new TypeError("invalid course fields");
+  }
+  return { id: value.id, title: value.title };
+};
 console.log(parseCourse({ id: "html", title: "HTML" }).title);
 // Console output: HTML
 ```
@@ -139,9 +141,9 @@ const TONE_CLASSES = {
   danger: "button button--danger",
 } satisfies Record<Tone, string>;
 
-function buttonClass(tone: Tone): string {
+const buttonClass = (tone: Tone): string => {
   return TONE_CLASSES[tone];
-}
+};
 
 const wideLayout = window.matchMedia("(min-width: 48rem)");
 console.log(buttonClass("primary"), wideLayout.matches);

@@ -12,9 +12,9 @@ console.log(add(20, 22));
 ## Optional, Default, and Rest Parameters
 
 ```typescript
-function greet(name = "Guest", ...titles: string[]): string {
+const greet = (name = "Guest", ...titles: string[]): string => {
   return `Hello ${titles.join(" ")} ${name}`.replaceAll("  ", " ");
-}
+};
 console.log(greet("Asha", "Dr."));
 // Console output: Hello Dr. Asha
 ```
@@ -24,9 +24,9 @@ Optional parameters come after required parameters unless using an options objec
 ## Generics Preserve Relationships
 
 ```typescript
-function first<T>(values: readonly T[]): T | undefined {
+const first = <T>(values: readonly T[]): T | undefined => {
   return values[0];
-}
+};
 console.log(first([10, 20]));
 console.log(first(["HTML", "CSS"]));
 // Console output:
@@ -39,9 +39,9 @@ The same input element type becomes the output type. A generic should express a 
 ## Generic Constraint
 
 ```typescript
-function getId<T extends { id: string }>(value: T): string {
+const getId = <T extends { id: string }>(value: T): string => {
   return value.id;
-}
+};
 console.log(getId({ id: "course-1", title: "HTML" }));
 // Console output: course-1
 ```
@@ -49,9 +49,9 @@ console.log(getId({ id: "course-1", title: "HTML" }));
 ## `keyof` Relationship
 
 ```typescript
-function get<T extends object, K extends keyof T>(value: T, key: K): T[K] {
+const get = <T extends object, K extends keyof T>(value: T, key: K): T[K] => {
   return value[key];
-}
+};
 console.log(get({ name: "Asha", age: 25 }, "name"));
 // Console output: Asha
 ```
@@ -61,9 +61,11 @@ console.log(get({ name: "Asha", age: 25 }, "name"));
 Use overloads when call signatures produce meaningfully different related types. Prefer a union when behavior and return shape are the same.
 
 ```typescript
-function length(value: string): number;
-function length(value: readonly unknown[]): number;
-function length(value: string | readonly unknown[]): number { return value.length; }
+type Length = {
+  (value: string): number;
+  (value: readonly unknown[]): number;
+};
+const length: Length = (value: string | readonly unknown[]): number => value.length;
 console.log(length("Java"), length([1, 2]));
 // Console output: 4 2
 ```

@@ -41,9 +41,9 @@ Let TypeScript infer obvious local types. Add annotations at public boundaries, 
 ## Annotations
 
 ```typescript
-function total(price: number, quantity: number): number {
+const total = (price: number, quantity: number): number => {
   return price * quantity;
-}
+};
 console.log(total(250, 2));
 // Console output: 500
 // total("250", 2) fails type checking.
@@ -65,9 +65,9 @@ console.log(count);
 ## Nullability
 
 ```typescript
-function length(value: string | null): number {
+const length = (value: string | null): number => {
   return value === null ? 0 : value.length;
-}
+};
 console.log(length(null), length("Java"));
 // Console output: 0 4
 ```

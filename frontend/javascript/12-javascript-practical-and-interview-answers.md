@@ -18,10 +18,10 @@ Requirements:
 ### Example State Function
 
 ```javascript
-function addTodo(todos, text) {
+const addTodo = (todos, text) => {
   if (typeof text !== "string" || text.length === 0) throw new TypeError("text is required");
   return [...todos, { id: crypto.randomUUID(), text, completed: false }];
-}
+};
 const todos = addTodo([], "Learn JavaScript");
 console.log(todos[0].text, todos.length);
 // Console output: Learn JavaScript 1

@@ -216,12 +216,12 @@ export type Expense = Readonly<{
   category: Category;
 }>;
 
-export function isCategory(value: unknown): value is Category {
+export const isCategory = (value: unknown): value is Category => {
   return typeof value === "string"
     && CATEGORIES.some((category) => category === value);
-}
+};
 
-export function isExpense(value: unknown): value is Expense {
+export const isExpense = (value: unknown): value is Expense => {
   return typeof value === "object"
     && value !== null
     && "id" in value
@@ -236,17 +236,17 @@ export function isExpense(value: unknown): value is Expense {
     && value.amountMinor > 0
     && "category" in value
     && isCategory(value.category);
-}
+};
 
-export function parseExpenses(serialized: string): readonly Expense[] {
+export const parseExpenses = (serialized: string): readonly Expense[] => {
   const value: unknown = JSON.parse(serialized);
   if (!Array.isArray(value) || !value.every(isExpense)) {
     throw new TypeError("stored expenses do not match the expense schema");
   }
   return value;
-}
+};
 
-export function parseAmountMinor(value: string): number {
+export const parseAmountMinor = (value: string): number => {
   if (!/^(?:0|[1-9]\d*)(?:\.\d{1,2})?$/.test(value)) {
     throw new TypeError("amount must be a positive decimal with at most two places");
   }
@@ -257,30 +257,30 @@ export function parseAmountMinor(value: string): number {
     throw new RangeError("amount is outside the supported range");
   }
   return amountMinor;
-}
+};
 
-export function addExpense(
+export const addExpense = (
   expenses: readonly Expense[],
   expense: Expense,
-): readonly Expense[] {
+): readonly Expense[] => {
   if (!isExpense(expense)) throw new TypeError("expense is invalid");
   return [...expenses, expense];
-}
+};
 
-export function filterExpenses(
+export const filterExpenses = (
   expenses: readonly Expense[],
   filter: CategoryFilter,
-): readonly Expense[] {
+): readonly Expense[] => {
   return filter === "all"
     ? expenses
     : expenses.filter((expense) => expense.category === filter);
-}
+};
 
-export function totalMinor(expenses: readonly Expense[]): number {
+export const totalMinor = (expenses: readonly Expense[]): number => {
   const total = expenses.reduce((sum, expense) => sum + expense.amountMinor, 0);
   if (!Number.isSafeInteger(total)) throw new RangeError("expense total is unsafe");
   return total;
-}
+};
 ```
 
 Concepts learned from this file:
@@ -312,11 +312,11 @@ const money = new Intl.NumberFormat("en-IN", {
   currency: "INR",
 });
 
-function requiredElement<T extends Element>(selector: string, type: new () => T): T {
+const requiredElement = <T extends Element>(selector: string, type: new () => T): T => {
   const element = document.querySelector(selector);
   if (!(element instanceof type)) throw new Error(`missing required element: ${selector}`);
   return element;
-}
+};
 
 const form = requiredElement("#expense-form", HTMLFormElement);
 const descriptionInput = requiredElement("#description", HTMLInputElement);
@@ -331,12 +331,12 @@ const total = requiredElement("#total", HTMLOutputElement);
 let expenses: readonly Expense[];
 let filter: CategoryFilter = "all";
 
-function loadExpenses(): readonly Expense[] {
+const loadExpenses = (): readonly Expense[] => {
   const serialized = localStorage.getItem(STORAGE_KEY);
   return serialized === null ? [] : parseExpenses(serialized);
-}
+};
 
-function expenseElement(expense: Expense): HTMLLIElement {
+const expenseElement = (expense: Expense): HTMLLIElement => {
   const item = document.createElement("li");
   const details = document.createElement("span");
   const description = document.createElement("strong");
@@ -349,16 +349,16 @@ function expenseElement(expense: Expense): HTMLLIElement {
   details.append(description, document.createElement("br"), category);
   item.append(details, amount);
   return item;
-}
+};
 
-function render(): void {
+const render = (): void => {
   const visible = filterExpenses(expenses, filter);
   list.replaceChildren(...visible.map(expenseElement));
   status.textContent = `${visible.length} of ${expenses.length} expenses shown`;
   total.value = money.format(totalMinor(visible) / 100);
-}
+};
 
-function start(): void {
+const start = (): void => {
   expenses = loadExpenses();
   render();
 
@@ -391,7 +391,7 @@ function start(): void {
     filter = value;
     render();
   });
-}
+};
 
 try {
   start();

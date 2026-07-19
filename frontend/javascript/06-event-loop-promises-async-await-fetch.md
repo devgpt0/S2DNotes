@@ -33,10 +33,10 @@ Returning a promise from `then` chains it. Throwing rejects the chain.
 ## Async/Await
 
 ```javascript
-async function answer() {
+const answer = async () => {
   const value = await Promise.resolve(42);
   return value;
-}
+};
 console.log(await answer());
 // Module console output: 42
 ```

@@ -2,6 +2,8 @@
 
 Use the dedicated [Chrome browser understanding, diagnostics, and performance roadmap](browser/00-chrome-browser-roadmap.md) alongside every module. It explains what the browser does and how to measure problems instead of guessing.
 
+After React and TypeScript fundamentals, use the [Redux Toolkit state-management roadmap](redux/00-redux-toolkit-roadmap.md) when an application has demonstrated shared client-state complexity.
+
 This course assumes no frontend experience. Study in order because each module uses ideas from the previous one.
 
 ## Learning Order

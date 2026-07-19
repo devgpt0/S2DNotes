@@ -1,5 +1,7 @@
 # JavaScript - Beginner to Expert Roadmap
 
+Code convention: standalone functions use `const name = (...) => {}` by default. The functions chapter explains the necessary exceptions: receiver-based object/class methods, generators, constructors, and deliberate dynamic-`this` examples.
+
 JavaScript adds behavior to web pages and also runs outside browsers. These notes focus on modern browser JavaScript using modules and strict, maintainable practices.
 
 ## Chapters
@@ -17,8 +19,11 @@ JavaScript adds behavior to web pages and also runs outside browsers. These note
 10. [Browser APIs, storage, security, observers, and workers](10-browser-apis-storage-security-observers-and-workers.md)
 11. [Performance, memory, testing, and debugging](11-performance-memory-testing-and-debugging.md)
 12. [Practical activities and interview answers](12-javascript-practical-and-interview-answers.md)
-13. [Expert JavaScript tips and browser patterns](98-javascript-expert-tips.md)
-14. [60-minute task board project](99-javascript-60-minute-project.md)
+13. [Execution contexts, hoisting, prototypes, and memory](13-execution-context-prototypes-and-memory.md)
+14. [Web concurrency, streams, workers, and realtime APIs](14-web-concurrency-streams-and-workers.md)
+15. [Production JavaScript architecture and security](15-production-architecture-and-security.md)
+16. [Expert JavaScript tips and browser patterns](98-javascript-expert-tips.md)
+17. [Complete task board project](99-javascript-60-minute-project.md)
 
 ## First Rule
 

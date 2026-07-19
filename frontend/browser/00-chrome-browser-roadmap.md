@@ -11,7 +11,8 @@ Chrome is the primary tool in the examples. The web concepts still apply to othe
 3. [Performance and Core Web Vitals](03-performance-and-core-web-vitals.md)
 4. [Network, memory, storage, and security diagnosis](04-network-memory-storage-security.md)
 5. [Hands-on Chrome performance lab](05-hands-on-performance-lab.md)
-6. [Chrome expert tools and production checklist](98-chrome-expert-tips.md)
+6. [Complete browser storage selection and lifecycle guide](06-browser-storage-complete-guide.md)
+7. [Chrome expert tools and production checklist](98-chrome-expert-tips.md)
 
 ## Beginner to Expert Path
 

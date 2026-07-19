@@ -1,5 +1,7 @@
 # 10 - Browser APIs, Storage, Security, Observers, and Workers
 
+For storage lifetime, security, quota, eviction, product-stage selection, IndexedDB, Cache Storage, OPFS, cookies, and server ownership, also read the [complete browser storage guide](../browser/06-browser-storage-complete-guide.md).
+
 ## URL and History
 
 ```javascript

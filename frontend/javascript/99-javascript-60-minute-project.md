@@ -176,7 +176,7 @@ Concepts learned from this file:
 ```javascript
 export const FILTERS = Object.freeze(["all", "active", "completed"]);
 
-export function addTask(tasks, text, id = crypto.randomUUID()) {
+export const addTask = (tasks, text, id = crypto.randomUUID()) => {
   if (!Array.isArray(tasks)) throw new TypeError("tasks must be an array");
   if (typeof text !== "string" || text.trim().length === 0) {
     throw new TypeError("task text must be a non-empty string");
@@ -186,9 +186,9 @@ export function addTask(tasks, text, id = crypto.randomUUID()) {
   }
 
   return [...tasks, { id, text: text.trim(), completed: false }];
-}
+};
 
-export function toggleTask(tasks, id) {
+export const toggleTask = (tasks, id) => {
   if (!tasks.some((task) => task.id === id)) {
     throw new RangeError(`unknown task id: ${id}`);
   }
@@ -196,21 +196,21 @@ export function toggleTask(tasks, id) {
   return tasks.map((task) =>
     task.id === id ? { ...task, completed: !task.completed } : task,
   );
-}
+};
 
-export function removeTask(tasks, id) {
+export const removeTask = (tasks, id) => {
   if (!tasks.some((task) => task.id === id)) {
     throw new RangeError(`unknown task id: ${id}`);
   }
   return tasks.filter((task) => task.id !== id);
-}
+};
 
-export function visibleTasks(tasks, filter) {
+export const visibleTasks = (tasks, filter) => {
   if (!FILTERS.includes(filter)) throw new RangeError(`unknown filter: ${filter}`);
   if (filter === "all") return tasks;
   const completed = filter === "completed";
   return tasks.filter((task) => task.completed === completed);
-}
+};
 ```
 
 Concepts learned from this file:
@@ -225,7 +225,7 @@ Concepts learned from this file:
 ```javascript
 const STORAGE_KEY = "javascript-task-board.tasks";
 
-function isTask(value) {
+const isTask = (value) => {
   return typeof value === "object"
     && value !== null
     && typeof value.id === "string"
@@ -233,9 +233,9 @@ function isTask(value) {
     && typeof value.text === "string"
     && value.text.length > 0
     && typeof value.completed === "boolean";
-}
+};
 
-export function loadTasks(storage = localStorage) {
+export const loadTasks = (storage = localStorage) => {
   const serialized = storage.getItem(STORAGE_KEY);
   if (serialized === null) return [];
 
@@ -244,14 +244,14 @@ export function loadTasks(storage = localStorage) {
     throw new TypeError("stored tasks do not match the task schema");
   }
   return value;
-}
+};
 
-export function saveTasks(tasks, storage = localStorage) {
+export const saveTasks = (tasks, storage = localStorage) => {
   if (!Array.isArray(tasks) || !tasks.every(isTask)) {
     throw new TypeError("refusing to store invalid tasks");
   }
   storage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-}
+};
 ```
 
 Concepts learned from this file:
@@ -286,7 +286,7 @@ if (!(form instanceof HTMLFormElement)
 let tasks;
 let filter = "all";
 
-function taskElement(task) {
+const taskElement = (task) => {
   const item = document.createElement("li");
   item.className = "task";
   item.dataset.id = task.id;
@@ -310,21 +310,21 @@ function taskElement(task) {
 
   item.append(text, toggle, remove);
   return item;
-}
+};
 
-function render() {
+const render = () => {
   const visible = visibleTasks(tasks, filter);
   list.replaceChildren(...visible.map(taskElement));
   status.textContent = `${visible.length} of ${tasks.length} tasks shown`;
-}
+};
 
-function commit(nextTasks) {
+const commit = (nextTasks) => {
   saveTasks(nextTasks);
   tasks = nextTasks;
   render();
-}
+};
 
-function start() {
+const start = () => {
   tasks = loadTasks();
   render();
 
@@ -353,7 +353,7 @@ function start() {
       : removeTask(tasks, item.dataset.id);
     commit(nextTasks);
   });
-}
+};
 
 try {
   start();

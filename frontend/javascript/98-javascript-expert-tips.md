@@ -84,14 +84,14 @@ Hoisting/TDZ, closure in loops, `this` call site, microtask vs task order, shall
 
 ```javascript
 let currentController;
-async function search(query) {
+const search = async (query) => {
   currentController?.abort();
   currentController = new AbortController();
   const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`, { signal: currentController.signal });
   if (!response.ok) throw new Error(`HTTP ${response.status}`);
   const data = await response.json();
   console.log(data);
-}
+};
 // Behavior: starting a newer search aborts the previous request so stale results cannot overwrite current UI.
 ```
 
@@ -109,11 +109,11 @@ console.log(lifecycle.signal.aborted);
 ### Runtime Boundary Parser
 
 ```javascript
-function parseCourse(value) {
+const parseCourse = (value) => {
   if (typeof value !== "object" || value === null) throw new TypeError("course must be an object");
   if (typeof value.id !== "string" || typeof value.title !== "string") throw new TypeError("invalid course fields");
   return Object.freeze({ id: value.id, title: value.title });
-}
+};
 console.log(parseCourse({ id: "html", title: "HTML" }));
 // Console output: {id: "html", title: "HTML"} (console formatting varies).
 ```
@@ -130,14 +130,14 @@ console.log(widths.length);
 ### Bounded Memoization
 
 ```javascript
-function memoizeOne(fn) {
+const memoizeOne = (fn) => {
   let hasValue = false, previousArgument, previousResult;
   return argument => {
     if (hasValue && Object.is(argument, previousArgument)) return previousResult;
     hasValue = true; previousArgument = argument; previousResult = fn(argument);
     return previousResult;
   };
-}
+};
 const square = memoizeOne(value => value * value);
 console.log(square(4), square(4));
 // Console output: 16 16; cache remains bounded to one argument/result.
@@ -146,7 +146,7 @@ console.log(square(4), square(4));
 ## High-Use Lifecycle and Responsive-Behavior Pattern
 
 ```javascript
-export function mountNavigation(root, media = matchMedia("(min-width: 48rem)")) {
+export const mountNavigation = (root, media = matchMedia("(min-width: 48rem)")) => {
   if (!(root instanceof HTMLElement)) throw new TypeError("navigation root is required");
   const controller = new AbortController();
   const button = root.querySelector("button[aria-expanded]");
@@ -161,7 +161,7 @@ export function mountNavigation(root, media = matchMedia("(min-width: 48rem)")) 
   media.addEventListener("change", closeOnWideLayout, { signal: controller.signal });
 
   return () => controller.abort();
-}
+};
 // Result: one mount function validates dependencies, attaches related listeners, and returns complete cleanup.
 ```
 

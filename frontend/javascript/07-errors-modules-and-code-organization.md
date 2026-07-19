@@ -3,12 +3,12 @@
 ## Throw Useful Errors
 
 ```javascript
-function positive(value) {
+const positive = (value) => {
   if (!Number.isFinite(value) || value <= 0) {
     throw new RangeError("value must be a positive finite number");
   }
   return value;
-}
+};
 console.log(positive(5));
 // Console output: 5
 ```
@@ -48,7 +48,7 @@ console.log(error.name, error.field);
 
 ```javascript
 // math.js
-export function add(left, right) { return left + right; }
+export const add = (left, right) => left + right;
 
 // app.js
 import { add } from "./math.js";

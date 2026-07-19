@@ -31,11 +31,11 @@ input.addEventListener("input", event => {
 ```typescript
 type Course = { id: string; title: string };
 
-function isCourse(value: unknown): value is Course {
+const isCourse = (value: unknown): value is Course => {
   if (typeof value !== "object" || value === null) return false;
   const item = value as Record<string, unknown>;
   return typeof item.id === "string" && typeof item.title === "string";
-}
+};
 
 const response = await fetch("/api/course/html");
 if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -63,9 +63,9 @@ try {
 ## Promise Types
 
 ```typescript
-async function loadName(): Promise<string> {
+const loadName = async (): Promise<string> => {
   return "Asha";
-}
+};
 console.log(await loadName());
 // Module console output: Asha
 ```
