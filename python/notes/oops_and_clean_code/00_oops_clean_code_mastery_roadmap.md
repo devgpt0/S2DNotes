@@ -30,6 +30,7 @@ You can:
 3. `12_dunder_methods_and_object_lifecycle.md`
 4. `13_code_smells_and_refactoring_playbook.md`
 5. `14_oop_clean_code_interview_case_studies.md`
+6. `15_class_creation_descriptors_and_metaclasses.md`
 
 ## 4) Study Order
 
@@ -39,6 +40,7 @@ You can:
 4. SOLID and design patterns
 5. Dataclasses + protocols + DI
 6. Refactoring and case-study practice
+7. Descriptors, class creation hooks, and metaclasses
 
 ## 5) Interview Checklist
 
@@ -47,6 +49,7 @@ You can:
 3. Explain ABC vs Protocol.
 4. Explain how DI improves testability.
 5. Explain common OOP smells and safe refactor steps.
+6. Explain descriptor lookup, `__init_subclass__`, class decorators, and when a metaclass is justified.
 
 ## 6) Production Checklist
 
@@ -55,3 +58,4 @@ You can:
 3. Domain invariants are validated at boundaries.
 4. Abstractions are stable and implementation-agnostic.
 5. Unit and contract tests protect refactors.
+6. Class-creation hooks are deterministic and avoid external side effects.

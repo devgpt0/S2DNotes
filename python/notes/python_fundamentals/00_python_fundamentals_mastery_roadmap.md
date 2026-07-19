@@ -28,6 +28,7 @@ You can:
 3. `12_modules_packages_import_system_mastery.md`
 4. `13_type_hints_static_analysis_mastery.md`
 5. `14_file_io_pathlib_serialization_mastery.md`
+6. `15_modern_packaging_pyproject_wheels.md`
 
 ## 4) Suggested Study Sequence
 
@@ -38,6 +39,7 @@ You can:
 5. Modules/packages/import internals
 6. Typing and static analysis
 7. File I/O and serialization boundaries
+8. Modern packaging, wheels, and release verification
 
 ## 5) Interview Checklist
 
@@ -49,6 +51,7 @@ You can:
 6. Explain `with` as deterministic cleanup.
 7. Explain import caching in `sys.modules`.
 8. Explain when to use `Iterable` vs `Sequence` in hints.
+9. Explain import package vs distribution, sdist vs wheel, and editable install vs release artifact.
 
 ## 6) Production Checklist
 
@@ -57,3 +60,4 @@ You can:
 3. Modules avoid import-time side effects.
 4. Public APIs have type hints.
 5. File-path handling uses `pathlib`.
+6. Built wheels are inspected and tested in a clean environment.

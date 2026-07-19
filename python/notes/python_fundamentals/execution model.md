@@ -1,495 +1,598 @@
-# 🐍 PYTHON — LEVEL 1 NOTES: EXECUTION MODEL
+# Python Execution Model - Beginner to Expert
 
----
+This chapter explains what Python does when it reads a module, resolves a name, calls a function, raises an exception, imports another module, or pauses an async task.
 
-# 🔷 1. EXECUTION MODEL
+## 1. Source to Execution
 
-## 🧠 Mental Model
-
-```text
-.py → bytecode → Python Virtual Machine (PVM)
-```
-
-* Python compiles code into **bytecode**
-* Bytecode runs in **Python interpreter (PVM)**
-* No aggressive JIT (in CPython)
-
-👉 Execution is **dynamic + interpreted**
-
----
-
-# 🔷 2. CORE MEMORY MODEL
-
-## 🧠 Fundamental Rule
-
-> ❗ **Everything in Python is an object (stored in heap)**
-
----
-
-## 🔹 Variables
-
-A variable is:
-
-> **a label (reference) pointing to an object**
-
----
-
-## 🧠 Visualization
+For CPython:
 
 ```text
-x = 10
-
-x ─────► [10 object]
+.py source -> tokens and AST -> code object and bytecode -> frame execution
 ```
-
----
-
-# 🔷 3. ASSIGNMENT (MOST IMPORTANT)
-
-## 🧠 Rule
-
-> ❗ Assignment does NOT copy object
-> ❗ It copies the reference
-
----
-
-### Example Thinking
 
 ```python
-a = [1,2]
-b = a
+source = "answer = 6 * 7"
+code = compile(source, "<lesson>", "exec")
+namespace: dict[str, object] = {}
+exec(code, namespace)
+
+print(namespace["answer"])
 ```
+
+Output:
+ 
+```text
+42
+```
+
+`exec` runs arbitrary code. Never pass it untrusted input.
+
+## 2. Module Execution
+
+Python executes a module's top-level statements from top to bottom.
+
+```python
+print("first")
+
+course = "Python"
+
+print(f"second: {course}")
+```
+
+Output:
 
 ```text
-a ─┐
-   ├──► [1,2]
-b ─┘
+first
+second: Python
 ```
 
-👉 Both refer to same object
-
----
-
-# 🔷 4. MUTABLE vs IMMUTABLE
-
----
-
-## 🔹 Immutable Objects
-
-* int, float, str, tuple
-
-### Behavior:
-
-> ❗ Any modification → NEW object created
-
----
-
-### Mental Model
+A `def` statement creates a function object. The function body runs only when called.
 
 ```python
-x = 10
-y = x
-y += 1
+print("before definition")
+
+
+def teach() -> None:
+    print("inside function")
+
+
+print("before call")
+teach()
 ```
+
+Output:
 
 ```text
-x ─────► [10]
-
-y ─────► [11]   (new object)
+before definition
+before call
+inside function
 ```
 
----
-
-## 🔹 Mutable Objects
-
-* list, dict, set
-
-### Behavior:
-
-> ❗ Modification happens in SAME object
-
----
-
-### Mental Model
+## 3. Names and Objects
 
 ```python
-x = [1]
-y = x
-y.append(2)
+topics = ["typing"]
+alias = topics
+alias.append("profiling")
+
+print(topics)
 ```
+
+Output:
 
 ```text
-x ─┐
-   ├──► [1,2]
-y ─┘
+['typing', 'profiling']
 ```
 
----
+Execution binds names to objects. Assignment does not create a deep copy.
 
-# 🔷 5. MUTATION vs REBINDING
+## 4. Execution Frames
 
----
+Each active Python function call has an execution frame. Conceptually, a frame contains:
 
-## 🔹 Mutation
+- the code being executed;
+- local variables;
+- access to global and built-in namespaces;
+- the current instruction position;
+- exception-handling state;
+- links needed for calls and debugging.
 
 ```python
-x.append(3)
+def inner(value: int) -> int:
+    return value * 2
+
+
+def outer() -> int:
+    result = inner(21)
+    return result
+
+
+print(outer())
 ```
 
-👉 Changes existing object
-
----
-
-## 🔹 Rebinding
-
-```python
-x = [1,2]
-```
-
-👉 New object created, variable now points to it
-
----
-
-## 🧠 Key Difference
-
-| Operation | Effect      |
-| --------- | ----------- |
-| Mutation  | same object |
-| Rebinding | new object  |
-
----
-
-# 🔷 6. FUNCTION ARGUMENT MODEL
-
-## 🧠 Python uses:
-
-> ✅ **Call-by-sharing (object reference passed)**
-
----
-
-## 🔹 What it means
-
-* Function gets **reference to same object**
-* Behavior depends on operation
-
----
-
-### Case 1: Mutation
-
-```python
-def f(x):
-    x.append(10)
-```
-
-👉 Original object changes
-
----
-
-### Case 2: Rebinding
-
-```python
-def f(x):
-    x = [1,2]
-```
-
-👉 Only local variable changes
-
----
-
-# 🔷 7. INTERVIEW MENTAL MODEL (STEP-BY-STEP)
-
-When solving any question:
-
----
-
-## 🧠 Step 1: Everything is object
-
-* No primitives
-
----
-
-## 🧠 Step 2: Track references
-
-* Which variables point to same object?
-
----
-
-## 🧠 Step 3: Check type
-
-* Mutable or immutable?
-
----
-
-## 🧠 Step 4: Identify operation
-
-* Mutation → same object changes
-* Rebinding → new object
-
----
-
-## 🧠 Step 5: Function behavior
-
-* Object shared
-* Reassignment local
-
----
-
-# 🔷 8. COMMON INTERVIEW PATTERNS
-
----
-
-### 🔥 Pattern 1: Shared Reference
-
-```python
-a = [1,2]
-b = a
-```
-
-👉 same object
-
----
-
-### 🔥 Pattern 2: Copy
-
-```python
-b = a[:]
-```
-
-👉 new object
-
----
-
-### 🔥 Pattern 3: Immutable Update
-
-```python
-x = 10
-x += 1
-```
-
-👉 new object
-
----
-
-### 🔥 Pattern 4: Function Mutation
-
-```python
-def f(x):
-    x.append(1)
-```
-
-👉 affects original
-
----
-
-### 🔥 Pattern 5: Function Rebinding
-
-```python
-def f(x):
-    x = []
-```
-
-👉 no effect outside
-
----
-
-# 🔷 9. COMMON MISTAKES (VERY IMPORTANT)
-
----
-
-### ❌ "Python variables store values"
-
-👉 WRONG
-✔️ They store **references**
-
----
-
-### ❌ "Assignment copies object"
-
-👉 WRONG
-✔️ Copies reference
-
----
-
-### ❌ "Functions pass by reference"
-
-👉 WRONG
-✔️ Call-by-sharing
-
----
-
-### ❌ "x += always mutates"
-
-👉 WRONG
-✔️ Depends on mutability
-
----
-
-# 🔷 10. FINAL MENTAL MODEL (CONDENSED)
-
----
-
-### 🧠 5 Golden Rules
-
-1. Everything = object
-2. Variable = reference (label)
-3. Assignment = reference copy
-4. Mutable → same object changes
-5. Immutable → new object created
-
----
-
-# 🎯 HOW TO THINK IN INTERVIEW
-
----
-
-When you see code:
+Output:
 
 ```text
-1. Draw objects in heap
-2. Track which variable points where
-3. Check mutable vs immutable
-4. Identify mutation vs rebinding
-5. Follow function flow
+42
 ```
 
----
+Flow:
 
-# 🚀 LEVEL 1 TARGET
+```text
+module frame -> call outer -> outer frame -> call inner -> inner frame
+             <- return 42  <- outer returns 42
+```
 
-You should be able to:
+## 5. LEGB Name Resolution
 
-* Predict output of simple code
-* Explain reference behavior clearly
-* Distinguish mutation vs reassignment instantly
+For a normal name lookup inside nested functions, Python searches:
 
----
+1. local;
+2. enclosing function scopes;
+3. module globals;
+4. built-ins.
 
-**Ready for assignments?** Check the `assignement/test` folder to test your understanding!
-
-**Next Level:** Level 2 covers hidden traps = nested lists, default args, shallow/deep copy, interning edge cases
-
----
-
-## Level 2
-
-### Mental Model
-Python executes bytecode in frames. Each call creates a frame with local namespace, and control flow moves frame to frame.
-
-### Solve Steps
-1. Trace frame creation for each call.
-2. Track local, global, and built-in lookups.
-3. Follow exception propagation frame-by-frame.
-4. Use this model to debug recursion and state leakage.
-
-## Level 3
-
-### Mental Model
-Concurrency model depends on runtime strategy: threads share memory under GIL, processes isolate memory, asyncio shares one event loop.
-
-### Solve Steps
-1. Choose model first (threads/processes/asyncio).
-2. Predict shared-state hazards only where memory is shared.
-3. Use queues/messages for process communication.
-4. In async code, reason at await boundaries.
-
----
-
-### Level 2 Questions
-1. What is a Python frame and what does it store?
-2. How are local/global/built-in names resolved during execution?
-3. How does an exception travel through nested calls?
-
-### Level 3 Questions
-1. Before each `await`, what state assumptions must be re-validated?
-2. Why do process-based workers avoid many shared-memory bugs?
-3. When does threading still need locks despite the GIL?
-
----
-
-## 🔷 2. EXECUTION MODEL
-
-Understand how this topic runs in actual program flow:
-
-- Read statement
-- Resolve type/object/reference
-- Execute operation (assignment, mutation, call, return)
-- Update memory state (stack/heap bindings)
-- Re-check final output from updated state
+```python
+label = "global"
 
 
----
+def outer() -> None:
+    label = "enclosing"
 
-## 🔷 3. INTERVIEW MENTAL MODEL (STEP-BY-STEP)
+    def inner() -> None:
+        label = "local"
+        print(label)
 
-When you see ANY question:
+    inner()
 
----
 
-### 🧠 Step 1: Identify variable type
+outer()
+```
 
-* Primitive? → value
-* Object? → reference
+Output:
 
----
+```text
+local
+```
 
-### 🧠 Step 2: Where is it stored?
+Class-body name lookup has additional details and should not be reduced blindly to the nested-function LEGB diagram.
 
-* Primitive → stack
-* Object → heap (via reference)
+## 6. Local Variables Are Determined by the Function Body
 
----
+```python
+count = 10
 
-### 🧠 Step 3: Assignment behavior
 
-* Primitive → copy value
-* Object → copy reference
+def broken() -> None:
+    print(count)
+    count = 11
+```
 
----
+Calling `broken()` raises `UnboundLocalError`. Because the body assigns `count`, the compiler treats it as local throughout that function. The read occurs before the local binding.
 
-### 🧠 Step 4: Operation type
+Fix the design by passing and returning data:
 
-* Field change → mutation
-* `new` → new object (reassignment)
+```python
+def increment(count: int) -> int:
+    return count + 1
 
----
 
-### 🧠 Step 5: Function call
+count = increment(10)
+print(count)
+```
 
-* Always pass-by-value
-* Object → reference copied
+Output:
 
----
+```text
+11
+```
 
-## 4. IMPORT SYSTEM AND MODULE EXECUTION (CRITICAL CONCEPT)
+Prefer explicit data flow over mutable globals.
 
-Import is executable behavior, not only a declaration.
+## 7. `nonlocal` Rebinds an Enclosing Name
 
-Core flow:
-1. Python checks `sys.modules` cache.
-2. If missing, loader finds and executes module top-level code.
-3. Module object is cached in `sys.modules`.
-4. Next import reuses cached module object.
+```python
+from collections.abc import Callable
 
-Implications:
-- top-level side effects run at first import time.
-- circular imports fail when module state is partially initialized.
-- import order can change runtime behavior if side effects exist.
 
-## 5. NAME RESOLUTION IN EXECUTION FRAMES (LEGB IN PRACTICE)
+def make_counter() -> Callable[[], int]:
+    count = 0
 
-Name lookup order:
-1. Local
-2. Enclosing
-3. Global
-4. Builtins
+    def increment() -> int:
+        nonlocal count
+        count += 1
+        return count
 
-Debug mindset:
-- unresolved name errors are often frame/namespace issues.
-- unexpected value usage is often shadowing (local name hides global/builtin).
+    return increment
 
-## 6. EXECUTION MODEL PITFALLS TO REVISE
 
-- module-level mutable state shared across imports.
-- circular imports from cross-module initialization logic.
-- hidden side effects at import time.
-- depending on implicit globals instead of explicit parameters.
+counter = make_counter()
+print(counter())
+print(counter())
+```
+
+Output:
+
+```text
+1
+2
+```
+
+The closure keeps the enclosing cell alive. Hidden closure state can be useful but should not replace an explicit object when lifecycle and inspection matter.
+
+## 8. Function Call Order
+
+Python evaluates the callable and argument expressions before entering the function body.
+
+```python
+def make_value(label: str, value: int) -> int:
+    print(label)
+    return value
+
+
+def add(left: int, right: int) -> int:
+    print("inside add")
+    return left + right
+
+
+print(add(make_value("left", 20), make_value("right", 22)))
+```
+
+Output:
+
+```text
+left
+right
+inside add
+42
+```
+
+Do not put order-sensitive side effects inside argument expressions when a few explicit statements are clearer.
+
+## 9. Parameter Binding
+
+```python
+def describe(course_id: str, *, active: bool = True) -> None:
+    print(f"{course_id=}, {active=}")
+
+
+describe("python", active=False)
+```
+
+Output:
+
+```text
+course_id='python', active=False
+```
+
+Before the body runs, Python binds positional, keyword, default, variadic, positional-only, and keyword-only parameters according to the signature. Invalid binding raises `TypeError` before the body begins.
+
+## 10. Return and `finally`
+
+```python
+def example() -> str:
+    try:
+        return "result"
+    finally:
+        print("cleanup")
+
+
+print(example())
+```
+
+Output:
+
+```text
+cleanup
+result
+```
+
+The return value is prepared, `finally` runs, and then the function returns. A `return` or new exception inside `finally` can replace the earlier result or exception; avoid that confusing behavior.
+
+## 11. Exception Propagation
+
+```python
+def parse_level(raw: str) -> int:
+    return int(raw)
+
+
+def load_level(raw: str) -> int:
+    try:
+        return parse_level(raw)
+    except ValueError as error:
+        raise ValueError("level must be an integer") from error
+
+
+try:
+    load_level("advanced")
+except ValueError as error:
+    print(error)
+    print(type(error.__cause__).__name__)
+```
+
+Output:
+
+```text
+level must be an integer
+ValueError
+```
+
+An unhandled exception unwinds frames until a matching handler is found. `finally` blocks and context-manager exits run during unwinding.
+
+## 12. Context Manager Execution
+
+```python
+from types import TracebackType
+
+
+class Lesson:
+    def __enter__(self) -> "Lesson":
+        print("enter")
+        return self
+
+    def __exit__(
+        self,
+        exception_type: type[BaseException] | None,
+        exception: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> bool:
+        print(f"exit: {exception_type is None}")
+        return False
+
+
+with Lesson():
+    print("body")
+```
+
+Output:
+
+```text
+enter
+body
+exit: True
+```
+
+Conceptually, `with` evaluates the manager, calls `__enter__`, executes the body, and always calls `__exit__`. Returning `True` from `__exit__` suppresses an exception; do that only when suppression is the explicit contract.
+
+## 13. Iterator Execution
+
+```python
+values = [10, 20]
+iterator = iter(values)
+
+print(next(iterator))
+print(next(iterator))
+
+try:
+    next(iterator)
+except StopIteration:
+    print("finished")
+```
+
+Output:
+
+```text
+10
+20
+finished
+```
+
+A `for` loop repeatedly calls `next` and handles `StopIteration` internally.
+
+## 14. Generator Suspension
+
+```python
+from collections.abc import Iterator
+
+
+def lessons() -> Iterator[str]:
+    print("started")
+    yield "fundamentals"
+    print("resumed")
+    yield "internals"
+
+
+iterator = lessons()
+print("created")
+print(next(iterator))
+print(next(iterator))
+```
+
+Output:
+
+```text
+created
+started
+fundamentals
+resumed
+internals
+```
+
+Calling a generator function creates a generator object without running its body. `next` resumes its saved frame until the next `yield`, return, or exception.
+
+## 15. Decorator Execution Time
+
+Decorators run when the decorated function or class is defined, usually during module import.
+
+```python
+from collections.abc import Callable
+
+
+def announce(function: Callable[[], None]) -> Callable[[], None]:
+    print(f"decorating {function.__name__}")
+    return function
+
+
+@announce
+def teach() -> None:
+    print("teaching")
+
+
+print("before call")
+teach()
+```
+
+Output:
+
+```text
+decorating teach
+before call
+teaching
+```
+
+Avoid decorators that perform network, database, or other expensive side effects at import time.
+
+## 16. Class Statement Execution
+
+A class statement executes its body in a namespace and then calls a class-creation mechanism, normally `type`.
+
+```python
+print("before class")
+
+
+class Course:
+    print("inside class body")
+    category = "programming"
+
+
+print(Course.category)
+```
+
+Output:
+
+```text
+before class
+inside class body
+programming
+```
+
+Methods are function objects placed in the class namespace. Descriptor binding later turns a function retrieved through an instance into a bound method.
+
+## 17. Import Execution and Cache
+
+On a normal import, Python:
+
+1. checks `sys.modules`;
+2. finds a module specification;
+3. creates a module object;
+4. caches it before execution finishes;
+5. executes top-level code;
+6. returns the module.
+
+```python
+import math
+import sys
+
+print("math" in sys.modules)
+print(math.sqrt(81))
+```
+
+Output:
+
+```text
+True
+9.0
+```
+
+The early cache insertion explains why circular imports can observe a partially initialized module. Fix dependency direction rather than scattering local imports as a default workaround.
+
+## 18. Main-Module Guard
+
+```python
+def main() -> None:
+    print("application started")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+When executed as the main module, `__name__` is `"__main__"`. When imported, the guard prevents `main()` from running. Package console entry points are a cleaner installed-command mechanism.
+
+## 19. Thread Execution
+
+Threads in one process share objects. The OS and interpreter can switch execution between threads.
+
+In a GIL-enabled CPython build, one thread executes Python bytecode at a time per interpreter, but I/O and native code can release the GIL. Shared multi-step invariants still need synchronization.
+
+## 20. Async Execution
+
+An `async def` call creates a coroutine object. Its body runs when awaited or scheduled.
+
+```python
+import asyncio
+
+
+async def lesson() -> str:
+    print("lesson started")
+    await asyncio.sleep(0)
+    print("lesson resumed")
+    return "done"
+
+
+async def main() -> None:
+    coroutine = lesson()
+    print("coroutine created")
+    print(await coroutine)
+
+
+asyncio.run(main())
+```
+
+Output:
+
+```text
+coroutine created
+lesson started
+lesson resumed
+done
+```
+
+At `await`, the task may suspend so another ready task can run. Re-check shared-state assumptions after every await boundary.
+
+## 21. Process Execution
+
+Separate processes normally have separate Python runtimes and memory spaces. Arguments and results commonly cross process boundaries through serialization and inter-process communication.
+
+Use the `if __name__ == "__main__":` guard around process-starting application code, especially with spawn-based platforms.
+
+## 22. CPython Bytecode Is Not a Stable API
+
+The `dis` module can explain execution:
+
+```python
+import dis
+
+
+def double(value: int) -> int:
+    return value * 2
+
+
+dis.dis(double)
+```
+
+Instruction names and specialization can change by Python version. Use bytecode for diagnosis and learning, not application branching.
+
+## 23. Debugging Execution
+
+Ask these questions:
+
+1. Which statement executes now?
+2. Which frame and namespace own each name?
+3. Which objects do the names reference?
+4. Is the operation mutation or rebinding?
+5. Which call, yield, await, import, or exception changes control flow?
+6. Which `finally` or context-manager cleanup must run?
+7. Can another task, thread, or process observe or change state?
+
+## Final Rules
+
+- modules and class bodies execute top to bottom;
+- function and coroutine bodies run only after call plus execution/await;
+- parameters are local bindings to evaluated argument objects;
+- name scope is determined from the code, not runtime guesswork;
+- exceptions unwind frames and run cleanup;
+- generators and coroutines preserve suspended execution state;
+- imports execute code and cache partially initialized modules;
+- every await or synchronization boundary can invalidate state assumptions;
+- treat CPython bytecode and frame details as diagnostics, not business contracts.
