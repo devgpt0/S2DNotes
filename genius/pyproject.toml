@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "genius-learning-chatbot"
+version = "1.0.0"
+description = "Streamlit RAG chatbot for the learnings document corpus"
+requires-python = ">=3.12"
+dependencies = [
+    "google-genai>=1.0,<2",
+    "numpy>=2.0,<3",
+    "pypdf>=5.0,<7",
+    "python-docx>=1.1,<2",
+    "python-dotenv>=1.0,<2",
+    "requests>=2.32,<3",
+    "sentence-transformers>=5,<6",
+    "streamlit>=1.40,<2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "bandit>=1.8,<2",
+    "pyright>=1.1,<2",
+    "pytest>=8.3,<9",
+    "ruff>=0.9,<1",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "RUF"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+
+[tool.setuptools]
+py-modules = ["app"]
+packages = ["genius_app"]
