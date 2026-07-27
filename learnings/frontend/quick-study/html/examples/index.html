@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTML interview examples</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to main content</a>
+    <header>
+      <h1>HTML interview examples</h1>
+      <nav aria-label="Example navigation">
+        <a href="#form-example">Accessible form</a>
+        <a href="#article-example">Semantic article</a>
+        <a href="#table-example">Comparison table</a>
+      </nav>
+    </header>
+
+    <main id="content">
+      <section id="form-example" aria-labelledby="form-heading">
+        <h2 id="form-heading">1. Accessible sign-up form</h2>
+        <form id="signup-form">
+          <fieldset>
+            <legend>Account details</legend>
+
+            <label for="name">Full name</label>
+            <input id="name" name="name" autocomplete="name" required />
+
+            <label for="email">Email</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+            />
+
+            <label for="password">Password</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="new-password"
+              minlength="8"
+              required
+            />
+
+            <label for="plan">Plan</label>
+            <select id="plan" name="plan" required>
+              <option value="">Choose a plan</option>
+              <option value="starter">Starter</option>
+              <option value="pro">Pro</option>
+            </select>
+
+            <label>
+              <input name="terms" type="checkbox" required /> I accept the terms
+            </label>
+            <button type="submit">Create account</button>
+          </fieldset>
+        </form>
+        <p id="result" class="result" role="status" hidden></p>
+      </section>
+
+      <article id="article-example">
+        <header>
+          <h2>2. How browsers render a page</h2>
+          <p>Published <time datetime="2026-07-28">28 July 2026</time></p>
+        </header>
+        <section aria-labelledby="parsing-heading">
+          <h3 id="parsing-heading">Parsing HTML</h3>
+          <p>The browser turns markup into a DOM tree.</p>
+        </section>
+        <aside aria-labelledby="related-heading">
+          <h3 id="related-heading">Related reading</h3>
+          <a href="#table-example">Accessible tables</a>
+        </aside>
+      </article>
+
+      <section id="table-example" aria-labelledby="table-heading">
+        <h2 id="table-heading">3. Accessible comparison table</h2>
+        <table>
+          <caption>Plan comparison per month</caption>
+          <thead>
+            <tr>
+              <th scope="col">Feature</th>
+              <th scope="col">Starter</th>
+              <th scope="col">Pro</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Projects</th>
+              <td>3</td>
+              <td>Unlimited</td>
+            </tr>
+            <tr>
+              <th scope="row">Support</th>
+              <td>Email</td>
+              <td>Priority</td>
+            </tr>
+            <tr>
+              <th scope="row">Price</th>
+              <td>INR 499</td>
+              <td>INR 999</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <footer>
+      <p>Open browser developer tools to inspect the semantic DOM.</p>
+    </footer>
+  </body>
+</html>

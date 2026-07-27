@@ -1,0 +1,36 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  color: #172033;
+  font: 1rem/1.5 system-ui, sans-serif;
+}
+
+label {
+  display: block;
+  margin-block-end: 0.5rem;
+  font-weight: 600;
+}
+
+input,
+button {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  font: inherit;
+}
+
+pre {
+  overflow: auto;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: #eef2ff;
+}
+
+:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}

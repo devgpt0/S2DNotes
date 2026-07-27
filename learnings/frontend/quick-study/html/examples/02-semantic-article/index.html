@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Semantic article</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <header>
+      <a href="#content">Skip to main content</a>
+      <nav aria-label="Primary">
+        <a href="./">Home</a> · <a href="#related">Related reading</a>
+      </nav>
+    </header>
+    <main id="content">
+      <article>
+        <header>
+          <h1>How browsers render a page</h1>
+          <p>Published <time datetime="2026-07-28">28 July 2026</time></p>
+        </header>
+        <section aria-labelledby="parsing-heading">
+          <h2 id="parsing-heading">Parsing HTML</h2>
+          <p>The browser turns HTML markup into a DOM tree.</p>
+        </section>
+      </article>
+      <aside id="related" aria-labelledby="related-heading">
+        <h2 id="related-heading">Related reading</h2>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/How_browsers_work">
+          How browsers work on MDN
+        </a>
+      </aside>
+    </main>
+    <footer><p>&copy; 2026 Web Notes</p></footer>
+  </body>
+</html>

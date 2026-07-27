@@ -1,0 +1,60 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: #172033;
+  background: #f4f7fb;
+  font: 1rem/1.5 system-ui, sans-serif;
+}
+
+main {
+  width: min(100% - 2rem, 60rem);
+  margin-inline: auto;
+  padding-block: 2rem;
+}
+
+section {
+  margin-block: 1rem;
+  padding: 1.25rem;
+  background: white;
+  border: 1px solid #d8dfeb;
+  border-radius: 0.75rem;
+}
+
+label {
+  display: block;
+  font-weight: 700;
+}
+
+select,
+textarea,
+button {
+  display: block;
+  width: min(100%, 32rem);
+  margin-block: 0.5rem;
+  padding: 0.65rem;
+  font: inherit;
+}
+
+button {
+  color: white;
+  background: #2457d6;
+  border: 0;
+  border-radius: 0.4rem;
+  cursor: pointer;
+}
+
+output {
+  color: #17643a;
+  font-weight: 700;
+}
+
+pre {
+  overflow-x: auto;
+  padding: 1rem;
+  color: #e6edf7;
+  background: #101827;
+  border-radius: 0.4rem;
+}

@@ -1,0 +1,28 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 2rem 1rem;
+  color: #172033;
+  font: 1rem/1.5 system-ui, sans-serif;
+}
+
+main {
+  max-width: 70rem;
+  margin-inline: auto;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: 1rem;
+}
+
+.card {
+  padding: 1rem;
+  border: 1px solid #aab4c5;
+  border-radius: 0.5rem;
+  background: #f8fafc;
+}

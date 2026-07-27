@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSS interview examples</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="page-header">
+      <h1>CSS interview examples</h1>
+      <p>Resize the page and navigate with Tab.</p>
+    </header>
+    <main>
+      <section aria-labelledby="center-heading">
+        <h2 id="center-heading">1. Center a card</h2>
+        <div class="center-demo">
+          <article class="centered-card">
+            <h3>Centered</h3>
+            <p>Grid places this card in the exact center.</p>
+          </article>
+        </div>
+      </section>
+      <section aria-labelledby="grid-heading">
+        <h2 id="grid-heading">2. Responsive card grid</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>HTML</h3>
+            <p>Page structure and meaning.</p>
+          </article>
+          <article class="card">
+            <h3>CSS</h3>
+            <p>Layout and presentation.</p>
+          </article>
+          <article class="card">
+            <h3>JavaScript</h3>
+            <p>Data and behavior.</p>
+          </article>
+          <article class="card">
+            <h3>React</h3>
+            <p>Component-based interfaces.</p>
+          </article>
+        </div>
+      </section>
+      <section aria-labelledby="menu-heading">
+        <h2 id="menu-heading">3. Hover and keyboard dropdown</h2>
+        <nav aria-label="Demo menu">
+          <ul class="menu">
+            <li><a href="#center-heading">Home</a></li>
+            <li class="menu-item">
+              <button type="button">Topics</button>
+              <ul class="submenu">
+                <li><a href="#grid-heading">Layout</a></li>
+                <li><a href="#menu-heading">Focus</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </section>
+    </main>
+  </body>
+</html>

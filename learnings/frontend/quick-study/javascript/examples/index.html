@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JavaScript interview examples</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <h1>JavaScript interview examples</h1>
+      <section>
+        <h2>1. Debounce</h2>
+        <label for="search">Search text</label>
+        <input id="search" autocomplete="off" />
+        <p>Status: <output id="debounce-output">Waiting for input</output></p>
+      </section>
+      <section>
+        <h2>2. Flatten a nested array</h2>
+        <pre><code>flatten([1, [2, [3, 4]], 5])</code></pre>
+        <p>Result: <output id="flatten-output"></output></p>
+      </section>
+      <section>
+        <h2>3. Group objects by a property</h2>
+        <pre><code>groupBy(people, person =&gt; person.team)</code></pre>
+        <pre id="group-output" aria-label="Grouped people result"></pre>
+      </section>
+    </main>
+  </body>
+</html>

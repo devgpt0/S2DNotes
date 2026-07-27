@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TypeScript interview examples</title>
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <main>
+      <h1>TypeScript interview examples</h1>
+      <section>
+        <h2>1. Type-safe property getter</h2>
+        <p id="getter-output"></p>
+        <pre><code>getProperty(user, "id")</code></pre>
+      </section>
+
+      <section>
+        <h2>2. Exhaustive request state</h2>
+        <label for="request-state">Select state</label>
+        <select id="request-state">
+          <option value="idle">Idle</option>
+          <option value="loading">Loading</option>
+          <option value="success">Success</option>
+          <option value="error">Error</option>
+        </select>
+        <p>Result: <output id="state-output"></output></p>
+      </section>
+
+      <section>
+        <h2>3. Validate unknown API data</h2>
+        <label for="json-input">JSON input</label>
+        <textarea id="json-input" rows="5">{"id":"u1","name":"Asha"}</textarea>
+        <button id="validate-button" type="button">Validate user</button>
+        <p>Result: <output id="validation-output"></output></p>
+      </section>
+    </main>
+  </body>
+</html>

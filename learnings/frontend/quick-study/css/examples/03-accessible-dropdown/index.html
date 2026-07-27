@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accessible dropdown</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <nav aria-label="Demo">
+      <div class="menu-item">
+        <button id="menu-button" aria-expanded="false" aria-controls="submenu">
+          Resources
+        </button>
+        <ul id="submenu" class="submenu" hidden>
+          <li><a href="https://developer.mozilla.org/">MDN</a></li>
+          <li><a href="https://web.dev/">web.dev</a></li>
+        </ul>
+      </div>
+    </nav>
+    <p>Use the button, Tab, and Escape keys.</p>
+  </body>
+</html>

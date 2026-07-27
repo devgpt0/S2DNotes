@@ -1,0 +1,21 @@
+{
+  "name": "quick-study-typescript-examples",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run check && vite build",
+    "preview": "vite preview",
+    "check": "tsc --noEmit",
+    "example:1": "tsx src/01-property-getter.ts",
+    "example:2": "tsx src/02-request-state.ts",
+    "example:3": "tsx src/03-validate-api-data.ts",
+    "examples": "npm run example:1 && npm run example:2 && npm run example:3"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3",
+    "vite": "^7.0.0"
+  }
+}

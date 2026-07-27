@@ -1,0 +1,116 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  color: #172033;
+  background: #f4f7fb;
+  font: 1rem/1.5 system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+.page-header,
+main {
+  width: min(100% - 2rem, 70rem);
+  margin-inline: auto;
+}
+
+.page-header {
+  padding-block: 2rem 1rem;
+}
+
+section {
+  margin-block: 1.5rem;
+  padding: 1.25rem;
+  background: white;
+  border: 1px solid #d8dfeb;
+  border-radius: 0.75rem;
+}
+
+.center-demo {
+  min-height: 18rem;
+  display: grid;
+  place-items: center;
+  background: #e5edff;
+  border: 2px dashed #7995d5;
+}
+
+.centered-card {
+  width: min(90%, 30rem);
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid #b8c2d1;
+  border-radius: 0.75rem;
+  box-shadow: 0 0.5rem 1.5rem rgb(36 87 214 / 15%);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  gap: 1rem;
+}
+
+.card {
+  padding: 1rem;
+  border: 1px solid #b8c2d1;
+  border-radius: 0.5rem;
+}
+
+.menu,
+.submenu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.menu a,
+.menu button {
+  display: block;
+  padding: 0.65rem 1rem;
+  color: white;
+  background: #2457d6;
+  border: 0;
+  border-radius: 0.35rem;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.menu-item {
+  position: relative;
+}
+
+.submenu {
+  display: none;
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline-start: 0;
+  z-index: 1;
+  min-width: 12rem;
+  padding-block-start: 0.25rem;
+  background: white;
+}
+
+.submenu a {
+  border-radius: 0;
+}
+
+.menu-item:hover .submenu,
+.menu-item:focus-within .submenu {
+  display: block;
+}
+
+.menu a:focus-visible,
+.menu button:focus-visible {
+  outline: 3px solid #f59e0b;
+  outline-offset: 3px;
+}
