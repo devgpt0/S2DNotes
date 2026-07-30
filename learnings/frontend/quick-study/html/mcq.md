@@ -1,273 +1,608 @@
-# HTML interview MCQs with explanations
+# HTML MCQs: read code, then explain the idea
 
-Answer each question before reading the explanation.
+There are 50 questions: 30 code-snippet questions and 20 theory questions. Try to predict the answer before revealing it.
 
-## 1. What does HTML primarily describe?
+## Part A: code-snippet MCQs (1-30)
 
-- A. Database queries
+### 1. What rendering mode does this request?
+
+```html
+<!doctype html>
+<html lang="en"></html>
+```
+
+- A. Quirks mode
+- B. XML mode
+- C. Modern standards mode
+- D. JavaScript strict mode
+
+**Answer: C.** The HTML doctype requests modern standards mode.
+
+### 2. What does the label activate when clicked?
+
+```html
+<label for="email">Email</label>
+<input id="email" type="email" />
+```
+
+- A. The input with `name="email"`
+- B. The input with `id="email"`
+- C. Every email input
+- D. No input
+
+**Answer: B.** A label's `for` value connects to an input's `id`.
+
+### 3. Which value is sent as the form field key?
+
+```html
+<input id="user-email" name="email" type="email" value="a@example.com" />
+```
+
+- A. `user-email`
+- B. `a@example.com`
+- C. `email`
+- D. `type`
+
+**Answer: C.** Forms submit a control's `name` and its value.
+
+### 4. What is this button's default behavior inside a form?
+
+```html
+<form>
+  <button>Save</button>
+</form>
+```
+
+- A. It resets the form
+- B. It submits the form
+- C. It does nothing
+- D. It opens a link
+
+**Answer: B.** A button in a form defaults to `type="submit"`.
+
+### 5. What is the correct alternative text choice here?
+
+```html
+<img src="blue-line.svg" alt="" />
+```
+
+- A. The browser hides the image visually
+- B. The image cannot load
+- C. Assistive technology treats it as decorative
+- D. The image has no size
+
+**Answer: C.** Empty `alt` is correct for a purely decorative image.
+
+### 6. What extra attribute protects this new-tab link?
+
+```html
+<a href="https://example.com" target="_blank" rel="noopener noreferrer">Resource</a>
+```
+
+- A. `href`
+- B. `target`
+- C. `rel`
+- D. Link text
+
+**Answer: C.** `noopener` prevents the opened page from getting an opener reference.
+
+### 7. Which element receives the fragment navigation?
+
+```html
+<a href="#practice">Practice</a>
+<section id="practice"><h2>Practice</h2></section>
+```
+
+- A. The anchor
+- B. The section
+- C. The heading only
+- D. The document head
+
+**Answer: B.** `#practice` targets the element whose `id` is `practice`.
+
+### 8. What does this landmark identify?
+
+```html
+<main>
+  <h1>Course notes</h1>
+</main>
+```
+
+- A. Secondary content
+- B. Site navigation
+- C. The page's unique main content
+- D. A footer
+
+**Answer: C.** `main` represents the primary content of the page.
+
+### 9. Which heading hierarchy is best for this content?
+
+```html
+<h1>CSS guide</h1>
+<h2>Selectors</h2>
+<h3>Class selectors</h3>
+```
+
+- A. It is a logical outline
+- B. `h3` must appear before `h2`
+- C. Every heading should be `h1`
+- D. Heading level controls only font size
+
+**Answer: A.** The nested topics move from the page subject to section to subsection.
+
+### 10. Which value will be submitted for the selected radio button?
+
+```html
+<label><input type="radio" name="contact" value="email" checked /> Email</label>
+<label><input type="radio" name="contact" value="phone" /> Phone</label>
+```
+
+- A. `contact=email`
+- B. `contact=phone`
+- C. Both values
+- D. No value because radio buttons cannot submit
+
+**Answer: A.** The checked control submits its shared `name` and its own `value`.
+
+### 11. What does `required` do in this normal browser submission?
+
+```html
+<input name="displayName" required />
+```
+
+- A. It encrypts the value
+- B. It blocks submission while the field is empty
+- C. It trims whitespace on the server
+- D. It makes the name unique
+
+**Answer: B.** It supplies client-side validation; the server must still validate.
+
+### 12. What happens after selecting the first option?
+
+```html
+<select name="country">
+  <option value="">Choose a country</option>
+  <option value="in">India</option>
+</select>
+```
+
+- A. `country=Choose a country`
+- B. `country=in`
+- C. `country=`
+- D. The field is not submitted
+
+**Answer: C.** The selected option's `value` is an empty string.
+
+### 13. What relationship do these cells express?
+
+```html
+<tr>
+  <th scope="row">Monday</th>
+  <td>30</td>
+</tr>
+```
+
+- A. `Monday` labels the row
+- B. `30` labels the row
+- C. Both cells are column headers
+- D. The markup is invalid
+
+**Answer: A.** `scope="row"` makes the header describe the row's data cell.
+
+### 14. Why are width and height useful here?
+
+```html
+<img src="lesson.jpg" alt="A lesson notebook" width="800" height="450" />
+```
+
+- A. They guarantee the image file is 800 by 450 pixels
+- B. They reserve layout space before the image loads
+- C. They make the image decorative
+- D. They make the image responsive by themselves
+
+**Answer: B.** The browser can reserve the aspect-ratio space and reduce layout shift.
+
+### 15. When does this script run?
+
+```html
+<script src="app.js" defer></script>
+```
+
+- A. Before HTML parsing begins
+- B. Immediately when it downloads, in any order
+- C. After HTML parsing, in deferred-script order
+- D. Only after a button click
+
+**Answer: C.** `defer` preserves order and runs after document parsing.
+
+### 16. What can JavaScript read from this element?
+
+```html
+<button data-course-id="html-101">Open</button>
+```
+
+- A. `button.dataset.courseId`, which is `"html-101"`
+- B. `button.courseId`, which is a number
+- C. `button.id`, which is `"html-101"`
+- D. Nothing; custom attributes are invalid
+
+**Answer: A.** `data-course-id` is exposed through the `dataset` camel-cased property.
+
+### 17. Why is this preferable to a clickable `div`?
+
+```html
+<button type="button">Show answer</button>
+```
+
+- A. It is always blue
+- B. It has native button semantics, focus, and keyboard behavior
+- C. It navigates automatically
+- D. It needs no CSS
+
+**Answer: B.** Native controls provide expected behavior before custom code is added.
+
+### 18. What does this grouping communicate?
+
+```html
+<fieldset>
+  <legend>Preferred contact</legend>
+  <label><input type="checkbox" name="updates" /> Send updates</label>
+</fieldset>
+```
+
+- A. The checkbox is disabled
+- B. The controls belong to a named group
+- C. The legend is only visual text
+- D. A table is being created
+
+**Answer: B.** `fieldset` groups related controls and `legend` names the group.
+
+### 19. What does this source-selection rule allow?
+
+```html
+<picture>
+  <source media="(min-width: 60rem)" srcset="wide.jpg" />
+  <img src="small.jpg" alt="A study desk" />
+</picture>
+```
+
+- A. It loads every image at once
+- B. It uses `wide.jpg` when the media condition matches
+- C. It makes `small.jpg` decorative
+- D. It creates a background image
+
+**Answer: B.** The browser may choose the matching source; the `img` remains the fallback and carries the `alt`.
+
+### 20. What does this tell a screen reader?
+
+```html
+<nav aria-label="Course navigation">
+  <a href="/html">HTML</a>
+</nav>
+```
+
+- A. The link is disabled
+- B. This navigation landmark is named "Course navigation"
+- C. The navigation is hidden
+- D. The page language changes
+
+**Answer: B.** The label distinguishes this navigation region from other navigation landmarks.
+
+### 21. What does `tabindex="-1"` do here?
+
+```html
+<main id="content" tabindex="-1">...</main>
+```
+
+- A. Removes the main region from the DOM
+- B. Puts it first in the Tab order
+- C. Allows programmatic focus without adding normal Tab-stop focus
+- D. Disables all child controls
+
+**Answer: C.** It is useful as a focus destination, such as after a skip link or route change.
+
+### 22. Which request method is represented?
+
+```html
+<form action="/search" method="get">
+  <input name="q" value="html" />
+</form>
+```
+
+- A. The query is normally placed in the URL
+- B. The request body is encrypted
+- C. The form cannot be submitted
+- D. The browser sends a `POST` request
+
+**Answer: A.** `GET` is commonly used for safe, repeatable searches.
+
+### 23. What kind of input behavior does this request?
+
+```html
+<input name="birthday" type="date" />
+```
+
+- A. A multi-line text area
+- B. Date-oriented browser validation and input UI where supported
+- C. A password field
+- D. An upload control
+
+**Answer: B.** An accurate input type gives the browser useful semantics and assistance.
+
+### 24. What does this media element provide?
+
+```html
+<video controls>
+  <track kind="captions" src="lesson.en.vtt" srclang="en" label="English" />
+</video>
+```
+
+- A. Captions as a text alternative option
+- B. Automatic translation of every page
+- C. A required video poster
+- D. Faster video downloading
+
+**Answer: A.** A captions track provides timed text for the video.
+
+### 25. Which content should be written in this element?
+
+```html
+<pre><code></code></pre>
+```
+
+- A. A navigation menu
+- B. A table layout
+- C. Code whose whitespace should be preserved
+- D. A form label
+
+**Answer: C.** `pre` preserves whitespace and `code` identifies code content.
+
+### 26. What does this metadata control?
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+```
+
+- A. The document language
+- B. The initial mobile layout viewport behavior
+- C. The page title
+- D. The script load order
+
+**Answer: B.** It lets mobile browsers use the device width for layout.
+
+### 27. What is invalid in this snippet?
+
+```html
+<p>Read this <div>important note</div> today.</p>
+```
+
+- A. Nothing; any element may be inside a paragraph
+- B. A `div` cannot be nested inside a `p`
+- C. `p` elements need an `id`
+- D. `div` elements require `role="note"`
+
+**Answer: B.** A paragraph cannot contain a block `div`; the browser repairs this unexpectedly.
+
+### 28. What list meaning does this convey?
+
+```html
+<ol>
+  <li>Install tools</li>
+  <li>Create a page</li>
+</ol>
+```
+
+- A. The items are alternatives
+- B. The items form an ordered sequence
+- C. The items are table rows
+- D. The items are navigation landmarks
+
+**Answer: B.** Use `ol` when the order carries meaning.
+
+### 29. What is the safest default for untrusted user text?
+
+```html
+<p id="comment"></p>
+```
+
+- A. Insert it with `innerHTML`
+- B. Set the element's `textContent`
+- C. Put it in a `style` attribute
+- D. Put it in `alt` regardless of purpose
+
+**Answer: B.** Text content does not parse the supplied string as HTML.
+
+### 30. Which image should normally avoid lazy loading?
+
+```html
+<img src="hero.jpg" alt="Students in a workshop" />
+```
+
+- A. The main image visible when the page first opens
+- B. A below-the-fold gallery image
+- C. A decorative footer image
+- D. An image inside a closed dialog
+
+**Answer: A.** The primary visible image should load promptly to avoid delaying useful content.
+
+## Part B: theory MCQs (31-50)
+
+### 31. What is HTML's primary responsibility?
+
+- A. Database storage
 - B. Page structure and meaning
 - C. Network routing
-- D. Image editing
+- D. Visual animation
 
-**Answer: B — Page structure and meaning.** HTML identifies content such as headings, paragraphs, navigation, forms, and articles. CSS controls presentation, while JavaScript adds behavior.
+**Answer: B.** HTML describes content; CSS styles it and JavaScript adds behavior.
 
-## 2. Why is `<!doctype html>` used?
+### 32. When should an `a` element be used?
 
-- A. It imports CSS
-- B. It enables modern standards mode
-- C. It adds page metadata
-- D. It opens the DOM
+- A. To perform an in-page action
+- B. To navigate to a URL or fragment
+- C. To create a dialog
+- D. To group inputs
 
-**Answer: B — It enables modern standards mode.** The doctype tells browsers to render the document using current HTML rules instead of legacy quirks mode.
+**Answer: B.** Links are destinations; buttons are actions.
 
-## 3. Which element contains the page's unique main content?
+### 33. How many `id` values may be duplicated in one document?
 
-- A. `section`
-- B. `article`
-- C. `main`
-- D. `body`
+- A. Zero; each `id` must be unique
+- B. Two
+- C. Any number in different sections
+- D. One per class
 
-**Answer: C — `main`.** `main` identifies the primary content of the page. `body` contains all visible page content, including repeated headers, navigation, and footers.
+**Answer: A.** Duplicate IDs break relationships, fragments, and JavaScript selection.
 
-## 4. Which element should trigger an in-page action?
+### 34. What should informative image `alt` describe?
 
-- A. `a`
-- B. `button`
-- C. `div`
-- D. `span`
+- A. The filename
+- B. Its purpose or information in the current context
+- C. Every pixel color
+- D. The CSS class
 
-**Answer: B — `button`.** Buttons provide built-in keyboard, focus, and accessibility behavior for actions. Links are intended for navigation to a URL.
+**Answer: B.** Alternative text communicates what the image contributes.
 
-## 5. Which element should navigate to another URL?
+### 35. Which attribute links a label to an input explicitly?
 
-- A. `a`
-- B. `button`
-- C. `label`
-- D. `nav`
+- A. Matching `for` and `id`
+- B. Matching `class`
+- C. Matching `name`
+- D. Matching `type`
 
-**Answer: A — `a`.** An anchor with an `href` represents navigation and supports expected browser behavior such as opening in a new tab or copying the destination.
+**Answer: A.** That association creates the accessible label relationship.
 
-## 6. What should `alt` contain for an informative image?
+### 36. Why is a placeholder not a label?
 
-- A. The file name
-- B. Its visual style
-- C. A description of its purpose
-- D. Empty text
+- A. It cannot contain letters
+- B. It disappears during entry and is not a reliable accessible name
+- C. It submits with the form
+- D. It creates a button
 
-**Answer: C — A description of its purpose.** Good alternative text communicates the information the image contributes in its current context, not every visual detail.
+**Answer: B.** Keep a visible, persistent label for every control.
 
-## 7. What should a purely decorative image use?
+### 37. What does ARIA usually add?
 
-- A. No `img` element
-- B. `alt=""`
-- C. `alt="image"`
-- D. `title="decorative"`
+- A. CSS layout
+- B. Semantics, not missing behavior
+- C. Server validation
+- D. Faster images
 
-**Answer: B — `alt=""`.** An empty alternative tells screen readers to ignore decoration. Omitting `alt` may cause a screen reader to announce the file name instead.
+**Answer: B.** Prefer native HTML because it supplies both semantics and behavior.
 
-## 8. How is a label explicitly connected to an input?
+### 38. What must always validate a submitted form value?
 
-- A. They use the same class
-- B. The label's `for` matches the input's `id`
-- C. They use the same `name`
-- D. They are styled by adjacent CSS
+- A. CSS
+- B. The browser only
+- C. The server
+- D. The page title
 
-**Answer: B — Matching `for` and `id`.** This association gives the input an accessible name and makes clicking the label focus or activate the input.
+**Answer: C.** Client-side validation improves usability but cannot be trusted for security.
 
-## 9. Which input attribute becomes the submitted field key?
+### 39. When is a table appropriate?
 
-- A. `id`
-- B. `class`
-- C. `name`
-- D. `for`
+- A. For page layout
+- B. For data with row/column relationships
+- C. For a two-button toolbar
+- D. For a site header
 
-**Answer: C — `name`.** Form submission sends name/value pairs. An input without a `name` is generally not included in the submitted form data.
+**Answer: B.** Use CSS layout for visual arrangement.
 
-## 10. What is the default type of a `button` inside a form?
+### 40. What is a semantic element?
 
-- A. `button`
-- B. `reset`
-- C. `submit`
-- D. `menu`
+- A. An element with a class
+- B. An element whose tag communicates content role
+- C. Any visible element
+- D. A CSS-only element
 
-**Answer: C — `submit`.** A form button submits by default. Set `type="button"` explicitly when the button performs a different action.
+**Answer: B.** `nav`, `main`, and `article` express roles beyond visual shape.
 
-## 11. Which method suits a search form that does not change server state?
+### 41. What does browser-side validation improve most directly?
 
-- A. GET
-- B. POST
-- C. PATCH
-- D. DELETE
+- A. User feedback before submission
+- B. Server authorization
+- C. Password encryption
+- D. Database indexing
 
-**Answer: A — GET.** GET represents a safe read and places search parameters in the URL, making results bookmarkable and shareable.
+**Answer: A.** It gives quick feedback, while server validation supplies trust.
 
-## 12. Which attribute is true simply when it is present?
+### 42. Why should focus indicators remain visible?
 
-- A. `class`
-- B. `disabled`
-- C. `value`
-- D. `name`
+- A. They make colors brighter
+- B. Keyboard users need to know the active control
+- C. They reduce network traffic
+- D. They change tab titles
 
-**Answer: B — `disabled`.** It is a Boolean attribute. Even `disabled="false"` means disabled because presence, not the text value, determines the state.
+**Answer: B.** Visible focus is essential for keyboard navigation.
 
-## 13. Which heading normally identifies the page's main subject?
+### 43. What does `defer` solve for a normal page script?
 
-- A. `h6`
-- B. `h3`
-- C. `h1`
-- D. Whichever heading has the desired size
+- A. It guarantees server security
+- B. It lets the script wait until HTML parsing is complete
+- C. It converts JavaScript to CSS
+- D. It adds a form label
 
-**Answer: C — `h1`.** Heading levels describe document structure, not appearance. CSS should control size while heading order communicates hierarchy.
+**Answer: B.** Deferred scripts can safely work with parsed document content.
 
-## 14. Which element represents standalone content such as a blog post?
+### 44. Why is `lang` important on the root element?
 
-- A. `article`
-- B. `aside`
-- C. `span`
-- D. `footer`
+- A. It sets CSS colors
+- B. It declares the document language to tools such as screen readers
+- C. It changes the HTTP method
+- D. It makes IDs unique
 
-**Answer: A — `article`.** An article is content that can make sense independently, such as a post, news story, review, or forum entry.
+**Answer: B.** Language metadata improves pronunciation and processing.
 
-## 15. Which element groups the primary navigation links?
+### 45. What is the safest general rule for untrusted content?
 
-- A. `menu`
-- B. `nav`
-- C. `section`
-- D. `header`
+- A. Treat it as HTML by default
+- B. Treat it as text unless there is a carefully sanitized HTML requirement
+- C. Put it in an attribute
+- D. Hide it with CSS
 
-**Answer: B — `nav`.** `nav` identifies a significant group of navigation links. A `header` may contain it but does not itself mean navigation.
+**Answer: B.** Parsing untrusted strings as HTML can create XSS vulnerabilities.
 
-## 16. Which elements group form controls and name the group?
+### 46. Why should heading levels follow an outline?
 
-- A. `div` and `p`
-- B. `form` and `label`
-- C. `fieldset` and `legend`
-- D. `section` and `h2`
+- A. Their default font size must never change
+- B. They communicate document structure for navigation and understanding
+- C. They make images load sooner
+- D. They prevent CSS from applying
 
-**Answer: C — `fieldset` and `legend`.** `fieldset` groups related controls, while `legend` gives that group an accessible label, especially useful for radio buttons and checkboxes.
+**Answer: B.** Use CSS for visual size, not heading-level misuse.
 
-## 17. When do radio buttons belong to one group?
+### 47. What is `main` normally limited to per page?
 
-- A. When they share an `id`
-- B. When they share a `name`
-- C. When they share a `value`
-- D. When they share a class
+- A. No limit
+- B. One unique main-content region
+- C. One per section
+- D. One per paragraph
 
-**Answer: B — When they share a `name`.** The browser then allows only one radio button in that named group to be selected. Each option should still have its own value and ID.
+**Answer: B.** It identifies the page's primary content.
 
-## 18. Which table cell represents a header?
+### 48. Why should external pages in an `iframe` have a title?
 
-- A. `td`
-- B. `tr`
-- C. `th`
-- D. `thead`
+- A. To speed up rendering
+- B. To identify the embedded content to assistive technology
+- C. To enable form submission
+- D. To select a CSS class
 
-**Answer: C — `th`.** A `th` identifies a row or column header. `scope="row"` or `scope="col"` makes its relationship to data cells explicit.
+**Answer: B.** The title tells users what the frame contains.
 
-## 19. Which element gives a table its accessible title?
+### 49. What is the best first accessibility technique?
 
-- A. `label`
-- B. `title`
-- C. `caption`
-- D. `legend`
+- A. Add ARIA everywhere
+- B. Use native semantic HTML correctly
+- C. Remove keyboard focus
+- D. Use clickable `div` elements
 
-**Answer: C — `caption`.** A caption describes the table as a whole and is programmatically associated with it.
+**Answer: B.** Native elements provide the most reliable baseline.
 
-## 20. What does `defer` do on a classic external script?
+### 50. Why validate HTML markup?
 
-- A. It runs the script before parsing
-- B. It runs after parsing and preserves script order
-- C. It prevents the download
-- D. It runs only after a click
+- A. It guarantees an attractive design
+- B. It catches invalid structure before browsers repair it unpredictably
+- C. It replaces browser testing
+- D. It creates SEO keywords
 
-**Answer: B — It runs after parsing and preserves order.** Deferred scripts download in parallel with HTML parsing, then execute in document order before `DOMContentLoaded`.
-
-## 21. What is true about `async` scripts?
-
-- A. Their execution order is guaranteed
-- B. They run only after `DOMContentLoaded`
-- C. They run as soon as downloaded, so order is not guaranteed
-- D. They block their own download
-
-**Answer: C — They execute as soon as ready.** `async` is suitable for independent scripts. Dependent scripts should not rely on async execution order.
-
-## 22. Which metadata is essential for a responsive mobile layout?
-
-- A. Keywords
-- B. Viewport
-- C. Author
-- D. Refresh
-
-**Answer: B — Viewport.** `<meta name="viewport" content="width=device-width, initial-scale=1.0">` makes the CSS viewport match the device width.
-
-## 23. What does `loading="lazy"` usually do on an image?
-
-- A. Compresses it
-- B. Delays loading until it is near the viewport
-- C. Hides its alternative text
-- D. Converts its format
-
-**Answer: B — It delays off-screen loading.** This can reduce initial network work, but the main visible image should normally load eagerly.
-
-## 24. Why specify an image's width and height?
-
-- A. To add resolution
-- B. To reserve layout space
-- C. To enable alternative text
-- D. To turn it into a link
-
-**Answer: B — To reserve layout space.** The browser can calculate the aspect ratio before the image downloads, reducing unexpected layout shift.
-
-## 25. Which attribute limits an iframe's capabilities?
-
-- A. `sandbox`
-- B. `target`
-- C. `media`
-- D. `scope`
-
-**Answer: A — `sandbox`.** It restricts capabilities such as scripts, forms, and same-origin access. Add back only the permissions the embedded content requires.
-
-## 26. What does ARIA add?
-
-- A. CSS behavior
-- B. Semantics for accessibility APIs
-- C. Automatic keyboard logic
-- D. Server validation
-
-**Answer: B — Accessibility semantics.** ARIA communicates roles, states, and relationships, but developers must still implement keyboard behavior and focus management.
-
-## 27. Which `tabindex` adds an element to normal keyboard focus order?
-
-- A. `-1`
-- B. `0`
-- C. `1`
-- D. `99`
-
-**Answer: B — `0`.** It uses DOM order. `-1` permits programmatic focus but removes the element from Tab order; positive values create difficult custom focus ordering.
-
-## 28. Which element preserves whitespace for a code block?
-
-- A. `code` alone
-- B. `pre`
-- C. `samp`
-- D. `blockquote`
-
-**Answer: B — `pre`.** `pre` preserves spaces and line breaks. It is commonly combined with a nested `code` element to identify source code semantically.
-
-## 29. Client-side form validation is best described as what?
-
-- A. A replacement for server validation
-- B. User assistance, not a security boundary
-- C. Something performed only by CSS
-- D. A complete defense against invalid requests
-
-**Answer: B — User assistance, not security.** Attackers can bypass the browser and send requests directly, so the server must independently validate every field.
-
-## 30. Which markup is invalid?
-
-- A. Unique IDs
-- B. A button containing text
-- C. Multiple elements with the same ID
-- D. A label wrapping its input
-
-**Answer: C — Duplicate IDs.** IDs must be unique so labels, URL fragments, scripts, and accessibility relationships identify the intended element reliably.
+**Answer: B.** Valid markup produces a more reliable DOM and better accessibility foundation.

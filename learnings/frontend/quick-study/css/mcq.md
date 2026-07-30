@@ -1,273 +1,622 @@
-# CSS interview MCQs with explanations
+# CSS MCQs: predict the computed style
 
-Answer each question before reading the explanation.
+There are 50 questions: 30 code-snippet questions and 20 theory questions. Assume no other CSS applies unless the question says otherwise.
 
-## 1. Which selector normally has the highest specificity?
+## Part A: code-snippet MCQs (1-30)
 
-- A. `p`
-- B. `.note`
-- C. `#note`
-- D. `*`
+### 1. What color is the paragraph?
 
-**Answer: C — `#note`.** An ID selector outweighs class and element selectors. Prefer classes for normal styling so rules remain easy to override.
+```html
+<p class="notice">Read this.</p>
+```
 
-## 2. If two matching declarations have equal specificity, which wins?
+```css
+p { color: black; }
+.notice { color: blue; }
+```
 
-- A. The first declaration
-- B. The later declaration
-- C. The shorter declaration
-- D. The inherited declaration
+- A. Black
+- B. Blue
+- C. Browser default
+- D. Transparent
 
-**Answer: B — The later declaration.** Source order is the final tie-breaker after cascade origin, layer, importance, and specificity are equal.
+**Answer: B.** A class selector is more specific than an element selector.
 
-## 3. What does `box-sizing: border-box` include in a declared width?
+### 2. What color wins?
 
-- A. Margin only
-- B. Content only
-- C. Content, padding, and border
-- D. Padding and margin
+```html
+<p id="message" class="notice">Read this.</p>
+```
 
-**Answer: C — Content, padding, and border.** Margin remains outside the declared width. `border-box` makes component sizing more predictable.
+```css
+p { color: black; }
+.notice { color: blue; }
+#message { color: red; }
+```
 
-## 4. Which box-model area lies outside the border?
+- A. Black
+- B. Blue
+- C. Red
+- D. All three colors
+
+**Answer: C.** An ID selector has higher specificity than a class selector.
+
+### 3. Which rule wins on a specificity tie?
+
+```html
+<p class="notice">Read this.</p>
+```
+
+```css
+.notice { color: blue; }
+.notice { color: green; }
+```
+
+- A. Blue
+- B. Green
+- C. Both colors blend
+- D. The browser default
+
+**Answer: B.** Later source order breaks an otherwise equal cascade tie.
+
+### 4. What is the total rendered width with this base rule?
+
+```css
+* { box-sizing: border-box; }
+.card { width: 200px; padding: 20px; border: 5px solid; }
+```
+
+- A. 200px
+- B. 240px
+- C. 250px
+- D. 210px
+
+**Answer: A.** `border-box` includes padding and border in the declared width.
+
+### 5. What changes when the base rule is absent?
+
+```css
+.card { width: 200px; padding: 20px; border: 5px solid; }
+```
+
+- A. Total width is 200px
+- B. Total width is 240px
+- C. Total width is 250px
+- D. The box is invisible
+
+**Answer: C.** Content-box width plus 40px padding and 10px border equals 250px.
+
+### 6. Which `h2` matches this selector?
+
+```css
+.card > h2 { color: navy; }
+```
+
+- A. Any `h2` anywhere in the document
+- B. An `h2` that is a direct child of `.card`
+- C. An `h2` before `.card`
+- D. Only an `h2` with `id="card"`
+
+**Answer: B.** `>` is the direct-child combinator.
+
+### 7. What state makes this outline appear?
+
+```css
+.button:focus-visible { outline: 3px solid blue; }
+```
+
+- A. When the button is disabled
+- B. When keyboard-style focus should be visibly indicated
+- C. When the button is hidden
+- D. When the page loads
+
+**Answer: B.** `:focus-visible` is designed for a clear focus indication when appropriate.
+
+### 8. What does this layout create by default?
+
+```css
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+```
+
+- A. A vertical main axis with horizontal cross-axis alignment
+- B. A horizontal main axis with vertically centered items
+- C. A two-dimensional grid
+- D. A hidden container
+
+**Answer: B.** Flex defaults to `row`; `justify-content` uses the main axis and `align-items` uses the cross axis.
+
+### 9. Which property changes the Flexbox main axis to vertical?
+
+```css
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+```
+
+- A. `display: flex`
+- B. `flex-direction: column`
+- C. `column`
+- D. `stack`
+
+**Answer: B.** The column direction makes vertical the main axis.
+
+### 10. What does `gap` add here?
+
+```css
+.actions {
+  display: flex;
+  gap: 1rem;
+}
+```
+
+- A. Space only outside the container
+- B. Space between flex items
+- C. A border around items
+- D. Extra font size
+
+**Answer: B.** `gap` is interior spacing between layout items.
+
+### 11. How does this card grid react to less space?
+
+```css
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+```
+
+- A. Every card remains on one line at any width
+- B. It uses as many 16rem-minimum columns as fit, then reduces columns
+- C. It creates exactly sixteen columns
+- D. It switches to Flexbox
+
+**Answer: B.** `auto-fit` and `minmax` make a content-responsive grid.
+
+### 12. Which element anchors this absolutely positioned close button?
+
+```css
+.card { position: relative; }
+.close { position: absolute; top: 0; right: 0; }
+```
+
+- A. The viewport
+- B. The closest positioned ancestor, `.card`
+- C. The document title
+- D. The previous sibling
+
+**Answer: B.** A positioned ancestor establishes the containing block.
+
+### 13. What happens to this element in normal layout?
+
+```css
+.notice { display: none; }
+```
+
+- A. It still takes space but is transparent
+- B. It is removed from layout
+- C. It becomes fixed
+- D. It becomes a screen-reader-only element
+
+**Answer: B.** `display: none` removes the element from rendering and the accessibility tree.
+
+### 14. What does this overflow rule do when needed?
+
+```css
+.code-panel { overflow: auto; }
+```
+
+- A. Always shows both scrollbars
+- B. Adds scrolling only if content overflows
+- C. Hides overflowing content
+- D. Wraps every word
+
+**Answer: B.** `auto` lets the browser supply scrolling when required.
+
+### 15. What does this size respond to?
+
+```css
+h1 { font-size: clamp(2rem, 5vw, 4rem); }
+```
+
+- A. It is always 5vw
+- B. It grows with viewport width but stays from 2rem to 4rem
+- C. It is always 2rem
+- D. It is always 4rem
+
+**Answer: B.** `clamp(minimum, preferred, maximum)` limits a fluid value.
+
+### 16. What value does this button receive?
+
+```css
+:root { --brand: #1d4ed8; }
+.button { background: var(--brand); }
+```
+
+- A. `var(--brand)` remains literal text
+- B. `#1d4ed8`
+- C. The browser default background
+- D. An inherited font color
+
+**Answer: B.** `var()` reads the custom property value.
+
+### 17. Which viewport matches this rule?
+
+```css
+@media (min-width: 48rem) {
+  .sidebar { display: block; }
+}
+```
+
+- A. Any viewport narrower than 48rem
+- B. A viewport at least 48rem wide
+- C. Only a 48px viewport
+- D. A container 48rem wide
+
+**Answer: B.** This is a viewport media query with an inclusive minimum.
+
+### 18. What must exist for this query to work?
+
+```css
+@container (min-width: 32rem) {
+  .card { grid-template-columns: 10rem 1fr; }
+}
+```
+
+- A. A nearby element with a container type, such as `container-type: inline-size`
+- B. A media query
+- C. An ID selector
+- D. A JavaScript event listener
+
+**Answer: A.** Container queries need a query container.
+
+### 19. What does this transform change first?
+
+```css
+.button:hover { transform: translateY(-2px); }
+```
+
+- A. The normal-flow position of following elements
+- B. The painted visual position of the button
+- C. The button's text content
+- D. The viewport height
+
+**Answer: B.** Transforms move the visual result without reflowing normal layout.
+
+### 20. Which properties are transitioned?
+
+```css
+.button { transition: transform 150ms ease, opacity 150ms ease; }
+```
+
+- A. Every property
+- B. Only `transform` and `opacity`
+- C. Only background color
+- D. No property until an animation is defined
+
+**Answer: B.** Listing exact properties is clearer than `transition: all`.
+
+### 21. What does this query respect?
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; }
+}
+```
+
+- A. A user preference for less motion
+- B. A smaller device width
+- C. A lower color contrast
+- D. An offline connection
+
+**Answer: A.** It removes nonessential animation for users who request reduced motion.
+
+### 22. Which value inherits to a child by default?
+
+```css
+.article { color: #111827; margin: 2rem; }
+```
+
+- A. `color` only
+- B. `margin` only
+- C. Both values
+- D. Neither value
+
+**Answer: A.** Text color normally inherits; margins do not.
+
+### 23. What does this selector match?
+
+```css
+[aria-current="page"] { font-weight: 700; }
+```
+
+- A. Only buttons
+- B. Any element with that exact attribute/value pair
+- C. Every link
+- D. The root element only
+
+**Answer: B.** Attribute selectors match an attribute condition, regardless of element type.
+
+### 24. Why can this be necessary on a flex child?
+
+```css
+.article-body { min-width: 0; }
+```
+
+- A. It makes every word bold
+- B. It allows a long-content child to shrink instead of forcing overflow
+- C. It positions the child absolutely
+- D. It removes padding
+
+**Answer: B.** Flex and grid items can otherwise keep a large intrinsic minimum width.
+
+### 25. What does this logical property change?
+
+```css
+.content { padding-inline: 1rem; }
+```
+
+- A. Top and bottom padding
+- B. Start and end padding in the inline direction
+- C. Border radius
+- D. Only left padding in every writing direction
+
+**Answer: B.** Logical properties adapt to writing direction.
+
+### 26. What does this preserve?
+
+```css
+img {
+  max-width: 100%;
+  height: auto;
+}
+```
+
+- A. The original file size
+- B. The image aspect ratio while allowing it to shrink
+- C. A fixed 100px width
+- D. The image's CSS background
+
+**Answer: B.** Automatic height follows the scaled width.
+
+### 27. What creates the extra text after the label?
+
+```css
+.required::after { content: " *"; }
+```
+
+- A. A pseudo-element
+- B. A DOM text node written in HTML
+- C. An inherited attribute
+- D. A media query
+
+**Answer: A.** `::after` generates a styled visual part; essential information should not live only there.
+
+### 28. What is the usual behavior of this position?
+
+```css
+.header {
+  position: sticky;
+  top: 0;
+}
+```
+
+- A. It is always removed from flow
+- B. It behaves in normal flow until the scroll threshold, then sticks within its container
+- C. It stays fixed to the viewport regardless of its container
+- D. It disables scrolling
+
+**Answer: B.** Sticky combines normal-flow placement with threshold-based sticking.
+
+### 29. What does this layer order declare?
+
+```css
+@layer reset, base, components, utilities;
+```
+
+- A. The number of grid columns
+- B. An explicit cascade priority order for layers
+- C. An animation sequence
+- D. Four custom properties
+
+**Answer: B.** Layer ordering helps control which groups of rules win.
+
+### 30. What likely happens here?
+
+```css
+.parent { opacity: 0.9; }
+.child { position: relative; z-index: 9999; }
+```
+
+- A. The child can always appear above every element on the page
+- B. Opacity can create a stacking context that confines the child
+- C. `z-index` changes text color
+- D. The child becomes invisible
+
+**Answer: B.** A large z-index cannot escape its parent's stacking context.
+
+## Part B: theory MCQs (31-50)
+
+### 31. What does the CSS cascade decide?
+
+- A. Which HTML file loads
+- B. Which competing declaration wins
+- C. Which database query runs
+- D. Which image is accessible
+
+**Answer: B.** The cascade resolves matching style declarations.
+
+### 32. Why prefer class selectors for most component styling?
+
+- A. They are impossible to override
+- B. They are reusable and have manageable specificity
+- C. They replace HTML semantics
+- D. They make CSS asynchronous
+
+**Answer: B.** Classes offer clear, low-conflict styling hooks.
+
+### 33. What is outside an element's border in the box model?
 
 - A. Content
 - B. Padding
 - C. Margin
 - D. Background
 
-**Answer: C — Margin.** From inside outward, the order is content, padding, border, and margin.
+**Answer: C.** Margin separates the element from its neighbors.
 
-## 5. Which unit is relative to the root font size?
+### 34. When should Flexbox usually be chosen over Grid?
 
-- A. `em`
-- B. `rem`
-- C. `vw`
-- D. `px`
+- A. For a one-dimensional row or column arrangement
+- B. For every page layout
+- C. For server-side data
+- D. For image compression
 
-**Answer: B — `rem`.** `rem` uses the root element's font size. `em` depends on the current element's font size for most properties.
+**Answer: A.** Flexbox focuses on one main axis.
 
-## 6. Which layout mode is best suited to a one-dimensional toolbar?
+### 35. When is Grid especially useful?
 
-- A. Grid
-- B. Flexbox
-- C. Table layout
-- D. Inline layout
+- A. When rows and columns must be controlled together
+- B. When only text color changes
+- C. When JavaScript is disabled
+- D. When a link opens another page
 
-**Answer: B — Flexbox.** Flexbox arranges and aligns items along one primary row or column, which matches most toolbar layouts.
+**Answer: A.** Grid is two-dimensional.
 
-## 7. Which layout mode controls rows and columns together?
+### 36. Why avoid `!important` as a normal repair tool?
 
-- A. Grid
-- B. Block
-- C. Inline
-- D. Float
+- A. It never works
+- B. It makes cascade ownership and later overrides harder to maintain
+- C. It removes all CSS
+- D. It changes HTML validity
 
-**Answer: A — Grid.** Grid is two-dimensional and provides explicit row and column tracks. Flexbox focuses on one dimension at a time.
+**Answer: B.** Solve the selector, source order, or component boundary instead.
 
-## 8. In a row flex container, which axis does `justify-content` control?
+### 37. What is a content-driven breakpoint?
 
-- A. Cross axis
-- B. Main axis
-- C. Stacking axis
-- D. Block axis only
+- A. A breakpoint chosen when layout content no longer fits well
+- B. A breakpoint named after a phone
+- C. A JavaScript error
+- D. A CSS syntax error
 
-**Answer: B — Main axis.** With the default `flex-direction: row`, the main axis is horizontal. Changing flex direction also changes which physical direction is the main axis.
+**Answer: A.** Layout needs should determine breakpoints.
 
-## 9. In a row flex container, which axis does `align-items` control?
+### 38. Why keep keyboard focus visible?
 
-- A. Main axis
-- B. Cross axis
-- C. Stacking axis
-- D. Inline axis only
+- A. It saves bandwidth
+- B. It tells keyboard users which control is active
+- C. It makes hover work on touch devices
+- D. It prevents inheritance
 
-**Answer: B — Cross axis.** In a row, this normally means vertical alignment. Always reason from flex direction rather than memorizing horizontal versus vertical.
+**Answer: B.** Focus is required to navigate confidently without a pointer.
 
-## 10. What does `gap` add?
+### 39. What should color contrast support?
 
-- A. Space between layout items
-- B. Margin outside the container
-- C. Border width
-- D. Text indentation
+- A. Decoration only
+- B. Readable text and distinguishable controls
+- C. Smaller HTML files
+- D. More selector specificity
 
-**Answer: A — Space between items.** Unlike child margins, gap does not add unwanted space around the outer edges of the collection.
+**Answer: B.** Contrast is an accessibility and usability requirement.
 
-## 11. An absolutely positioned element is normally positioned against what?
+### 40. Why test layouts with enlarged text?
 
-- A. Always the viewport
-- B. Its nearest positioned ancestor
-- C. Its next sibling
-- D. The root font size
+- A. It makes fonts load sooner
+- B. It reveals clipping and fixed-height failures
+- C. It resets custom properties
+- D. It changes media queries to JavaScript
 
-**Answer: B — Its nearest positioned ancestor.** If no qualifying ancestor exists, its containing block is usually the initial containing block.
+**Answer: B.** Interfaces must survive zoom and user font preferences.
 
-## 12. A fixed element is normally positioned against what?
+### 41. What is a stacking context?
 
-- A. Parent content
-- B. The viewport
-- C. A grid row
-- D. The text baseline
+- A. A block formatting context only
+- B. A local z-ordering world for an element and descendants
+- C. A Flexbox container
+- D. A type of font
 
-**Answer: B — The viewport.** It stays at the same viewport position while the document scrolls, although certain transformed ancestors can change its containing block.
+**Answer: B.** Descendants cannot out-rank elements outside that context just by increasing z-index.
 
-## 13. What does a sticky element need to visibly stick?
+### 42. Which browser tool best shows a crossed-out losing declaration?
 
-- A. A threshold such as `top: 0`
-- B. `z-index: -1`
-- C. `display: inline`
-- D. `float: left`
+- A. The computed styles/rules inspector
+- B. The address bar
+- C. The page title
+- D. View source only
 
-**Answer: A — An inset threshold.** Without `top`, `bottom`, or a logical inset, the browser has no point at which sticky behavior should begin.
+**Answer: A.** Developer tools explain the applied and overridden rules.
 
-## 14. Why can a very large `z-index` still appear below another element?
+### 43. Why use `rem` frequently for spacing and typography?
 
-- A. Large numbers are invalid
-- B. The elements are in different stacking contexts
-- C. Flexbox ignores z-index
-- D. It requires `!important`
+- A. It depends on the root text size and scales predictably
+- B. It always equals one pixel
+- C. It disables zoom
+- D. It is a grid-only unit
 
-**Answer: B — Different stacking contexts.** A child's z-index is compared inside its own context and cannot escape the ordering of that context's parent.
+**Answer: A.** Root-relative sizing supports coherent scaling.
 
-## 15. Which property normally inherits from a parent?
+### 44. What is a custom property's main benefit?
 
-- A. `margin`
-- B. `border`
-- C. `color`
-- D. `width`
+- A. It turns CSS into JavaScript
+- B. It gives repeated design values a reusable, cascade-aware name
+- C. It removes the need for selectors
+- D. It encrypts colors
 
-**Answer: C — `color`.** Many text-related properties inherit. Most box and layout properties do not.
+**Answer: B.** Variables help keep colors, spacing, and theme values consistent.
 
-## 16. What does `:focus-visible` select?
+### 45. Why prefer `transform`/`opacity` for simple motion when possible?
 
-- A. Mouse clicks only
-- B. Focus when a visible indicator is appropriate
-- C. Disabled controls
-- D. Hovered elements
+- A. They are always accessible without testing
+- B. They often avoid costly layout work compared with size/position changes
+- C. They remove the need for CSS
+- D. They create semantic HTML
 
-**Answer: B — Focus needing an indicator.** Browsers commonly match it for keyboard focus, allowing strong keyboard feedback without always showing a ring after pointer interaction.
+**Answer: B.** Still keep motion brief and respect reduced-motion preferences.
 
-## 17. What is `::before`?
+### 46. What does mobile-first CSS mean?
 
-- A. A pseudo-class
-- B. A pseudo-element
-- C. A media query
-- D. A combinator
+- A. Hide desktop content permanently
+- B. Start with the small-layout base and add enhancements as space becomes available
+- C. Use only pixels
+- D. Ignore large screens
 
-**Answer: B — A pseudo-element.** It creates a styleable generated box before an element's content. Essential information should remain in real HTML.
+**Answer: B.** It produces a simple base and intentional larger-layout rules.
 
-## 18. How much specificity does `:where(...)` add?
+### 47. Why can `100vw` cause horizontal scrolling?
 
-- A. Zero
-- B. One class
-- C. One ID
-- D. The specificity of its most specific argument
+- A. It may include the scrollbar width
+- B. It always equals zero
+- C. It disables overflow
+- D. It removes padding
 
-**Answer: A — Zero.** This makes `:where()` useful for defaults that consumers can override easily.
+**Answer: A.** `width: 100%` is often safer for normal layout containers.
 
-## 19. Which declaration creates responsive columns without a media query?
+### 48. What is the safest default layout strategy?
 
-- A. `grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr))`
-- B. `position: fixed`
-- C. `float: left`
-- D. `white-space: nowrap`
+- A. Absolute-position every element
+- B. Use normal flow, then Flexbox or Grid for real layout relationships
+- C. Use tables for all columns
+- D. Add `z-index: 9999` everywhere
 
-**Answer: A — `repeat(auto-fit, minmax(...))`.** Grid creates as many minimum-sized columns as fit and lets them share remaining space.
+**Answer: B.** Native flow is resilient to changing content.
 
-## 20. What does `clamp(minimum, preferred, maximum)` do?
+### 49. Why should essential information not be only in `::before` or `::after` content?
 
-- A. Clips overflowing content
-- B. Keeps a fluid value within limits
-- C. Creates a grid
-- D. Crops an image
+- A. Pseudo-elements cannot have color
+- B. Generated visual content is not a reliable semantic content source
+- C. It prevents CSS loading
+- D. It makes the DOM invalid
 
-**Answer: B — It bounds a fluid value.** The preferred value can respond to the viewport while the minimum and maximum prevent unusable extremes.
+**Answer: B.** Put required information in the HTML itself.
 
-## 21. What does a container query respond to?
+### 50. What should you do first when a CSS rule seems ignored?
 
-- A. Device brand
-- B. The component container's size
-- C. Network speed
-- D. DOM depth
+- A. Add `!important`
+- B. Inspect whether the selector matches and which rule wins
+- C. Rewrite the HTML completely
+- D. Add random margins
 
-**Answer: B — Container size.** This lets a reusable component adapt to where it is placed instead of only to the viewport.
-
-## 22. Which property is generally cheapest to animate?
-
-- A. `width`
-- B. `top`
-- C. `transform`
-- D. `grid-template-columns`
-
-**Answer: C — `transform`.** Transforms and opacity can often be composited without recalculating document layout on every frame.
-
-## 23. Why should `transition: all` usually be avoided?
-
-- A. It is invalid CSS
-- B. It can animate unintended or expensive properties
-- C. It disables hover
-- D. It prevents easing
-
-**Answer: B — It is too broad.** Naming the intended property documents behavior and avoids accidental layout animation after future style changes.
-
-## 24. Which media feature respects a user's reduced-motion preference?
-
-- A. `prefers-color-scheme`
-- B. `prefers-reduced-motion`
-- C. `orientation`
-- D. `hover`
-
-**Answer: B — `prefers-reduced-motion`.** Use it to remove or simplify nonessential movement for users who can be harmed or distracted by animation.
-
-## 25. What often fixes a flex child that refuses to shrink around long content?
-
-- A. `min-width: 0`
-- B. `width: 100vw`
-- C. `position: absolute`
-- D. `z-index: 1`
-
-**Answer: A — `min-width: 0`.** Flex items default to an automatic minimum based on their content, which may prevent shrinking and cause overflow.
-
-## 26. What is a CSS custom property?
-
-- A. A Sass-only variable
-- B. A cascading value such as `--color-brand`
-- C. An HTML attribute
-- D. A browser extension
-
-**Answer: B — A cascading custom value.** It can inherit, vary by selector or theme, and be read with `var(--color-brand)`.
-
-## 27. What does `overflow: auto` do?
-
-- A. Always clips content
-- B. Adds scrolling when needed
-- C. Expands the viewport
-- D. Hides the entire element
-
-**Answer: B — It adds conditional scrolling.** Scrollbars appear when content exceeds the box instead of being shown unconditionally.
-
-## 28. What is the usual mobile-first approach?
-
-- A. Use only `max-width` queries
-- B. Write narrow-screen defaults, then add `min-width` enhancements
-- C. Detect device models in JavaScript
-- D. Use fixed-width layouts
-
-**Answer: B — Start narrow and enhance.** This gives small screens a simple default and introduces layout complexity only when enough space is available.
-
-## 29. Which approach best supports maintainable CSS?
-
-- A. Deep ID selector chains
-- B. Many `!important` declarations
-- C. Shallow component-focused classes
-- D. Inline styles everywhere
-
-**Answer: C — Shallow component classes.** They keep ownership clear and specificity predictable without tightly coupling CSS to the document hierarchy.
-
-## 30. Why must focus indicators remain visible?
-
-- A. They improve SEO
-- B. Keyboard users need to know which control is active
-- C. They load images
-- D. They improve CSS parsing
-
-**Answer: B — They show keyboard position.** Removing outlines without an equally visible replacement makes keyboard navigation confusing or unusable.
+**Answer: B.** Developer tools provide the evidence needed for a correct fix.

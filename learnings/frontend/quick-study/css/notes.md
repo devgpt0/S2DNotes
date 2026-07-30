@@ -1,6 +1,8 @@
-# CSS: beginner-to-expert essential notes
+# CSS: turn clear HTML into a usable interface
 
-CSS controls presentation: layout, spacing, color, typography, and responsive behavior. Read a rule as: **select elements, then apply declarations**.
+CSS controls the presentation of HTML: spacing, color, type, layout, responsive behavior, and motion. The browser first builds the HTML DOM, then matches CSS rules to elements, resolves conflicts, calculates sizes and positions, and paints the result.
+
+Read every rule as: **select these elements, then apply these declarations.**
 
 ```css
 .card {
@@ -9,97 +11,206 @@ CSS controls presentation: layout, spacing, color, typography, and responsive be
 }
 ```
 
-## 1. Selectors and states
+This selects every element with `class="card"`, adds inside spacing, and draws a border around it.
+
+## 1. Start with a predictable base
+
+### The idea
+
+Browsers have useful default styles, but predictable sizing removes a common beginner surprise: a declared width normally describes the content box, not its padding and border.
+
+### See it in code
 
 ```css
-button { }                  /* element */
-.button { }                 /* class */
-#save { }                   /* id */
-[aria-current="page"] { }  /* attribute */
-.card > h2 { }              /* direct child */
-.card h2 { }                /* any descendant */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
 ```
 
-Pseudo-classes describe state (`:hover`, `:focus-visible`, `:checked`, `:disabled`, `:first-child`, `:nth-child(2n)`). Pseudo-elements style a generated part (`::before`, `::after`, `::placeholder`). Generated content must not contain essential information.
+With `border-box`, `width: 20rem` includes the content, padding, and border. Margin remains outside. Setting it on every element makes component widths easier to reason about.
 
-## 2. Cascade, specificity, and inheritance
+## 2. Select the element you actually mean
 
-When rules conflict, CSS chooses by: `!important` (avoid it), origin/layer, specificity, then later source order.
+### The idea
 
-Specificity: inline style > `#id` > `.class`, `[attribute]`, `:hover` > `element`.
+A selector says which elements receive a rule. Prefer small, reusable class selectors because they are easy to understand and override.
+
+### See it in code
 
 ```css
-p { color: black; }          /* element */
-.notice { color: blue; }     /* class wins */
-#message { color: red; }     /* id wins */
+button { color: #111827; }                 /* element */
+.button { background: #dbeafe; }           /* class */
+#save { border-color: #2563eb; }           /* unique ID */
+[aria-current="page"] { font-weight: 700; } /* attribute */
+.card > h2 { margin-top: 0; }               /* direct child */
+.card h2 { color: #1e3a8a; }                /* any descendant */
 ```
 
-Some text properties, such as `color` and `font-family`, inherit from a parent. Layout properties, such as `margin`, do not. Prefer low-specificity classes; do not fight CSS with `!important`.
+The `>` in `.card > h2` matters: it matches an `h2` immediately inside `.card`, not one nested further down.
 
-Cascade layers give rule groups an explicit priority:
+### States and generated parts
 
 ```css
-@layer reset, base, components, utilities;
+.button:hover { background: #bfdbfe; }
+.button:focus-visible { outline: 3px solid #1d4ed8; }
+.field:disabled { opacity: 0.6; }
+.required::after { content: " *"; }
 ```
 
-Within the same origin, unlayered author styles beat layered styles. `:where(...)` always has zero specificity; it is useful for easy-to-override defaults.
+Pseudo-classes such as `:hover`, `:focus-visible`, and `:disabled` match a state. Pseudo-elements such as `::after` style a generated part. Do not place essential information only in generated CSS content; it may not be available to every user.
 
-## 3. Box model, sizing, and units
+## 3. Understand the cascade before reaching for `!important`
 
-Every element has **content → padding → border → margin**. `margin` is outside; `padding` is inside.
+### The idea
+
+Several rules can match one element. The **cascade** decides the winning declaration. For ordinary author styles, compare importance, layer, specificity, then source order.
+
+### See it in code
+
+```css
+p { color: #111827; }
+.notice { color: #1d4ed8; }
+#message { color: #b91c1c; }
+```
+
+For `<p id="message" class="notice">`, the text is red because an ID selector is more specific than a class or element selector.
+
+### Specificity in plain language
+
+- An ID selector beats a class, attribute selector, or pseudo-class.
+- A class, attribute selector, or pseudo-class beats an element selector.
+- If specificity ties, the later rule wins.
+- Inline styles are very strong. `!important` changes the cascade and makes normal maintenance harder; avoid it.
+
+Some properties inherit from a parent, such as `color` and `font-family`. Spacing and layout properties such as `margin` and `display` do not. Use the browser's computed-styles panel to see the real winner.
+
+## 4. The box model explains spacing and size
+
+### The idea
+
+Every rendered box has content in the middle, then padding, border, and margin moving outward.
 
 ```text
-┌────────────── margin ──────────────┐
-│  ┌────────── border ────────────┐  │
-│  │  ┌──────── padding ───────┐  │  │
-│  │  │        content         │  │  │
-│  │  └────────────────────────┘  │  │
-│  └──────────────────────────────┘  │
-└────────────────────────────────────┘
+margin
+  border
+    padding
+      content
 ```
+
+### See it in code
 
 ```css
-* { box-sizing: border-box; }
+.notice {
+  width: 20rem;
+  padding: 1rem;
+  border: 2px solid #93c5fd;
+  margin: 1.5rem auto;
+}
 ```
 
-With `border-box`, declared width includes padding and border, which makes sizing predictable.
+With the base rule `box-sizing: border-box`, this box is 20rem wide including its 2rem of horizontal padding and 4px of horizontal border. Its vertical margin separates it from neighbors; `auto` horizontal margins center it when a width is available.
 
-- `px`: fixed CSS pixels; useful for borders and small limits.
-- `rem`: relative to root font size; good default for spacing and type.
-- `%`: relative to parent.
-- `vw`/`vh`: relative to viewport.
+### Choose units by what they respond to
+
+- `rem`: root font size; a strong default for text and spacing.
+- `em`: current element's font size; useful for component-relative values.
+- `%`: a related container size.
+- `vw` and `vh`: viewport dimensions; use carefully on mobile browsers.
 - `fr`: remaining space in a grid.
-- `min()`, `max()`, `clamp()`: responsive limits, e.g. `font-size: clamp(1rem, 2vw, 2rem)`.
+- `min()`, `max()`, and `clamp()`: safe responsive limits.
 
-Vertical margins of normal block elements can collapse. Flex and Grid margins do not. `min-width: 0` often fixes a flex/grid child that refuses to shrink because of long content.
+```css
+h1 {
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+```
 
-## 4. Display, positioning, overflow, and stacking
+This heading grows with the viewport but never becomes smaller than 2rem or larger than 4rem.
 
-- `block`: starts a new line, normally fills available width.
-- `inline`: stays in text flow; width/height generally do not apply.
-- `inline-block`: flows inline but can have dimensions.
-- `none`: removes the element from layout.
-- `position: relative`: remains in flow and can anchor absolute children.
-- `absolute`: removed from normal flow; positioned against nearest positioned ancestor.
-- `fixed`: positioned against viewport.
-- `sticky`: normal flow until its scroll threshold, then sticks within its container.
+## 5. Normal flow, display, and positioning
 
-`z-index` only compares elements in the same stacking context. It works on positioned elements and flex/grid items; a giant value cannot escape a different stacking context.
+### The idea
 
-`overflow: auto` adds scrolling only when needed; `hidden` clips content. A positioned element, `opacity < 1`, `transform`, and several other properties create a new stacking context.
+Normal document flow is the browser's default layout algorithm: block elements stack and inline content flows through text. Use it first. Use other layout modes when they solve a real relationship.
 
-## 5. Flexbox and Grid
+### See it in code
 
-Use **Flexbox for one direction** (row or column). Use **Grid for rows and columns**.
+```css
+.badge { display: inline-block; }
+.hidden { display: none; }
+
+.dialog {
+  position: fixed;
+  inset: 1rem;
+}
+
+.card { position: relative; }
+.card__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+```
+
+- `block` normally starts on a new line and fills available inline width.
+- `inline` flows with text and ignores most width and height settings.
+- `inline-block` flows with text but accepts dimensions.
+- `none` removes the element from layout and the accessibility tree.
+- `relative` stays in flow but creates a positioning reference.
+- `absolute` leaves normal flow and looks for the nearest positioned ancestor.
+- `fixed` positions against the viewport.
+- `sticky` stays in flow until its scroll boundary, then sticks inside its scroll container.
+
+Use `overflow: auto` when a container should scroll only if content needs it. Avoid fixed heights for text containers because translated or zoomed text can overflow.
+
+## 6. Use Flexbox for one direction
+
+### The idea
+
+Flexbox lays out items along one main axis: a row or a column. It excels at toolbars, button groups, and simple alignment.
+
+### See it in code
 
 ```css
 .toolbar {
   display: flex;
-  align-items: center;       /* cross axis */
-  justify-content: space-between; /* main axis */
+  align-items: center;
+  justify-content: space-between;
   gap: 1rem;
 }
 
+.toolbar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+```
+
+The default `flex-direction` is `row`, so the main axis is horizontal. `justify-content` positions items along that main axis. `align-items` positions them across it, normally vertically. If you change to `flex-direction: column`, the axes change too.
+
+Use `gap` for space *between* layout items. It does not add unwanted space around the outside edge.
+
+```css
+.content { min-width: 0; }
+```
+
+This small rule is sometimes needed on a flex child with long text: it permits the child to shrink rather than forcing overflow.
+
+## 7. Use Grid for rows and columns together
+
+### The idea
+
+Grid describes two-dimensional layout. It is a natural choice for card collections, page regions, and repeated rows and columns.
+
+### See it in code
+
+```css
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
@@ -107,32 +218,67 @@ Use **Flexbox for one direction** (row or column). Use **Grid for rows and colum
 }
 ```
 
-For flex: `flex-direction` sets the main axis; `justify-content` works on it; `align-items` works across it. `flex: 1` means an item can grow to share remaining space. `gap` adds space without outer-edge margins.
-
-For grid: define tracks with `grid-template-columns`; place items with `grid-column`/`grid-row` only when needed. The pattern above creates as many columns as fit, then one column on narrow screens.
-
-## 6. Typography, colors, and custom properties
-
-Set a readable `line-height` (often `1.5`) and keep line length reasonable. Use a font stack with fallbacks. Do not set body text in viewport units alone because users must be able to zoom.
+Read the column rule as: create as many columns as fit; each is at least 16rem wide; share remaining space equally. When the container becomes narrow, cards wrap naturally into fewer columns without a device-specific breakpoint.
 
 ```css
-:root {
-  --color-brand: #1d4ed8;
-  --space-md: 1rem;
-}
-
-.button {
-  color: white;
-  background: var(--color-brand);
-  padding: 0.75rem var(--space-md);
+.page {
+  display: grid;
+  grid-template-columns: 16rem minmax(0, 1fr);
+  gap: 2rem;
 }
 ```
 
-Custom properties participate in the cascade and can change by theme or component. Ensure text/background color contrast remains accessible.
+`minmax(0, 1fr)` permits the second column to shrink below its content's preferred width, which helps long content avoid horizontal overflow.
 
-## 7. Responsive and container-aware design
+## 8. Create readable typography and reusable design values
 
-Start mobile-first; add a rule when the content needs it, not for a device name.
+### The idea
+
+Good typography helps users scan and understand content. Custom properties let repeated values have one meaningful name.
+
+### See it in code
+
+```css
+:root {
+  --color-text: #111827;
+  --color-surface: #ffffff;
+  --color-action: #1d4ed8;
+  --space-md: 1rem;
+  --radius-md: 0.5rem;
+}
+
+body {
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.button {
+  padding: 0.75rem var(--space-md);
+  border-radius: var(--radius-md);
+  background: var(--color-action);
+  color: white;
+}
+```
+
+Custom properties participate in the cascade, so a component or dark theme can redefine them. Ensure foreground and background combinations have enough contrast. Keep line height comfortable and do not prevent users from zooming text.
+
+Prefer logical properties when direction should not matter:
+
+```css
+.content {
+  margin-inline: auto;
+  padding-block: 2rem;
+  padding-inline: 1rem;
+}
+```
+
+## 9. Make layouts responsive to available space
+
+### The idea
+
+Start with the smallest useful layout, then change it when the content needs more room. A breakpoint belongs to a layout problem, not a device brand.
+
+### See it in code
 
 ```css
 .sidebar { display: none; }
@@ -140,60 +286,71 @@ Start mobile-first; add a rule when the content needs it, not for a device name.
 @media (min-width: 48rem) {
   .sidebar { display: block; }
 }
-```
 
-- Use `:hover` plus keyboard-friendly `:focus-visible`; touch devices may not hover.
-- Prefer `transition: opacity 150ms ease` rather than `transition: all`.
-- Respect motion preferences:
-
-```css
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.01ms; transition-duration: 0.01ms; }
+img {
+  max-width: 100%;
+  height: auto;
 }
 ```
 
-Media queries respond to the viewport or user preference. Container queries respond to the space available to a component:
+The sidebar is absent until 48rem of viewport width is available. Images can shrink with their container while retaining their aspect ratio.
+
+For reusable components, container queries respond to the component's own space:
 
 ```css
 .card-list { container-type: inline-size; }
+
 @container (min-width: 32rem) {
   .card { grid-template-columns: 10rem 1fr; }
 }
 ```
 
-Use `max-width: 100%; height: auto` for images that must shrink. Prefer logical properties such as `margin-inline` and `padding-block` when supporting different writing directions.
+## 10. Add interaction and motion without excluding people
 
-## 8. Transforms, transitions, and animations
+### The idea
 
-`transform` changes visual position/size without changing normal layout. `translate`, `scale`, and `rotate` are usually smoother than animating `top`, `width`, or `height`.
+States should work for mouse, keyboard, and touch users. Motion should explain a change, not distract from it.
+
+### See it in code
 
 ```css
-.button { transition: transform 150ms ease; }
-.button:hover { transform: translateY(-2px); }
+.button {
+  transition: transform 150ms ease, background-color 150ms ease;
+}
 
-@keyframes pulse { 50% { opacity: 0.5; } }
+.button:hover,
+.button:focus-visible {
+  background-color: #1e40af;
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms;
+    transition-duration: 0.01ms;
+  }
+}
 ```
 
-Animate `transform` and `opacity` when possible. Motion should be short, purposeful, and optional via `prefers-reduced-motion`.
+`transform` moves the painted result without changing normal layout. Animating `transform` and `opacity` is usually smoother than repeatedly changing `top`, `width`, or `height`. `:focus-visible` preserves a clear keyboard focus signal without showing it unnecessarily after a pointer click.
 
-## 9. Architecture, debugging, and performance
+## 11. Debug the browser's computed result
 
-- Keep selectors shallow and component-focused. Use consistent class naming.
-- Prefer normal flow, Flexbox, and Grid before absolute positioning.
-- Use browser DevTools to inspect computed styles, the box model, grid/flex overlays, and crossed-out rules.
-- Remove unused CSS, compress assets, and avoid enormous selector chains.
-- Avoid layout-triggering animation and repeated style recalculation.
-- Test responsive layouts by content breakpoints, text zoom, keyboard focus, and long/translated content.
+When CSS surprises you, do not guess. Inspect the element in browser developer tools.
 
-## 10. Common mistakes
+1. Confirm the selector actually matches.
+2. Check which declaration is crossed out and why it lost the cascade.
+3. Inspect the computed value, box model, and inherited values.
+4. Turn on Flexbox or Grid overlays to see tracks and alignment.
+5. Test narrow width, text zoom, long words, keyboard focus, and reduced motion.
 
-- Fixed heights that clip growing text.
-- `100vw` causing horizontal overflow because it can include the scrollbar.
-- Removing focus outlines.
-- Using `!important` to patch unclear ownership.
-- Assuming `z-index: 999999` escapes every stacking context.
-- Using only color or hover to communicate state.
+Avoid `!important` as a repair. It hides the ownership problem and makes the next change harder. A small class, predictable source order, and a clear component boundary are usually enough.
 
-## Interview checklist
+## Learning path: beginner to expert
 
-Explain the box model, `border-box`, cascade and specificity, normal flow, `relative`/`absolute`/`fixed`/`sticky`, Flexbox axes, Grid vs Flexbox, responsive design, and stacking contexts.
+1. Practise selectors, the cascade, inheritance, and the box model.
+2. Build layouts in normal flow, then add Flexbox and Grid deliberately.
+3. Use `rem`, responsive limits, and content-driven breakpoints.
+4. Create reusable values with custom properties and test contrast.
+5. Test keyboard focus, zoom, reduced motion, and long translated content.
+6. Learn to debug computed styles instead of adding random overrides.
