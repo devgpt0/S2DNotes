@@ -13,6 +13,29 @@ Read every rule as: **select these elements, then apply these declarations.**
 
 This selects every element with `class="card"`, adds inside spacing, and draws a border around it.
 
+## Visual map: how CSS becomes pixels
+
+```mermaid
+flowchart LR
+    A[HTML elements] --> C[Selector matching]
+    B[CSS rules] --> C
+    C --> D[Cascade chooses winners]
+    D --> E[Computed styles]
+    E --> F[Layout: size and position]
+    F --> G[Painted browser page]
+```
+
+```text
+HTML                         CSS                      Browser
+
+<article class="card">      .card {                  +------------------+
+  Study CSS                    padding: 1rem;          |   Study CSS      |
+</article>                      border: 1px solid;      +------------------+
+                             }
+```
+
+When a rule appears to do nothing, follow the diagram: check selector matching, the cascade winner, and the computed result.
+
 ## 1. Start with a predictable base
 
 ### The idea
@@ -116,6 +139,21 @@ margin
 
 With the base rule `box-sizing: border-box`, this box is 20rem wide including its 2rem of horizontal padding and 4px of horizontal border. Its vertical margin separates it from neighbors; `auto` horizontal margins center it when a width is available.
 
+### Box-model visual
+
+```text
++--------------------------- margin ---------------------------+
+|  +------------------------ border ------------------------+  |
+|  |  +--------------------- padding ---------------------+  |  |
+|  |  |                    content                        |  |  |
+|  |  +---------------------------------------------------+  |  |
+|  +---------------------------------------------------------+  |
++---------------------------------------------------------------+
+
+border-box width = content + horizontal padding + horizontal border
+margin remains outside the declared width
+```
+
 ### Choose units by what they respond to
 
 - `rem`: root font size; a strong default for text and spacing.
@@ -167,6 +205,21 @@ Normal document flow is the browser's default layout algorithm: block elements s
 - `fixed` positions against the viewport.
 - `sticky` stays in flow until its scroll boundary, then sticks inside its scroll container.
 
+### Positioning visual
+
+```text
+Normal flow                Absolute inside a relative card
+
+[ Header ]                 +----------------------------+
+[ Card   ]                 | Card                  [x]  | <- absolute
+[ Footer ]                 |                            |
+                           +----------------------------+
+                           ^ relative positioning reference
+
+Fixed:  attached to the viewport
+Sticky: scrolls normally, then holds at its threshold
+```
+
 Use `overflow: auto` when a container should scroll only if content needs it. Avoid fixed heights for text containers because translated or zoomed text can overflow.
 
 ## 6. Use Flexbox for one direction
@@ -195,6 +248,19 @@ Flexbox lays out items along one main axis: a row or a column. It excels at tool
 The default `flex-direction` is `row`, so the main axis is horizontal. `justify-content` positions items along that main axis. `align-items` positions them across it, normally vertically. If you change to `flex-direction: column`, the axes change too.
 
 Use `gap` for space *between* layout items. It does not add unwanted space around the outside edge.
+
+### Flex-axis visual
+
+```text
+flex-direction: row
+
+main axis / justify-content  ---------------------------------->
+                             [ Logo ]       [ Search ] [ Login ]
+cross axis / align-items                    |
+                                            v
+
+flex-direction: column rotates the main axis vertically.
+```
 
 ```css
 .content { min-width: 0; }
@@ -229,6 +295,24 @@ Read the column rule as: create as many columns as fit; each is at least 16rem w
 ```
 
 `minmax(0, 1fr)` permits the second column to shrink below its content's preferred width, which helps long content avoid horizontal overflow.
+
+### Grid visual: the same cards at two widths
+
+```text
+Wide container
++------------+  +------------+  +------------+
+| Card 1     |  | Card 2     |  | Card 3     |
++------------+  +------------+  +------------+
+
+Narrow container
++----------------------------+
+| Card 1                     |
++----------------------------+
+| Card 2                     |
++----------------------------+
+| Card 3                     |
++----------------------------+
+```
 
 ## 8. Create readable typography and reusable design values
 
@@ -301,8 +385,19 @@ For reusable components, container queries respond to the component's own space:
 .card-list { container-type: inline-size; }
 
 @container (min-width: 32rem) {
-  .card { grid-template-columns: 10rem 1fr; }
+.card { grid-template-columns: 10rem 1fr; }
 }
+```
+
+### Responsive decision visual
+
+```mermaid
+flowchart TD
+    A[How much space is available?] --> B{What owns that space?}
+    B -- Browser viewport --> C[Use a media query]
+    B -- Reusable component container --> D[Use a container query]
+    C --> E[Change layout when content needs it]
+    D --> E
 ```
 
 ## 10. Add interaction and motion without excluding people
@@ -343,6 +438,16 @@ When CSS surprises you, do not guess. Inspect the element in browser developer t
 3. Inspect the computed value, box model, and inherited values.
 4. Turn on Flexbox or Grid overlays to see tracks and alignment.
 5. Test narrow width, text zoom, long words, keyboard focus, and reduced motion.
+
+```mermaid
+flowchart TD
+    A[Style looks wrong] --> B{Does selector match?}
+    B -- No --> C[Fix selector or HTML hook]
+    B -- Yes --> D{Is declaration crossed out?}
+    D -- Yes --> E[Inspect cascade and specificity]
+    D -- No --> F[Inspect computed value and box model]
+    F --> G[Test content, width, zoom, and state]
+```
 
 Avoid `!important` as a repair. It hides the ownership problem and makes the next change harder. A small class, predictable source order, and a clear component boundary are usually enough.
 

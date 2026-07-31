@@ -4,6 +4,17 @@ There are 50 questions: 30 code-snippet questions and 20 theory questions. Try t
 
 ## Part A: code-snippet MCQs (1-30)
 
+### How to read the HTML visuals
+
+```text
+SOURCE CODE                 BROWSER RESULT                 DOCUMENT MEANING
+<button>Save</button>       [ Save ]                       action control
+<a href="/help">Help</a>    Help                           navigation link
+<h1>Notes</h1>              Notes                          page heading
+```
+
+For each question, first identify the element and its attributes, then predict both the visible result and the meaning the browser records.
+
 ### 1. What rendering mode does this request?
 
 ```html
@@ -143,6 +154,27 @@ There are 50 questions: 30 code-snippet questions and 20 theory questions. Try t
 - D. No value because radio buttons cannot submit
 
 **Answer: A.** The checked control submits its shared `name` and its own `value`.
+
+#### Visual checkpoint: questions 1-10
+
+```text
+Browser page
++--------------------------------------------------+
+| Course notes                           [Save]     |
+|                                                  |
+| Email                                            |
+| [ learner@example.com________________ ]          |
+|                                                  |
+| Preferred contact                               |
+| (*) Email        ( ) Phone                       |
++--------------------------------------------------+
+
+DOM relationships
+label for="email" ------> input id="email"
+input name="email" -----> submitted key `email`
+checked radio -----------> submitted value `email`
+button in form ----------> submit by default
+```
 
 ### 11. What does `required` do in this normal browser submission?
 
@@ -288,6 +320,35 @@ There are 50 questions: 30 code-snippet questions and 20 theory questions. Try t
 
 **Answer: B.** The label distinguishes this navigation region from other navigation landmarks.
 
+#### Visual checkpoint: questions 11-20
+
+```text
+Logical page regions
++--------------------------------------------------+
+| HEADER                                           |
+|   NAV: Course navigation                         |
++--------------------------------------------------+
+| MAIN                                             |
+|   ARTICLE                                        |
+|     SECTION                                      |
++--------------------------------------------------+
+
+Image choice
+[ informative photo ] -> useful alt text
+[ decorative divider ] -> alt=""
+
+Table relationship
+column header
+      |
+      v
++----------+---------+
+| Day      | Minutes |
++----------+---------+
+| Monday ->| 30      |
++----------+---------+
+  row header
+```
+
 ### 21. What does `tabindex="-1"` do here?
 
 ```html
@@ -425,7 +486,38 @@ There are 50 questions: 30 code-snippet questions and 20 theory questions. Try t
 
 **Answer: A.** The primary visible image should load promptly to avoid delaying useful content.
 
+#### Visual checkpoint: questions 21-30
+
+```mermaid
+flowchart LR
+    A[HTML parsing] --> B[DOM complete]
+    C[defer script download] --> D[Run after parsing]
+    B --> D
+    E[Visible hero image] --> F[Load promptly]
+    G[Below-page image] --> H[May lazy-load]
+```
+
+```text
+Keyboard focus model
+Tab order: [Link] -> [Input] -> [Button]
+tabindex="-1": programmatic focus target, not a normal Tab stop
+```
+
 ## Part B: theory MCQs (31-50)
+
+### Theory concept map
+
+```mermaid
+flowchart TD
+    A[Good HTML] --> B[Structure]
+    A --> C[Meaning]
+    A --> D[Accessibility]
+    A --> E[Safe data submission]
+    B --> F[Headings and landmarks]
+    C --> G[Correct native elements]
+    D --> H[Labels, alt text, keyboard]
+    E --> I[Server validation]
+```
 
 ### 31. What is HTML's primary responsibility?
 

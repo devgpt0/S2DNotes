@@ -4,6 +4,19 @@ There are 50 questions: 30 code-snippet questions and 20 theory questions. Predi
 
 ## Part A: code-snippet MCQs (1-30)
 
+### How to read the JavaScript visuals
+
+JavaScript questions may ask about a browser change, console output, or a value held in memory.
+
+```text
+Browser output:  [ Saved ]
+Console output:  > "Saved"
+Memory value:    user ---> { name: "Asha" }
+Async order:     start -> end -> promise -> timer
+```
+
+Trace one statement at a time and write the new value beside each changed variable.
+
 ### 1. What does this print?
 
 ```js
@@ -141,6 +154,20 @@ const result = [1, 2].forEach((number) => number * 2);
 - D. A Promise
 
 **Answer: C.** `forEach` is for side effects; it does not create an output array.
+
+#### Visual checkpoint: questions 1-10
+
+```text
+Value choice
+0 || 3  ------> 3      because 0 is falsy
+0 ?? 3  ------> 0      because 0 is not null or undefined
+
+Array pipelines
+[1, 2, 3] -- map(*2) ------------> [2, 4, 6]
+[40, 70, 90] -- find(>=60) ------> 70
+[10, 20, 30] -- reduce(sum, 0) --> 60
+[1, 2] -- forEach(...) ----------> undefined
+```
 
 ### 11. What does this print?
 
@@ -300,6 +327,24 @@ async function answer() {
 
 **Answer: B.** `async` wraps returned values in a Promise.
 
+#### Visual checkpoint: questions 11-20
+
+```text
+Shallow copy
+original.settings --+
+                   +----> { theme: "dark" }
+copy.settings -----+
+
+Closure
+next() ---> remembered count: 0 -> 1 -> 2
+
+Event loop
+call stack:  start -> end -> empty
+microtask:                         promise
+next task:                                  timer
+console:     start -> end -> promise -> timer
+```
+
 ### 21. Why is this check needed?
 
 ```js
@@ -443,7 +488,44 @@ controller.abort();
 
 **Answer: B.** AbortController lets obsolete work be cancelled.
 
+#### Visual checkpoint: questions 21-30
+
+```mermaid
+flowchart BT
+    A[Clicked child button] --> B[Parent list listener]
+    B --> C[Find closest button]
+    C --> D[Read data-id]
+    D --> E[Remove matching item]
+```
+
+```text
+DOM safety
+untrusted string -- textContent --> visible text
+untrusted string -- innerHTML ---> parsed markup / XSS risk
+
+Storage
+object -- JSON.stringify --> string -- localStorage
+string -- JSON.parse -----> object
+
+Fetch cancellation
+request running -- controller.abort() --> cancellation requested
+```
+
 ## Part B: theory MCQs (31-50)
+
+### Theory concept map
+
+```mermaid
+flowchart TD
+    A[Reliable JavaScript] --> B[Explicit values and types]
+    A --> C[Small functions and clear state]
+    A --> D[Controlled async work]
+    A --> E[Safe DOM and external data]
+    B --> F[Strict equality and validation]
+    C --> G[Scope, closures, modules]
+    D --> H[Promises, errors, cancellation]
+    E --> I[textContent and trust boundaries]
+```
 
 ### 31. Which declaration should be the default for a binding that will not be reassigned?
 

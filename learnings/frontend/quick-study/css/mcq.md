@@ -4,6 +4,23 @@ There are 50 questions: 30 code-snippet questions and 20 theory questions. Assum
 
 ## Part A: code-snippet MCQs (1-30)
 
+### How to read the CSS visuals
+
+```mermaid
+flowchart LR
+    A[Which selector matches?] --> B[Which declaration wins?]
+    B --> C[What is the computed value?]
+    C --> D[How does the box look in the browser?]
+```
+
+```text
+HTML: <p class="notice">Read this</p>
+CSS:  .notice { color: blue; }
+                         |
+Browser: Read this <------+
+         blue text
+```
+
 ### 1. What color is the paragraph?
 
 ```html
@@ -161,6 +178,26 @@ p { color: black; }
 
 **Answer: B.** `gap` is interior spacing between layout items.
 
+#### Visual checkpoint: questions 1-10
+
+```text
+Cascade
+p { color: black }     specificity: element
+.notice { color: blue } specificity: class   <- wins
+
+Box model with border-box
++---------------- width: 200px ----------------+
+| border | padding | content | padding | border |
++-----------------------------------------------+
+Everything shown above fits inside the declared 200px width.
+
+Flex row
+main axis -------------------------------------->
+[Logo]              gap              [Actions]
+cross axis                         |
+                                   v
+```
+
 ### 11. How does this card grid react to less space?
 
 ```css
@@ -299,6 +336,24 @@ h1 { font-size: clamp(2rem, 5vw, 4rem); }
 - D. No property until an animation is defined
 
 **Answer: B.** Listing exact properties is clearer than `transition: all`.
+
+#### Visual checkpoint: questions 11-20
+
+```text
+Responsive grid
+
+Wide:    [ Card 1 ] [ Card 2 ] [ Card 3 ]
+Narrow:  [ Card 1 ]
+         [ Card 2 ]
+         [ Card 3 ]
+
+Media query:     responds to viewport width
+Container query: responds to component width
+
+Transform result
+Before: [ Button ]
+After:  [ Button ]  moved visually by -2px; neighbors do not reflow
+```
 
 ### 21. What does this query respect?
 
@@ -439,7 +494,39 @@ img {
 
 **Answer: B.** A large z-index cannot escape its parent's stacking context.
 
+#### Visual checkpoint: questions 21-30
+
+```text
+Stacking contexts
+
+Page context
+|-- Modal: z-index 10
+`-- Parent: opacity .9, z-index 1
+    `-- Child: z-index 9999
+
+The child remains inside Parent's z-ordering world,
+so it cannot jump above Modal by itself.
+
+Logical spacing
+padding-inline:  start [ content ] end
+padding-block:          top/bottom
+```
+
 ## Part B: theory MCQs (31-50)
+
+### Theory concept map
+
+```mermaid
+flowchart TD
+    A[Maintainable CSS] --> B[Predictable cascade]
+    A --> C[Resilient layout]
+    A --> D[Accessible states]
+    A --> E[Evidence-based debugging]
+    B --> F[Low-specificity classes]
+    C --> G[Normal flow, Flexbox, Grid]
+    D --> H[Contrast, focus, reduced motion]
+    E --> I[Inspect computed styles]
+```
 
 ### 31. What does the CSS cascade decide?
 

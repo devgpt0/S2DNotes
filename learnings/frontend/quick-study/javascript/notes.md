@@ -4,6 +4,23 @@ JavaScript is the language that calculates with data and changes a web page afte
 
 Use this learning loop: predict what a snippet does, run it, inspect the result, then change one line and predict again.
 
+## Visual map: how JavaScript changes a page
+
+```mermaid
+flowchart LR
+    A[User click or data] --> B[Event handler or function]
+    B --> C[Read current state]
+    C --> D[Calculate new state]
+    D --> E[Update the DOM]
+    E --> F[Browser paints the change]
+```
+
+Not every JavaScript result is visible on the page, so these notes show three kinds of output:
+
+```text
+Browser: [ Saved ]          Console: "Saved"          Memory: user ---> { name: "Asha" }
+```
+
 ## 1. Values, variables, and identity
 
 ### The idea
@@ -35,6 +52,19 @@ console.log(first.topic); // "CSS"
 ```
 
 Both bindings refer to the same object. Copy deliberately when you need a new outer object: `const updated = { ...first, topic: "JavaScript" };`. Spread creates a **shallow** copy; nested objects remain shared.
+
+### Reference visual
+
+```text
+first  -----+
+            +----> { topic: "CSS" }
+second -----+
+
+Changing the shared object through `second` is visible through `first`.
+
+updated ---------> { topic: "JavaScript" }
+                    a different outer object
+```
 
 ## 2. Compare and choose values deliberately
 
@@ -126,6 +156,17 @@ Read each method as a question:
 - `reduce`: how do items become one accumulated result?
 - `forEach`: perform a side effect for each item; it returns `undefined`.
 
+### Array-method visual
+
+```text
+Input: [60, 75, 90]
+
+map(score => score + 5)       -> [65, 80, 95]   transform every item
+filter(score => score >= 70)  -> [75, 90]       keep matching items
+find(score => score >= 70)    -> 75             return first match
+reduce((sum, score) => ...)   -> 225            combine into one value
+```
+
 ### Mutation example
 
 ```js
@@ -162,6 +203,20 @@ console.log(next()); // 2
 ```
 
 `nextCount` is a **closure**: it remembers `count` from the call to `createCounter` that created it. Closures power private state, event handlers, callbacks, and factory functions.
+
+### Closure visual
+
+```text
+createCounter() call
++----------------------------------+
+| remembered variable: count = 2   |
+|                                  |
+| next() --------------------------+----> can still access count
++----------------------------------+
+
+Call 1: count 0 -> 1
+Call 2: count 1 -> 2
+```
 
 `let` and `const` are block-scoped. Do not read them before their declaration is initialized. A function declaration can be called before its source line; a function expression assigned to a `const` cannot.
 
@@ -236,6 +291,19 @@ console.log("end");
 // start, end, promise, timer
 ```
 
+### Event-loop timeline
+
+```text
+Time ------------------------------------------------------------>
+
+Call stack:   console(start)  schedule  schedule  console(end)  empty
+Console:      start                                  end
+Microtasks:                          [promise]                 -> promise
+Task queue:                                    [timer]         -> timer
+
+Final order: start -> end -> promise -> timer
+```
+
 After current synchronous code finishes, Promise callbacks (microtasks) run before the next timer or input task. This ordering explains many asynchronous results.
 
 ```js
@@ -291,6 +359,24 @@ list.addEventListener("click", (event) => {
 
 Click events bubble from a button through its ancestors. One listener on the list can therefore serve current and future item buttons. `preventDefault()` stops an element's built-in action, such as form navigation. Use `stopPropagation()` rarely because it can break other listeners.
 
+### DOM and event-bubbling visual
+
+```mermaid
+flowchart BT
+    A[button data-id=42] --> B[list item]
+    B --> C[list with one click listener]
+    C --> D[closest finds the button]
+    D --> E[removeItem 42]
+```
+
+```text
+Before click                     After click
++----------------------+         +----------------------+
+| Learn HTML       [x] | click   | Learn CSS        [x] |
+| Learn CSS        [x] |  ---->  +----------------------+
++----------------------+
+```
+
 ## 9. Handle errors and client storage carefully
 
 ### The idea
@@ -314,6 +400,17 @@ const preferences = JSON.parse(localStorage.getItem("preferences") ?? "{}");
 ```
 
 Do not store secrets or authentication tokens in browser storage. Treat all external text as untrusted, avoid unsafe HTML insertion, validate data at server boundaries, and use secure cookies for session authentication where appropriate.
+
+### Trust-boundary visual
+
+```mermaid
+flowchart LR
+    A[Form, API, URL, storage] --> B[Untrusted external data]
+    B --> C{Validate expected type and shape}
+    C -- Valid --> D[Application logic]
+    C -- Invalid --> E[Stop with an explicit error]
+    D --> F[textContent for visible text]
+```
 
 ## 10. Measure before optimizing
 

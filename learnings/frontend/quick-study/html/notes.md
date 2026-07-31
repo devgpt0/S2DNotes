@@ -4,6 +4,28 @@ HTML is the meaning and structure of a web page. It tells the browser, search en
 
 Think of a simple page as a document with a title, sections, text, links, images, and controls. Start by describing that document well; styling comes afterwards.
 
+## Visual map: from HTML source to browser page
+
+```mermaid
+flowchart LR
+    A[HTML source] --> B[Browser parser]
+    B --> C[DOM tree]
+    C --> D[Visible page]
+    C --> E[Meaning for assistive technology]
+    C --> F[Elements CSS and JavaScript can use]
+```
+
+```text
+Browser tab: Study guide
++--------------------------------------------------+
+| Study guide                                      |
+|                                                  |
+| Learn one concept, then practise it.             |
++--------------------------------------------------+
+```
+
+The browser sketch represents visible output, not extra HTML syntax.
+
 ## 1. How the browser turns HTML into a page
 
 ### The idea
@@ -35,6 +57,20 @@ main
 - An **opening tag** starts an element and a **closing tag** ends it.
 - Some elements have no content or closing tag, for example `img`, `input`, `meta`, and `link`.
 - Invalid nesting makes the browser repair the DOM. Write valid markup instead of relying on that repair.
+
+### Visual connection: nesting becomes a tree
+
+```text
+HTML source                     DOM relationship
+
+<main>                          main
+  <h1>Study plan</h1>           |-- h1
+  <p>Practise daily.</p>        `-- p
+</main>
+
+Indentation helps readers see the same parent-child relationship
+that the browser records in the DOM.
+```
 
 ## 2. Begin every page with a complete document
 
@@ -170,6 +206,25 @@ Semantic elements explain the role of a region. They make pages easier to naviga
 <footer>Copyright 2026 Study Hub</footer>
 ```
 
+### Browser landmark sketch
+
+```text
++--------------------------------------------------+
+| HEADER: Study Hub       NAV: Notes | Quiz        |
++--------------------------------------------------+
+| MAIN                                             |
+|  ARTICLE: How to make a study plan               |
+|   SECTION: Choose a time                         |
+|   Start with a small, repeatable session.        |
+|                                                  |
+|  ASIDE: Five-minute review checklist             |
++--------------------------------------------------+
+| FOOTER: Copyright 2026 Study Hub                 |
++--------------------------------------------------+
+```
+
+The tags do not draw these borders. The sketch shows the logical regions; CSS controls their actual appearance.
+
 ### Choose the right element
 
 - `header` and `footer`: introductory or closing content for a page or section.
@@ -244,6 +299,29 @@ A form collects user input. Every control needs a clear label, an appropriate ty
 </form>
 ```
 
+### Browser form sketch
+
+```text
+Email address
++--------------------------------------+
+| learner@example.com                  |
++--------------------------------------+
+
+How should we contact you?
+(*) Email   ( ) Phone
+
+[ Create account ]
+```
+
+```mermaid
+flowchart LR
+    A[Visible label] -- for=email --> B[Input id=email]
+    B -- name=email --> C[Submitted field]
+    D[Radio name=contact] --> E[One selected value]
+    C --> F[POST /signup]
+    E --> F
+```
+
 ### What happens when it is submitted
 
 The label's `for="email"` points to the input's `id="email"`; clicking the label focuses that input. The browser sends values using their `name` attributes, such as `email=...` and `contact=email`. The shared radio `name` makes the choices mutually exclusive.
@@ -275,6 +353,21 @@ A table represents relationships in rows and columns. Media needs controls and a
     <tr><th scope="row">Monday</th><td>30</td></tr>
   </tbody>
 </table>
+```
+
+### Browser table sketch
+
+```text
+Weekly study time
++----------+---------+
+| Day      | Minutes |
++==========+=========+
+| Monday   | 30      |
++----------+---------+
+
+Column headers: Day, Minutes
+Row header: Monday
+Data cell: 30
 ```
 
 `caption` names the table. `th` says a cell is a header, and `scope` tells whether it labels a column or row. Do not use a table only to arrange a page layout.
@@ -335,6 +428,20 @@ HTML controls when the browser discovers styles, scripts, and embedded content. 
 <script src="app.js" defer></script>
 ```
 
+### Loading timeline
+
+```mermaid
+sequenceDiagram
+    participant B as Browser
+    participant H as HTML parser
+    participant S as app.js
+    B->>H: Parse HTML
+    B->>S: Download in parallel
+    H-->>B: DOM parsing complete
+    S-->>B: Execute deferred script
+    B-->>B: Display interactive page
+```
+
 `defer` downloads a classic script while HTML is being parsed, then runs it after parsing in document order. That makes it a good default for scripts that use the DOM. `async` runs as soon as it finishes downloading, so independent analytics-style scripts may use it, but their order is not guaranteed. `type="module"` scripts are deferred by default.
 
 Never put untrusted text into HTML. Use text APIs in JavaScript, validate form data on the server, and use a strong Content Security Policy in a real application. Give each `iframe` a useful `title` and use the minimum `sandbox` permissions it needs.
@@ -369,6 +476,23 @@ This small page connects structure, semantics, navigation, an image, and a form.
     </main>
   </body>
 </html>
+```
+
+### Approximate browser result
+
+```text
++--------------------------------------------------+
+| Study Hub                                        |
++--------------------------------------------------+
+| Review yesterday's notes                         |
+| Spend five minutes recalling ideas before        |
+| reading them again.                              |
+|                                                  |
+| [ learner reviewing notes image - 800 x 450 ]    |
+|                                                  |
+| Email for a reminder                             |
+| [____________________________] [ Send reminder ] |
++--------------------------------------------------+
 ```
 
 Before styling it, check the document outline, Tab through it, submit the empty form, and inspect the elements in browser developer tools. That feedback loop is how concepts become reliable habits.
