@@ -1,6 +1,8 @@
-# Python Sets: 30 MCQs
+# Python Sets: 60 MCQs
 
-## Questions
+Questions 31-60 are based on the concepts taught in [Python Set Notes](../../python/notes/collection_framework/set.md).
+
+## Part A: Concept MCQs (1-30)
 
 1. Which expression creates an empty set?
    - A. `{}`
@@ -182,7 +184,7 @@
     - C. It can be used as a dictionary key when its items are hashable.
     - D. It preserves duplicate items.
 
-## Answers and Reasons
+## Part A Answers and Reasons
 
 1. **C — `set()`**. `{}` creates an empty dictionary, while `set()` creates an empty set.
 2. **B — `{1, 2, 3}`**. A set keeps only one instance of each equal value.
@@ -214,3 +216,430 @@
 28. **B — `for value in values.copy():`**. Iterating over a copy avoids changing the set being iterated.
 29. **B — `set(values)`**. Constructing a set keeps unique values only.
 30. **C — It can be used as a dictionary key**. An immutable, hashable `frozenset` is valid as a dictionary key.
+
+## Part B: Code-Snippet MCQs (31-60)
+
+### 31. What is printed?
+
+```python
+values = {1, 2, 2, 3}
+print(len(values), sorted(values))
+```
+
+- A. `4 [1, 2, 2, 3]`
+- B. `3 [1, 2, 3]`
+- C. `4 [1, 2, 3]`
+- D. `3 [3, 2, 1]`
+
+### 32. What is printed?
+
+```python
+values = {1, 2}
+values.add(2)
+print(len(values))
+```
+
+- A. `1`
+- B. `2`
+- C. `3`
+- D. `KeyError`
+
+### 33. What is printed?
+
+```python
+values = {1}
+values.update([2, 3], (3, 4))
+print(sorted(values))
+```
+
+- A. `[1, 2, 3, 3, 4]`
+- B. `[2, 3, 4]`
+- C. `[1, 2, 3, 4]`
+- D. `TypeError`
+
+### 34. What happens?
+
+```python
+values = {1, 2}
+values.remove(3)
+```
+
+- A. Nothing happens
+- B. Returns `False`
+- C. Raises `KeyError`
+- D. Raises `ValueError`
+
+### 35. What is printed?
+
+```python
+values = {1, 2}
+values.discard(3)
+print(sorted(values))
+```
+
+- A. `[1, 2]`
+- B. `[1]`
+- C. `[2]`
+- D. `KeyError`
+
+### 36. What is printed?
+
+```python
+values = {10, 20, 30}
+values.pop()
+print(len(values))
+```
+
+- A. `0`
+- B. `1`
+- C. `2`
+- D. `3`
+
+### 37. What is printed?
+
+```python
+left = {1, 2}
+right = {2, 3}
+result = left | right
+print(sorted(result), sorted(left))
+```
+
+- A. `[1, 2, 3] [1, 2]`
+- B. `[2] [1, 2]`
+- C. `[1, 3] [1, 3]`
+- D. `[1, 2, 3] [1, 2, 3]`
+
+### 38. What is printed?
+
+```python
+left = {1, 2, 3}
+right = {2, 3, 4}
+print(sorted(left & right))
+```
+
+- A. `[1, 4]`
+- B. `[2, 3]`
+- C. `[1, 2, 3, 4]`
+- D. `[]`
+
+### 39. What is printed?
+
+```python
+left = {1, 2, 3}
+right = {2, 4}
+print(sorted(left - right))
+```
+
+- A. `[2]`
+- B. `[1, 3]`
+- C. `[1, 3, 4]`
+- D. `[4]`
+
+### 40. What is printed?
+
+```python
+left = {1, 2, 3}
+right = {2, 4}
+print(sorted(left ^ right))
+```
+
+- A. `[2]`
+- B. `[1, 3]`
+- C. `[1, 3, 4]`
+- D. `[1, 2, 3, 4]`
+
+### 41. What is printed?
+
+```python
+values = {1, 2}
+values |= {2, 3}
+print(sorted(values))
+```
+
+- A. `[1, 2]`
+- B. `[2]`
+- C. `[1, 2, 3]`
+- D. `[1, 3]`
+
+### 42. What is printed?
+
+```python
+values = {1, 2, 3}
+values &= {2, 3, 4}
+print(sorted(values))
+```
+
+- A. `[1, 4]`
+- B. `[2, 3]`
+- C. `[1, 2, 3, 4]`
+- D. `[]`
+
+### 43. What is printed?
+
+```python
+small = {1, 2}
+large = {1, 2, 3}
+print(small.issubset(large), large.issuperset(small))
+```
+
+- A. `True True`
+- B. `True False`
+- C. `False True`
+- D. `False False`
+
+### 44. What is printed?
+
+```python
+first = {1, 2}
+second = {2, 1}
+print(first <= second, first < second)
+```
+
+- A. `True True`
+- B. `True False`
+- C. `False True`
+- D. `False False`
+
+### 45. What is printed?
+
+```python
+first = {1, 2}
+second = {3, 4}
+print(first.isdisjoint(second))
+```
+
+- A. `True`
+- B. `False`
+- C. `set()`
+- D. `None`
+
+### 46. What is printed?
+
+```python
+result = {number * number for number in range(6) if number % 2 == 0}
+print(sorted(result))
+```
+
+- A. `[0, 2, 4]`
+- B. `[0, 4, 16]`
+- C. `[1, 9, 25]`
+- D. `[4, 16, 36]`
+
+### 47. What happens?
+
+```python
+values = {[1, 2], [3, 4]}
+```
+
+- A. A two-item set is created
+- B. The lists become tuples
+- C. Raises `TypeError`
+- D. Raises `IndexError`
+
+### 48. What is printed?
+
+```python
+values = {(1, 2), (3, 4)}
+print((1, 2) in values)
+```
+
+- A. `True`
+- B. `False`
+- C. `TypeError`
+- D. `KeyError`
+
+### 49. What is printed?
+
+```python
+values = frozenset([1, 2, 2])
+print(len(values), 2 in values)
+```
+
+- A. `3 True`
+- B. `2 True`
+- C. `2 False`
+- D. `TypeError`
+
+### 50. What is printed?
+
+```python
+key = frozenset({'read', 'write'})
+permissions = {key: 'editor'}
+print(permissions[frozenset({'write', 'read'})])
+```
+
+- A. `'editor'`
+- B. `KeyError`
+- C. `TypeError`
+- D. `frozenset({'read', 'write'})`
+
+### 51. What happens?
+
+```python
+values = frozenset({1, 2})
+values.add(3)
+```
+
+- A. The value is added
+- B. Nothing happens
+- C. Raises `AttributeError`
+- D. Raises `KeyError`
+
+### 52. What is printed?
+
+```python
+first = {1, 2}
+second = first.copy()
+second.add(3)
+print(sorted(first), sorted(second))
+```
+
+- A. `[1, 2, 3] [1, 2, 3]`
+- B. `[1, 2] [1, 2, 3]`
+- C. `[1, 2] [3]`
+- D. `TypeError`
+
+### 53. What is printed?
+
+```python
+first = {1, 2}
+second = first
+second.add(3)
+print(sorted(first))
+```
+
+- A. `[1, 2]`
+- B. `[3]`
+- C. `[1, 2, 3]`
+- D. `None`
+
+### 54. What is printed?
+
+```python
+values = {1, 2, 3, 4}
+values.difference_update({2, 4, 6})
+print(sorted(values))
+```
+
+- A. `[2, 4]`
+- B. `[1, 3]`
+- C. `[1, 3, 6]`
+- D. `[1, 2, 3, 4, 6]`
+
+### 55. What is printed?
+
+```python
+values = {1, 2, 3}
+values.symmetric_difference_update({2, 4})
+print(sorted(values))
+```
+
+- A. `[2]`
+- B. `[1, 3]`
+- C. `[1, 3, 4]`
+- D. `[1, 2, 3, 4]`
+
+### 56. What is printed?
+
+```python
+seen = set()
+for value in [1, 2, 3, 2, 4]:
+    if value in seen:
+        print(value)
+        break
+    seen.add(value)
+```
+
+- A. `1`
+- B. `2`
+- C. `3`
+- D. Nothing
+
+### 57. What is printed?
+
+```python
+first = [1, 2, 2, 3]
+second = [2, 3, 4]
+print(sorted(set(first) & set(second)))
+```
+
+- A. `[1, 4]`
+- B. `[2, 2, 3]`
+- C. `[2, 3]`
+- D. `[1, 2, 3, 4]`
+
+### 58. What is printed?
+
+```python
+seen = set()
+duplicates = set()
+for character in 'banana':
+    if character in seen:
+        duplicates.add(character)
+    else:
+        seen.add(character)
+print(sorted(duplicates))
+```
+
+- A. `['a']`
+- B. `['a', 'n']`
+- C. `['b', 'a', 'n']`
+- D. `[]`
+
+### 59. What is printed?
+
+```python
+edge_one = frozenset({'A', 'B'})
+edge_two = frozenset({'B', 'A'})
+print(edge_one == edge_two)
+```
+
+- A. `True`
+- B. `False`
+- C. `TypeError`
+- D. Order dependent
+
+### 60. What is printed?
+
+```python
+values = [3, 1, 3, 2, 1]
+print(sorted(set(values)))
+```
+
+- A. `[3, 1, 3, 2, 1]`
+- B. `[3, 2, 1]`
+- C. `[1, 2, 3]`
+- D. `{1, 2, 3}`
+
+## Part B Answers and Reasons
+
+31. **B - `3 [1, 2, 3]`**. Sets keep only unique values.
+32. **B - `2`**. Adding an existing value changes nothing.
+33. **C - `[1, 2, 3, 4]`**. `update()` consumes every iterable and removes duplicates.
+34. **C - `KeyError`**. `remove()` requires the value to exist.
+35. **A - `[1, 2]`**. `discard()` ignores an absent value.
+36. **C - `2`**. `pop()` removes one arbitrary member.
+37. **A - `[1, 2, 3] [1, 2]`**. Union creates a new set and leaves `left` unchanged.
+38. **B - `[2, 3]`**. Intersection keeps values found in both sets.
+39. **B - `[1, 3]`**. Difference keeps left-side values absent from the right.
+40. **C - `[1, 3, 4]`**. Symmetric difference keeps values found in exactly one set.
+41. **C - `[1, 2, 3]`**. `|=` performs an in-place union.
+42. **B - `[2, 3]`**. `&=` performs an in-place intersection.
+43. **A - `True True`**. Both relationship checks describe the same containment.
+44. **B - `True False`**. Equal sets satisfy subset-or-equal but not proper subset.
+45. **A - `True`**. The sets have no common member.
+46. **B - `[0, 4, 16]`**. The comprehension squares the even inputs.
+47. **C - `TypeError`**. Mutable lists are unhashable set members.
+48. **A - `True`**. A tuple of integers is hashable.
+49. **B - `2 True`**. `frozenset` is immutable and removes duplicates.
+50. **A - `'editor'`**. Equal frozensets have equal hashes regardless of item order.
+51. **C - `AttributeError`**. A frozenset has no mutating `add()` method.
+52. **B - `[1, 2] [1, 2, 3]`**. `copy()` creates a separate set.
+53. **C - `[1, 2, 3]`**. Assignment aliases the same set.
+54. **B - `[1, 3]`**. `difference_update()` removes common values in place.
+55. **C - `[1, 3, 4]`**. The in-place symmetric difference removes `2` and adds `4`.
+56. **B - `2`**. The second `2` is the first repeated value encountered.
+57. **C - `[2, 3]`**. Converting to sets removes duplicates before intersection.
+58. **B - `['a', 'n']`**. Both characters occur more than once.
+59. **A - `True`**. Frozenset equality is independent of iteration order.
+60. **C - `[1, 2, 3]`**. The set removes duplicates and `sorted()` provides deterministic order.

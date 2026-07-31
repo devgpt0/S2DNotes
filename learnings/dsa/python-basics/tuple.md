@@ -1,6 +1,8 @@
-# Python Tuples: 30 MCQs
+# Python Tuples: 60 MCQs
 
-## Questions
+Questions 31-60 are based on the concepts taught in [Python Tuple Notes](../../python/notes/collection_framework/tuple.md).
+
+## Part A: Concept MCQs (1-30)
 
 1. Which expression creates an empty tuple?
    - A. `{}`
@@ -182,7 +184,7 @@
     - C. A collection requiring unique items only.
     - D. A key-value mapping.
 
-## Answers and Reasons
+## Part A Answers and Reasons
 
 1. **C — `()`**. Parentheses with no items create an empty tuple.
 2. **B — `(5,)`**. The trailing comma, not the parentheses, makes this a one-item tuple.
@@ -214,3 +216,429 @@
 28. **C — `first + second`**. Tuples are immutable, so concatenation creates a new tuple.
 29. **B — Yes, but the item reference cannot be reassigned**. The list can be mutated, but the tuple cannot replace its reference to that list.
 30. **B — A fixed record such as an `(x, y)` coordinate**. Tuples suit ordered collections whose structure should not change.
+
+## Part B: Code-Snippet MCQs (31-60)
+
+### 31. What is printed?
+
+```python
+value = (5,)
+print(type(value).__name__)
+```
+
+- A. `int`
+- B. `list`
+- C. `tuple`
+- D. `set`
+
+### 32. What is printed?
+
+```python
+packed = 1, 2, 3
+print(packed)
+```
+
+- A. `[1, 2, 3]`
+- B. `(1, 2, 3)`
+- C. `{1, 2, 3}`
+- D. `3`
+
+### 33. What is printed?
+
+```python
+x, y = (10, 20)
+print(x, y)
+```
+
+- A. `10 20`
+- B. `(10, 20)`
+- C. `20 10`
+- D. `ValueError`
+
+### 34. What happens?
+
+```python
+x, y = (1, 2, 3)
+```
+
+- A. `x` becomes `1` and `y` becomes `(2, 3)`
+- B. The extra value is ignored
+- C. Raises `ValueError`
+- D. Raises `TypeError`
+
+### 35. What is printed?
+
+```python
+first, *middle, last = (1, 2, 3, 4, 5)
+print(first, middle, last)
+```
+
+- A. `1 (2, 3, 4) 5`
+- B. `1 [2, 3, 4] 5`
+- C. `(1,) (2, 3, 4) (5,)`
+- D. `ValueError`
+
+### 36. What is printed?
+
+```python
+def point():
+    return 2, 3
+
+result = point()
+print(result)
+```
+
+- A. `[2, 3]`
+- B. `(2, 3)`
+- C. `2 3`
+- D. `None`
+
+### 37. What is printed?
+
+```python
+def collect(*args):
+    print(type(args).__name__, args)
+
+collect(1, 2, 3)
+```
+
+- A. `list [1, 2, 3]`
+- B. `tuple (1, 2, 3)`
+- C. `tuple [1, 2, 3]`
+- D. `dict {1, 2, 3}`
+
+### 38. What is printed?
+
+```python
+def add_three(a, b, c):
+    return a + b + c
+
+values = (1, 2, 3)
+print(add_three(*values))
+```
+
+- A. `3`
+- B. `6`
+- C. `(1, 2, 3)`
+- D. `TypeError`
+
+### 39. What is printed?
+
+```python
+left = 1
+right = 2
+left, right = right, left
+print(left, right)
+```
+
+- A. `1 2`
+- B. `2 1`
+- C. `(2, 1)`
+- D. `ValueError`
+
+### 40. What happens?
+
+```python
+values = (1, 2, 3)
+values[0] = 9
+```
+
+- A. `values` becomes `(9, 2, 3)`
+- B. Raises `TypeError`
+- C. Raises `IndexError`
+- D. Nothing happens
+
+### 41. What is printed?
+
+```python
+values = ([1],)
+values[0].append(2)
+print(values)
+```
+
+- A. `([1],)`
+- B. `([1, 2],)`
+- C. `([2],)`
+- D. `TypeError`
+
+### 42. What is printed?
+
+```python
+locations = {(10, 20): 'park'}
+print(locations[(10, 20)])
+```
+
+- A. `(10, 20)`
+- B. `'park'`
+- C. `KeyError`
+- D. `TypeError`
+
+### 43. What happens?
+
+```python
+locations = {(10, [20]): 'park'}
+```
+
+- A. A dictionary is created
+- B. The list becomes a tuple
+- C. Raises `TypeError`
+- D. Raises `ValueError`
+
+### 44. What is printed?
+
+```python
+values = ('a', 'b', 'c', 'd')
+print(values[1:3])
+```
+
+- A. `['b', 'c']`
+- B. `('b', 'c')`
+- C. `('a', 'b', 'c')`
+- D. `'bc'`
+
+### 45. What is printed?
+
+```python
+first = (1, 2)
+second = first + (3,)
+print(first, second)
+```
+
+- A. `(1, 2, 3) (1, 2, 3)`
+- B. `(1, 2) (1, 2, 3)`
+- C. `(1, 2) (3,)`
+- D. `TypeError`
+
+### 46. What is printed?
+
+```python
+rows = ([],) * 2
+rows[0].append(1)
+print(rows)
+```
+
+- A. `([1], [])`
+- B. `([1], [1])`
+- C. `([], [])`
+- D. `TypeError`
+
+### 47. What is printed?
+
+```python
+values = (1, 2, 2, 3, 2)
+print(values.count(2))
+```
+
+- A. `1`
+- B. `2`
+- C. `3`
+- D. `4`
+
+### 48. What happens?
+
+```python
+values = ('a', 'b')
+print(values.index('z'))
+```
+
+- A. Prints `-1`
+- B. Prints `None`
+- C. Raises `ValueError`
+- D. Raises `KeyError`
+
+### 49. What is printed?
+
+```python
+pairs = [(1, 2), (3, 4)]
+total = 0
+for left, right in pairs:
+    total += left + right
+print(total)
+```
+
+- A. `4`
+- B. `7`
+- C. `10`
+- D. `(1, 2, 3, 4)`
+
+### 50. What is printed?
+
+```python
+values = (3, 1, 2)
+print(sorted(values), values)
+```
+
+- A. `(1, 2, 3) (1, 2, 3)`
+- B. `[1, 2, 3] (3, 1, 2)`
+- C. `[1, 2, 3] [3, 1, 2]`
+- D. `TypeError`
+
+### 51. What is printed?
+
+```python
+point = (0, 5)
+match point:
+    case (0, y):
+        print(y)
+    case _:
+        print('other')
+```
+
+- A. `0`
+- B. `5`
+- C. `other`
+- D. `ValueError`
+
+### 52. What is printed?
+
+```python
+from collections import namedtuple
+
+Point = namedtuple('Point', ['x', 'y'])
+point = Point(2, 3)
+print(point.x)
+```
+
+- A. `2`
+- B. `3`
+- C. `'x'`
+- D. `AttributeError`
+
+### 53. What is printed?
+
+```python
+from typing import NamedTuple
+
+class Point(NamedTuple):
+    x: int
+    y: int
+
+print(Point(1, 2) == (1, 2))
+```
+
+- A. `True`
+- B. `False`
+- C. `TypeError`
+- D. `NotImplemented`
+
+### 54. What is printed?
+
+```python
+from copy import deepcopy
+
+first = (1, [2, 3])
+second = deepcopy(first)
+second[1].append(4)
+print(first, second)
+```
+
+- A. `(1, [2, 3, 4]) (1, [2, 3, 4])`
+- B. `(1, [2, 3]) (1, [2, 3, 4])`
+- C. `(1, [2, 3]) (1, [2, 3])`
+- D. `TypeError`
+
+### 55. What is printed?
+
+```python
+values = tuple([1, 2, 3])
+print(values)
+```
+
+- A. `[1, 2, 3]`
+- B. `(1, 2, 3)`
+- C. `{1, 2, 3}`
+- D. `TypeError`
+
+### 56. What is printed?
+
+```python
+numbers = (number * number for number in range(3))
+print(tuple(numbers), tuple(numbers))
+```
+
+- A. `(0, 1, 4) (0, 1, 4)`
+- B. `(0, 1, 4) ()`
+- C. `() (0, 1, 4)`
+- D. `TypeError`
+
+### 57. What is printed?
+
+```python
+print((1, 9) < (2, 0))
+```
+
+- A. `True`
+- B. `False`
+- C. `TypeError`
+- D. Comparison is random
+
+### 58. What is printed?
+
+```python
+cache = {('user', 42): 'Asha'}
+print(cache[('user', 42)])
+```
+
+- A. `('user', 42)`
+- B. `'Asha'`
+- C. `KeyError`
+- D. `TypeError`
+
+### 59. What is printed?
+
+```python
+first, *_, last = (1, 2, 3, 4)
+print(first, last)
+```
+
+- A. `1 2`
+- B. `1 4`
+- C. `[1] [4]`
+- D. `ValueError`
+
+### 60. What is printed?
+
+```python
+def show(first, *args, **kwargs):
+    print(first, args, kwargs['active'])
+
+show(1, 2, 3, active=True)
+```
+
+- A. `1 [2, 3] True`
+- B. `1 (2, 3) True`
+- C. `(1, 2, 3) {'active': True}`
+- D. `TypeError`
+
+## Part B Answers and Reasons
+
+31. **C - `tuple`**. The trailing comma creates a one-item tuple.
+32. **B - `(1, 2, 3)`**. Commas pack the values into a tuple.
+33. **A - `10 20`**. Exact unpacking assigns one value to each target.
+34. **C - `ValueError`**. Two targets cannot receive three values without a starred target.
+35. **B - `1 [2, 3, 4] 5`**. A starred target receives a list.
+36. **B - `(2, 3)`**. Comma-separated return values form a tuple.
+37. **B - `tuple (1, 2, 3)`**. Positional extras are collected in an `args` tuple.
+38. **B - `6`**. `*values` unpacks the tuple into three arguments.
+39. **B - `2 1`**. Multiple assignment evaluates the right side before rebinding.
+40. **B - `TypeError`**. Tuple items cannot be reassigned.
+41. **B - `([1, 2],)`**. The tuple is fixed, but its contained list remains mutable.
+42. **B - `'park'`**. A tuple of integers is a valid dictionary key.
+43. **C - `TypeError`**. The nested list makes the tuple unhashable.
+44. **B - `('b', 'c')`**. Slicing a tuple returns a tuple.
+45. **B - `(1, 2) (1, 2, 3)`**. Concatenation creates a new tuple.
+46. **B - `([1], [1])`**. Repetition duplicates the same list reference.
+47. **C - `3`**. The value `2` appears three times.
+48. **C - `ValueError`**. `index()` fails when the value is absent.
+49. **C - `10`**. Loop unpacking adds both values from both pairs.
+50. **B - `[1, 2, 3] (3, 1, 2)`**. `sorted()` returns a list and leaves the tuple unchanged.
+51. **B - `5`**. The first pattern matches and binds the second item to `y`.
+52. **A - `2`**. Named tuples expose tuple positions through field names.
+53. **A - `True`**. `NamedTuple` instances retain tuple equality behavior.
+54. **B - `(1, [2, 3]) (1, [2, 3, 4])`**. Deep copying separates the inner list.
+55. **B - `(1, 2, 3)`**. `tuple()` converts the iterable into a tuple.
+56. **B - `(0, 1, 4) ()`**. A generator is exhausted after the first conversion.
+57. **A - `True`**. Tuple comparison is lexicographic, so the first items decide here.
+58. **B - `'Asha'`**. A hashable tuple works as a stable composite key.
+59. **B - `1 4`**. The starred throwaway target collects the middle values.
+60. **B - `1 (2, 3) True`**. Extra positional arguments form a tuple and keyword arguments a dictionary.
