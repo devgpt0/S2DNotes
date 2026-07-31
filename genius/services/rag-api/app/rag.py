@@ -260,11 +260,14 @@ def _environment_directory(name: str, default: Path) -> Path:
 def _corpus_directory_from_environment() -> str | None:
     learnings_root = os.getenv("LEARNINGS_ROOT")
     legacy_root = os.getenv("RAG_CORPUS_DIR")
-    if learnings_root is not None and legacy_root is not None:
-        if learnings_root != legacy_root:
-            raise ValueError(
-                "LEARNINGS_ROOT and RAG_CORPUS_DIR must match when both are set"
-            )
+    if (
+        learnings_root is not None
+        and legacy_root is not None
+        and learnings_root != legacy_root
+    ):
+        raise ValueError(
+            "LEARNINGS_ROOT and RAG_CORPUS_DIR must match when both are set"
+        )
     return learnings_root if learnings_root is not None else legacy_root
 
 
@@ -594,7 +597,7 @@ class Bm25Index:
 
         try:
             rank_bm25 = importlib.import_module("rank_bm25")
-            bm25_okapi = getattr(rank_bm25, "BM25Okapi")
+            bm25_okapi = rank_bm25.BM25Okapi
         except (AttributeError, ImportError):
             self._build_native_index()
         else:
@@ -620,7 +623,18 @@ class Bm25Index:
         if not tokens:
             return np.zeros(len(self._tokenized_documents), dtype=np.float32)
         if self._rank_bm25 is not None:
-            return np.asarray(self._rank_bm25.get_scores(tokens), dtype=np.float32)
+            scores = np.asarray(self._rank_bm25.get_scores(tokens), dtype=np.float32)
+            if np.any(scores > 0) or not np.any(scores != 0):
+                return scores
+
+            query_terms = set(tokens)
+            return np.asarray(
+                [
+                    sum(term in document for term in query_terms)
+                    for document in self._tokenized_documents
+                ],
+                dtype=np.float32,
+            )
 
         result = np.zeros(len(self._tokenized_documents), dtype=np.float32)
         if not self._term_frequencies or self._average_length == 0:
@@ -869,7 +883,7 @@ class BgeM3Embedder:
                 raise EmbeddingUnavailableError(self._error)
             try:
                 flag_embedding = importlib.import_module("FlagEmbedding")
-                bge_m3_flag_model = getattr(flag_embedding, "BGEM3FlagModel")
+                bge_m3_flag_model = flag_embedding.BGEM3FlagModel
 
                 self._model = bge_m3_flag_model(
                     self._model_name,
@@ -936,7 +950,7 @@ class CrossEncoderReranker:
                 raise EmbeddingUnavailableError(self._error)
             try:
                 sentence_transformers = importlib.import_module("sentence_transformers")
-                cross_encoder = getattr(sentence_transformers, "CrossEncoder")
+                cross_encoder = sentence_transformers.CrossEncoder
 
                 self._model = cross_encoder(
                     self._model_name,
@@ -1214,7 +1228,7 @@ class RagService:
         except json.JSONDecodeError as error:
             raise ValueError(f"Upstash manifest is not valid JSON: {path}") from error
         if not isinstance(manifest, dict):
-            raise ValueError(f"Upstash manifest must be an object: {path}")
+            raise TypeError(f"Upstash manifest must be an object: {path}")
         if set(manifest) != {"version", "namespace", "chunk_ids"}:
             raise ValueError(f"Upstash manifest has an invalid schema: {path}")
         version = manifest["version"]
