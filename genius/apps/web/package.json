@@ -1,0 +1,39 @@
+{
+  "name": "@genius/web",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.6.2",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "format:check": "prettier --check .",
+    "lint:code": "oxlint",
+    "lint:types": "tsc --noEmit",
+    "lint": "pnpm run format:check && pnpm run lint:code && pnpm run lint:types",
+    "test": "vitest run"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@monaco-editor/react": "4.7.0",
+    "better-sqlite3": "13.0.2",
+    "next": "16.2.12",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "7.6.13",
+    "@types/node": "24.10.13",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
+    "@tailwindcss/postcss": "4.1.14",
+    "oxlint": "1.76.0",
+    "prettier": "3.9.6",
+    "tailwindcss": "4.1.14",
+    "typescript": "5.9.3",
+    "vitest": "4.0.17"
+  }
+}

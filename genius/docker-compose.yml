@@ -1,0 +1,53 @@
+services:
+  rag-api:
+    build:
+      context: ./services/rag-api
+    environment:
+      LEARNINGS_ROOT: /workspace/learnings
+      MODEL_CACHE_DIR: /models
+      LOCAL_INDEX_DIR: /data/index
+      RAG_AUTO_INDEX: "true"
+      RAG_EMBEDDING_MODEL: ${RAG_EMBEDDING_MODEL:-BAAI/bge-m3}
+      RAG_RERANKER_MODEL: ${RAG_RERANKER_MODEL:-BAAI/bge-reranker-v2-m3}
+      RAG_CHUNK_TOKENS: ${RAG_CHUNK_TOKENS:-700}
+      RAG_CHUNK_OVERLAP_TOKENS: ${RAG_CHUNK_OVERLAP_TOKENS:-100}
+      UPSTASH_VECTOR_REST_URL: ${UPSTASH_VECTOR_REST_URL:-}
+      UPSTASH_VECTOR_REST_TOKEN: ${UPSTASH_VECTOR_REST_TOKEN:-}
+      UPSTASH_VECTOR_NAMESPACE: ${UPSTASH_VECTOR_NAMESPACE:-genius-rag}
+    volumes:
+      - ../learnings:/workspace/learnings:ro
+      - rag-model-cache:/models
+      - rag-data:/data
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    environment:
+      RAG_API_URL: http://rag-api:8000
+      DATABASE_URL: file:/data/genius.sqlite
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-2.5-flash-lite}
+      CEREBRAS_API_KEY: ${CEREBRAS_API_KEY:-}
+      CEREBRAS_MODEL: ${CEREBRAS_MODEL:-llama-3.3-70b}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GROQ_MODEL: ${GROQ_MODEL:-llama-3.3-70b-versatile}
+    depends_on:
+      rag-api:
+        condition: service_healthy
+    volumes:
+      - web-data:/data
+    ports:
+      - "3000:3000"
+
+volumes:
+  rag-model-cache:
+  rag-data:
+  web-data:

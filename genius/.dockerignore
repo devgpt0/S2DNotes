@@ -1,0 +1,9 @@
+node_modules/
+apps/web/node_modules/
+apps/web/.next/
+apps/web/coverage/
+services/rag-api/.pytest_cache/
+services/rag-api/__pycache__/
+services/rag-api/.venv/
+.env
+.git/

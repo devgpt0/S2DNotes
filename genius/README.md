@@ -1,64 +1,84 @@
-# Genius learning chatbot
+# Genius Learning RAG
 
-Genius is a Streamlit retrieval-augmented chatbot for every supported document under the
-repository's `learnings` directory. It uses the local open-source `BAAI/bge-m3` model for retrieval
-embeddings and Gemini Flash chat models for answer generation. Search can run in the current
-Streamlit process or in Upstash Vector.
+Genius is a local-first learning chat application built with Next.js, pnpm,
+FastAPI, uv, self-hosted BGE-M3 retrieval, and optional Upstash Vector retrieval.
 
-Supported documents are Markdown, plain text, reStructuredText, PDF, and DOCX files. Virtual
-environments, dependency folders, caches, hidden directories, and zero-byte files are excluded.
+## Features
 
-## Setup
+- Learning chat grounded in Markdown under the sibling learnings directory
+- Selectable local hybrid RAG or Upstash Vector RAG
+- Heading-aware chunks, BM25 plus dense retrieval, and local cross-encoder reranking
+- Technical tutor with written-answer and interactive-MCQ practice
+- Random DSA challenges and Monaco templates for C++, Java, Python, Go, and Rust
+- Streaming learning chat with cited sources and local SQLite conversation history
+- Server-side Gemini, Cerebras, and Groq provider selection
+- Local SQLite chat and study-history persistence
 
-Python 3.12 or newer is required.
+## Credentials
 
-```powershell
-cd C:\pocs\notes\genius
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-python -m pip install -e .
-streamlit run app.py
-```
+Copy .env.example to .env and set only the provider credentials you intend to
+use. Never commit .env or real keys.
 
-The existing `.env` file must contain:
+| Variable | Purpose |
+| --- | --- |
+| GEMINI_API_KEY | Google Gemini chat provider |
+| CEREBRAS_API_KEY | Cerebras chat provider |
+| GROQ_API_KEY | Groq chat provider |
+| UPSTASH_VECTOR_REST_URL | Optional Upstash Vector endpoint |
+| UPSTASH_VECTOR_REST_TOKEN | Optional Upstash Vector token |
 
-```dotenv
-GEMINI_API_KEY=your-gemini-api-key
-UPSTASH_VECTOR_REST_URL=https://your-index-url.upstash.io
-UPSTASH_VECTOR_REST_TOKEN=your-upstash-token
-```
+BGE-M3 and the cross-encoder run locally in the RAG container and need no
+external embedding API key. The first startup downloads model weights into the
+rag-model-cache Docker volume. MODEL_CACHE_DIR is passed directly to both
+model loaders and defaults to the persistent /models Docker volume.
 
-The Upstash Vector index must use 1,024 dimensions and cosine distance. The in-memory backend only
-requires `GEMINI_API_KEY`. The sidebar can reindex the in-memory store, Upstash Vector, or both in a
-single embedding pass. Upstash indexing uses deterministic vector IDs, so reindexing updates
-existing chunks instead of duplicating them.
+Upstash is optional. When enabled, Genius records the chunk IDs it owns under
+LOCAL_INDEX_DIR and deletes IDs that disappear on later reindexes. It never
+blindly deletes unknown vectors from the configured namespace; unknown stale
+results are discarded before citations are created. Use a dedicated Upstash
+namespace for Genius so retained vectors from another application cannot crowd
+out retrieval results.
 
-From the repository root, use the synchronized project environment to embed the corpus into both
-stores and start the UI:
+## Run
 
-```powershell
-uv run --project genius streamlit run genius/app.py -- --index-both
-```
+1. Install Docker Desktop, pnpm, and uv for host development.
+2. Copy .env.example to .env and add at least one chat-provider key.
+3. Run docker compose up --build from this directory.
+4. Open http://localhost:3000.
 
-On later starts, this command rebuilds only the process-local in-memory index and reuses Upstash
-when it already contains vectors. Upstash is changed again only when it is empty or when you choose
-an Upstash reindex target in the UI and click **Reindex learnings**.
+The RAG API rebuilds indexes at startup from indexable Markdown files in the
+sibling learnings directory. It excludes dependency, VCS, and build folders.
 
-BGE-M3 embedding batches and model files are cached under `genius/.cache`, so they are downloaded
-and generated only once. Upstash vectors are isolated in the `local-bge-m3` namespace.
+For host-only development, run `uv sync --group dev` and
+`uv run uvicorn app.main:app --port 8000` from `services/rag-api`, then create
+a local uncommitted environment file with RAG_API_URL=http://localhost:8000 and
+DATABASE_URL=file:./data/genius.sqlite before running pnpm dev.
 
-Responses support Markdown, highlighted fenced code blocks, tables, inline code, Graphviz/DOT
-diagrams, and LaTeX blocks. Before each answer, the activity panel shows query embedding, vector
-search, chunk reading, context preparation, and response-generation progress. Retrieved files and
-similarity scores are shown below each answer.
+## Use
 
-## Quality checks
+- Learn: choose a provider/model and Local or Upstash RAG, optionally select
+  folders and Markdown files from the full tree, then ask a question. Responses
+  stream with file and heading citations.
+- Tutor: choose a topic and files, then start a five-question written-answer
+  or interactive-MCQ session. Each answer receives a critique and a 1-5 rating.
+- Code review: start a random DSA prompt, choose one of the five supported
+  languages, and submit code for an LLM-only review. Submitted code is not run.
 
-```powershell
-python -m pip install -e ".[dev]"
-ruff format --check .
-ruff check .
-pyright app.py genius_app/rag.py
-bandit -c pyproject.toml -r app.py genius_app/rag.py
-python -m pytest
-```
+## Validation
+
+Run the web checks with pnpm lint, pnpm test, and pnpm build from apps/web.
+The RAG API uses its committed `services/rag-api/uv.lock`; run its checks with
+`uv run --group dev pytest`, `uv run --group dev ruff check .`,
+`uv run --group dev pyright app tests`, and
+`uv run --group dev bandit -q -r app` from `services/rag-api`. To validate
+Compose configuration without real credentials, run
+docker compose --env-file .env.example config from this directory.
+
+With Docker Desktop running, scripts/smoke-compose.ps1 performs the complete
+credential-free local Compose smoke test and tears the stack down afterward.
+
+## Security Notes
+
+- API keys remain server-side; no provider key uses a NEXT_PUBLIC_ variable.
+- Coding submissions are reviewed by an LLM only and are never executed.
+- The local SQLite database is stored in the web-data Docker volume.
