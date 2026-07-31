@@ -1,645 +1,1832 @@
-# Python Lists: 60 MCQs
+# Python Lists: 120 Questions
 
-Questions 31-60 are based on the concepts taught in [Python List Notes](../../python/notes/collection_framework/list.md).
+All questions are strictly based on concepts 1–12 in [Python List Notes](../../python/notes/collection_framework/list.md).
 
-## Part A: Concept MCQs (1-30)
+## Part A: Theory MCQs (1–30)
 
-1. Which expression creates an empty list?
-   - A. `{}`
-   - B. `[]`
-   - C. `()`
-   - D. `set()`
+### 1. What is a Python list?
 
-2. What is the value of `len([4, 5, 6])`?
-   - A. `2`
-   - B. `3`
-   - C. `6`
-   - D. Error
+- A. An ordered mutable sequence
+- B. An immutable unordered value
+- C. A unique-value-only collection
+- D. A number only
 
-3. What does `items[-1]` return for `items = ['a', 'b', 'c']`?
-   - A. `'a'`
-   - B. `'b'`
-   - C. `'c'`
-   - D. Error
+**Answer:** A. An ordered mutable sequence
 
-4. What is the result of `[1, 2] + [3, 4]`?
-   - A. `[1, 2, 3, 4]`
-   - B. `[4, 6]`
-   - C. `[[1, 2], [3, 4]]`
-   - D. Error
+**Reasoning:** Lists preserve order and can change.
 
-5. What does `numbers.append(3)` do?
-   - A. Adds `3` at the beginning.
-   - B. Adds `3` at the end.
-   - C. Returns a new sorted list.
-   - D. Removes the first `3`.
+### 2. Which property lets a list change?
 
-6. What is the value of `result` after `values = [1, 2]; result = values.append(3)`?
-   - A. `[1, 2, 3]`
-   - B. `[3]`
-   - C. `3`
-   - D. `None`
+- A. Immutability
+- B. Mutability
+- C. Hashing
+- D. Sorting
 
-7. What is `values` after `values = [1, 2]; values.extend([3, 4])`?
-   - A. `[1, 2, [3, 4]]`
-   - B. `[1, 2, 3, 4]`
-   - C. `[3, 4, 1, 2]`
-   - D. Error
+**Answer:** B. Mutability
 
-8. What is `values` after `values = [1, 2]; values.insert(1, 9)`?
-   - A. `[9, 1, 2]`
-   - B. `[1, 2, 9]`
-   - C. `[1, 9, 2]`
-   - D. Error
+**Reasoning:** Lists can be updated after creation.
 
-9. What does `values.pop()` do for a non-empty list?
-   - A. Removes and returns the first item.
-   - B. Removes and returns the last item.
-   - C. Removes all items.
-   - D. Returns the last item without removing it.
+### 3. Can a list hold strings and integers together?
 
-10. Which method removes the first matching value from a list?
-    - A. `delete()`
-    - B. `discard()`
-    - C. `remove()`
-    - D. `clear()`
+- A. No
+- B. Only after sorting
+- C. Yes
+- D. Only in a tuple
 
-11. What happens when `[1, 2].remove(3)` is evaluated?
-    - A. It returns `False`.
-    - B. It does nothing.
-    - C. It raises `ValueError`.
-    - D. It raises `KeyError`.
+**Answer:** C. Yes
 
-12. What is the result of `['p', 'q', 'r', 's'][1:3]`?
-    - A. `['p', 'q']`
-    - B. `['q', 'r']`
-    - C. `['q', 'r', 's']`
-    - D. `['r', 's']`
+**Reasoning:** Lists are heterogeneous.
 
-13. What is the result of `[0, 1, 2, 3, 4][::2]`?
-    - A. `[0, 2, 4]`
-    - B. `[1, 3]`
-    - C. `[0, 1, 2]`
-    - D. `[4, 2, 0]`
+### 4. Which expression creates an empty list?
 
-14. What is the result of `list(reversed([1, 2, 3]))`?
-    - A. `[1, 2, 3]`
-    - B. `[3, 2, 1]`
-    - C. `None`
-    - D. Error
+- A. {}
+- B. ()
+- C. set()
+- D. []
 
-15. What does `values.reverse()` do?
-    - A. Returns a new reversed list.
-    - B. Reverses the list in place and returns `None`.
-    - C. Sorts the list in descending order.
-    - D. Converts the list to a tuple.
+**Answer:** D. []
 
-16. What is the value of `result` after `values = [3, 1, 2]; result = values.sort()`?
-    - A. `[1, 2, 3]`
-    - B. `[3, 1, 2]`
-    - C. `None`
-    - D. Error
+**Reasoning:** Square brackets create a list.
 
-17. Which expression returns a new sorted list without changing `values`?
-    - A. `values.sort()`
-    - B. `sorted(values)`
-    - C. `values.reverse()`
-    - D. `list.sort(values)`
+### 5. What does list() return without an argument?
 
-18. What is the result of `[3, 1, 2].sort(reverse=True)`?
-    - A. `[3, 2, 1]`
-    - B. `[1, 2, 3]`
-    - C. `None`
-    - D. Error
+- A. []
+- B. {}
+- C. None
+- D. ()
 
-19. What does `[1, 2, 2, 3].count(2)` return?
-    - A. `1`
-    - B. `2`
-    - C. `3`
-    - D. `True`
+**Answer:** A. []
 
-20. What does `[10, 20, 30].index(20)` return?
-    - A. `1`
-    - B. `20`
-    - C. `2`
-    - D. `True`
+**Reasoning:** list() creates an empty list.
 
-21. What is the value of `a` after `a = [1, 2]; b = a; b.append(3)`?
-    - A. `[1, 2]`
-    - B. `[1, 2, 3]`
-    - C. `[3]`
-    - D. Error
+### 6. What does list("Hi") return?
 
-22. Which expression creates a shallow copy of `values`?
-    - A. `copy = values`
-    - B. `copy = values[:]`
-    - C. `copy = values.append()`
-    - D. `copy = tuple(values)`
+- A. ["Hi"]
+- B. ["H", "i"]
+- C. "Hi"
+- D. An error
 
-23. What is the result of `[x * 2 for x in [1, 2, 3]]`?
-    - A. `[1, 2, 3, 1, 2, 3]`
-    - B. `[2, 4, 6]`
-    - C. `[1, 4, 9]`
-    - D. `(2, 4, 6)`
+**Answer:** B. ["H", "i"]
 
-24. Which expression checks whether `4` is present in `values`?
-    - A. `values.has(4)`
-    - B. `values.contains(4)`
-    - C. `4 in values`
-    - D. `values == 4`
+**Reasoning:** Strings are iterable character by character.
 
-25. What is the result of `[[1, 2], [3, 4]][1][0]`?
-    - A. `1`
-    - B. `2`
-    - C. `3`
-    - D. `4`
+### 7. What happens for list(123)?
 
-26. What is the main issue with `rows = [[0] * 3] * 2` when rows will be modified independently?
-    - A. It creates a tuple.
-    - B. Both rows refer to the same inner list.
-    - C. It cannot contain integers.
-    - D. It creates three rows.
+- A. It returns [123]
+- B. It returns 123
+- C. It raises TypeError
+- D. It returns []
 
-27. Which statement correctly deletes the item at index `1` from `values`?
-    - A. `remove values[1]`
-    - B. `del values[1]`
-    - C. `values.delete(1)`
-    - D. `values.remove(1)`
+**Answer:** C. It raises TypeError
 
-28. What does `values.clear()` do?
-    - A. Removes duplicate values only.
-    - B. Returns a new empty list.
-    - C. Removes every item from the existing list.
-    - D. Deletes the variable `values`.
+**Reasoning:** An integer is not iterable.
 
-29. What is the result of `list(range(2, 8, 2))`?
-    - A. `[2, 4, 6]`
-    - B. `[2, 4, 6, 8]`
-    - C. `[2, 3, 4, 5, 6, 7]`
-    - D. `[8, 6, 4, 2]`
+### 8. What does index 0 select?
 
-30. Which property is true of Python lists?
-    - A. They are immutable and unordered.
-    - B. They are mutable and preserve order.
-    - C. They allow only unique items.
-    - D. They can store only one data type.
+- A. The last item
+- B. Every item
+- C. No item
+- D. The first item
 
-## Part A Answers and Reasons
+**Answer:** D. The first item
 
-1. **B — `[]`**. Square brackets create a list; `{}` creates a dictionary.
-2. **B — `3`**. The list has three elements: `4`, `5`, and `6`.
-3. **C — `'c'`**. Index `-1` accesses the final item in a sequence.
-4. **A — `[1, 2, 3, 4]`**. The `+` operator concatenates two lists into a new list.
-5. **B — Adds `3` at the end**. `append()` adds one item to the end of the existing list.
-6. **D — `None`**. `append()` mutates the list in place and does not return the list.
-7. **B — `[1, 2, 3, 4]`**. `extend()` adds each item from the supplied iterable.
-8. **C — `[1, 9, 2]`**. `insert(1, 9)` places `9` before the item currently at index `1`.
-9. **B — Removes and returns the last item**. Without an index, `pop()` operates on the last list item.
-10. **C — `remove()`**. `remove(value)` deletes the first occurrence of that value.
-11. **C — It raises `ValueError`**. `remove()` raises `ValueError` if the requested value is missing.
-12. **B — `['q', 'r']`**. A slice includes the start index and excludes the stop index.
-13. **A — `[0, 2, 4]`**. The step of `2` selects every second item starting at index `0`.
-14. **B — `[3, 2, 1]`**. `reversed()` iterates in reverse order, and `list()` materializes that iterator.
-15. **B — Reverses in place and returns `None`**. `reverse()` changes the original list rather than creating a new one.
-16. **C — `None`**. `sort()` changes `values` in place and returns `None`.
-17. **B — `sorted(values)`**. `sorted()` returns a newly sorted list and leaves the original object unchanged.
-18. **C — `None`**. `sort(reverse=True)` sorts the temporary list in descending order but returns `None`.
-19. **B — `2`**. The value `2` occurs twice in the list.
-20. **A — `1`**. Indexing starts at zero, so `20` is the item at index `1`.
-21. **B — `[1, 2, 3]`**. `a` and `b` refer to the same list, so appending through `b` changes `a`.
-22. **B — `copy = values[:]`**. A full slice produces a shallow copy of the list.
-23. **B — `[2, 4, 6]`**. The comprehension multiplies every source value by `2`.
-24. **C — `4 in values`**. The `in` operator performs a membership test.
-25. **C — `3`**. The first index selects `[3, 4]`; the next index selects its first item.
-26. **B — Both rows refer to the same inner list**. List multiplication repeats references, so changing one row changes the other.
-27. **B — `del values[1]`**. `del` removes the item at the specified index.
-28. **C — Removes every item from the existing list**. `clear()` empties the list in place.
-29. **A — `[2, 4, 6]`**. `range(2, 8, 2)` starts at `2`, increments by `2`, and stops before `8`.
-30. **B — They are mutable and preserve order**. Lists can be changed after creation and keep their item order.
+**Reasoning:** Python indices start at zero.
 
-## Part B: Code-Snippet MCQs (31-60)
+### 9. What does index -1 select?
 
-### 31. What is printed?
+- A. The last item
+- B. The first item
+- C. The list length
+- D. No item
 
-```python
+**Answer:** A. The last item
+
+**Reasoning:** Negative index -1 means the final item.
+
+### 10. What happens for an invalid direct index?
+
+- A. It returns None
+- B. It raises IndexError
+- C. It returns []
+- D. It clears the list
+
+**Answer:** B. It raises IndexError
+
+**Reasoning:** Direct access needs an existing item.
+
+### 11. Is the slice end included?
+
+- A. Yes
+- B. Only for numbers
+- C. No
+- D. Only for strings
+
+**Answer:** C. No
+
+**Reasoning:** Slices exclude the end index.
+
+### 12. What happens for an out-of-range slice?
+
+- A. It raises IndexError
+- B. It returns None
+- C. It clears the list
+- D. It returns available items
+
+**Answer:** D. It returns available items
+
+**Reasoning:** Slicing safely limits its bounds.
+
+### 13. How can index 1 be updated?
+
+- A. values[1] = 9
+- B. values.append(1)
+- C. values.clear()
+- D. values.remove(1)
+
+**Answer:** A. values[1] = 9
+
+**Reasoning:** Indexed assignment replaces an item.
+
+### 14. Can slice assignment change list length?
+
+- A. No
+- B. Yes
+- C. Only for strings
+- D. Only for empty lists
+
+**Answer:** B. Yes
+
+**Reasoning:** Replacement length can differ from slice length.
+
+### 15. What does append(value) do?
+
+- A. Adds at the beginning
+- B. Removes a value
+- C. Adds one final item
+- D. Sorts the list
+
+**Answer:** C. Adds one final item
+
+**Reasoning:** append() adds one item at the end.
+
+### 16. What does extend([3, 4]) do?
+
+- A. Adds [3, 4] as one item
+- B. Removes 3 and 4
+- C. Returns a tuple
+- D. Adds 3 and 4 separately
+
+**Answer:** D. Adds 3 and 4 separately
+
+**Reasoning:** extend() adds each iterable item.
+
+### 17. What does insert(1, 9) do?
+
+- A. Places 9 at index 1
+- B. Removes index 1
+- C. Adds 9 at the end
+- D. Sorts the list
+
+**Answer:** A. Places 9 at index 1
+
+**Reasoning:** insert() adds at a requested index.
+
+### 18. What does remove(value) delete?
+
+- A. Every match
+- B. The first matching value
+- C. The last item
+- D. The indexed item only
+
+**Answer:** B. The first matching value
+
+**Reasoning:** remove() stops after its first match.
+
+### 19. What happens when remove() cannot find a value?
+
+- A. It returns False
+- B. It returns None
+- C. It raises ValueError
+- D. It raises IndexError
+
+**Answer:** C. It raises ValueError
+
+**Reasoning:** An absent value is a ValueError.
+
+### 20. What does pop() do without an index?
+
+- A. Returns the first item only
+- B. Clears the list
+- C. Sorts the list
+- D. Removes and returns the last item
+
+**Answer:** D. Removes and returns the last item
+
+**Reasoning:** pop() defaults to the final item.
+
+### 21. What does clear() do?
+
+- A. Removes every item
+- B. Deletes the variable
+- C. Removes duplicates only
+- D. Returns a new list
+
+**Answer:** A. Removes every item
+
+**Reasoning:** clear() empties the existing list.
+
+### 22. After second = first, what is second?
+
+- A. A deep copy
+- B. An alias for first
+- C. A shallow copy
+- D. An empty list
+
+**Answer:** B. An alias for first
+
+**Reasoning:** Both names reference the same list.
+
+### 23. Which creates a shallow copy?
+
+- A. second = values
+- B. values.append(1)
+- C. values[:]
+- D. reversed(values)
+
+**Answer:** C. values[:]
+
+**Reasoning:** A full slice creates a new outer list.
+
+### 24. What does a shallow nested-list copy share?
+
+- A. Nothing
+- B. Only its length
+- C. Only its outer list
+- D. Its inner lists
+
+**Answer:** D. Its inner lists
+
+**Reasoning:** Only the outer list is copied.
+
+### 25. Which creates independent nested lists?
+
+- A. copy.deepcopy(values)
+- B. values[:]
+- C. list(values)
+- D. second = values
+
+**Answer:** A. copy.deepcopy(values)
+
+**Reasoning:** deepcopy() recursively copies nested values.
+
+### 26. What does + do with two lists?
+
+- A. Finds membership
+- B. Concatenates them
+- C. Sorts them
+- D. Removes duplicates
+
+**Answer:** B. Concatenates them
+
+**Reasoning:** + joins list sequences.
+
+### 27. What does in do with a list?
+
+- A. Adds an item
+- B. Removes an item
+- C. Tests membership
+- D. Sorts the list
+
+**Answer:** C. Tests membership
+
+**Reasoning:** in checks whether a value is present.
+
+### 28. Which function returns a new sorted list?
+
+- A. values.sort()
+- B. values.reverse()
+- C. reversed(values)
+- D. sorted(values)
+
+**Answer:** D. sorted(values)
+
+**Reasoning:** sorted() leaves the original unchanged.
+
+### 29. What does index(value) return?
+
+- A. The first matching position
+- B. The match count
+- C. The value itself
+- D. The final position
+
+**Answer:** A. The first matching position
+
+**Reasoning:** index() reports the first match.
+
+### 30. Which loop supplies both index and item?
+
+- A. for value in values
+- B. for i, value in enumerate(values)
+- C. for i in range(1)
+- D. for value in reversed(values)
+
+**Answer:** B. for i, value in enumerate(values)
+
+**Reasoning:** enumerate() yields index-item pairs.
+
+## Part B: Code-Snippet MCQs (31–120)
+
+### 31. What is the result?
+
+~~~python
+values = list(range(1))
+print(values)
+
+~~~
+
+- A. None
+- B. []
+- C. [0]
+- D. An exception
+
+**Answer:** C. [0]
+
+**Reasoning:** list() materializes the values produced by range().
+
+### 32. What is the result?
+
+~~~python
+values = list(range(2))
+print(values)
+
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. [0, 1]
+
+**Answer:** D. [0, 1]
+
+**Reasoning:** list() materializes the values produced by range().
+
+### 33. What is the result?
+
+~~~python
+values = list(range(3))
+print(values)
+
+~~~
+
+- A. [0, 1, 2]
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. [0, 1, 2]
+
+**Reasoning:** list() materializes the values produced by range().
+
+### 34. What is the result?
+
+~~~python
+values = list(range(4))
+print(values)
+
+~~~
+
+- A. None
+- B. [0, 1, 2, 3]
+- C. []
+- D. An exception
+
+**Answer:** B. [0, 1, 2, 3]
+
+**Reasoning:** list() materializes the values produced by range().
+
+### 35. What is the result?
+
+~~~python
+values = list(range(5))
+print(values)
+
+~~~
+
+- A. None
+- B. []
+- C. [0, 1, 2, 3, 4]
+- D. An exception
+
+**Answer:** C. [0, 1, 2, 3, 4]
+
+**Reasoning:** list() materializes the values produced by range().
+
+### 36. What is the result?
+
+~~~python
+values = list(range(6))
+print(values)
+
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. [0, 1, 2, 3, 4, 5]
+
+**Answer:** D. [0, 1, 2, 3, 4, 5]
+
+**Reasoning:** list() materializes the values produced by range().
+
+### 37. What is the result?
+
+~~~python
+values = list(range(7))
+print(values)
+
+~~~
+
+- A. [0, 1, 2, 3, 4, 5, 6]
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. [0, 1, 2, 3, 4, 5, 6]
+
+**Reasoning:** list() materializes the values produced by range().
+
+### 38. What is the result?
+
+~~~python
+values = list(range(8))
+print(values)
+
+~~~
+
+- A. None
+- B. [0, 1, 2, 3, 4, 5, 6, 7]
+- C. []
+- D. An exception
+
+**Answer:** B. [0, 1, 2, 3, 4, 5, 6, 7]
+
+**Reasoning:** list() materializes the values produced by range().
+
+### 39. What is the result?
+
+~~~python
+values = list(range(9))
+print(values)
+
+~~~
+
+- A. None
+- B. []
+- C. [0, 1, 2, 3, 4, 5, 6, 7, 8]
+- D. An exception
+
+**Answer:** C. [0, 1, 2, 3, 4, 5, 6, 7, 8]
+
+**Reasoning:** list() materializes the values produced by range().
+
+### 40. What is the result?
+
+~~~python
+values = list(range(10))
+print(values)
+
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+**Answer:** D. [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+**Reasoning:** list() materializes the values produced by range().
+
+### 41. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[0])
+~~~
+
+- A. 10
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. 10
+
+**Reasoning:** Direct indexing selects one item by position.
+
+### 42. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[1])
+~~~
+
+- A. None
+- B. 20
+- C. []
+- D. An exception
+
+**Answer:** B. 20
+
+**Reasoning:** Direct indexing selects one item by position.
+
+### 43. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[2])
+~~~
+
+- A. None
+- B. []
+- C. 30
+- D. An exception
+
+**Answer:** C. 30
+
+**Reasoning:** Direct indexing selects one item by position.
+
+### 44. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[3])
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. 40
+
+**Answer:** D. 40
+
+**Reasoning:** Direct indexing selects one item by position.
+
+### 45. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[4])
+~~~
+
+- A. 50
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. 50
+
+**Reasoning:** Direct indexing selects one item by position.
+
+### 46. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[0])
+~~~
+
+- A. None
+- B. 10
+- C. []
+- D. An exception
+
+**Answer:** B. 10
+
+**Reasoning:** Direct indexing selects one item by position.
+
+### 47. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[1])
+~~~
+
+- A. None
+- B. []
+- C. 20
+- D. An exception
+
+**Answer:** C. 20
+
+**Reasoning:** Direct indexing selects one item by position.
+
+### 48. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[2])
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. 30
+
+**Answer:** D. 30
+
+**Reasoning:** Direct indexing selects one item by position.
+
+### 49. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[3])
+~~~
+
+- A. 40
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. 40
+
+**Reasoning:** Direct indexing selects one item by position.
+
+### 50. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[4])
+~~~
+
+- A. None
+- B. 50
+- C. []
+- D. An exception
+
+**Answer:** B. 50
+
+**Reasoning:** Direct indexing selects one item by position.
+
+### 51. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[:1])
+~~~
+
+- A. None
+- B. []
+- C. [10]
+- D. An exception
+
+**Answer:** C. [10]
+
+**Reasoning:** A slice excludes its end index.
+
+### 52. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[:2])
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. [10, 20]
+
+**Answer:** D. [10, 20]
+
+**Reasoning:** A slice excludes its end index.
+
+### 53. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[:3])
+~~~
+
+- A. [10, 20, 30]
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. [10, 20, 30]
+
+**Reasoning:** A slice excludes its end index.
+
+### 54. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[:4])
+~~~
+
+- A. None
+- B. [10, 20, 30, 40]
+- C. []
+- D. An exception
+
+**Answer:** B. [10, 20, 30, 40]
+
+**Reasoning:** A slice excludes its end index.
+
+### 55. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[:5])
+~~~
+
+- A. None
+- B. []
+- C. [10, 20, 30, 40, 50]
+- D. An exception
+
+**Answer:** C. [10, 20, 30, 40, 50]
+
+**Reasoning:** A slice excludes its end index.
+
+### 56. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[:0])
+~~~
+
+- A. None
+- B. [0]
+- C. An exception
+- D. []
+
+**Answer:** D. []
+
+**Reasoning:** A slice excludes its end index.
+
+### 57. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[:1])
+~~~
+
+- A. [10]
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. [10]
+
+**Reasoning:** A slice excludes its end index.
+
+### 58. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[:2])
+~~~
+
+- A. None
+- B. [10, 20]
+- C. []
+- D. An exception
+
+**Answer:** B. [10, 20]
+
+**Reasoning:** A slice excludes its end index.
+
+### 59. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[:3])
+~~~
+
+- A. None
+- B. []
+- C. [10, 20, 30]
+- D. An exception
+
+**Answer:** C. [10, 20, 30]
+
+**Reasoning:** A slice excludes its end index.
+
+### 60. What is the result?
+
+~~~python
+values = [10, 20, 30, 40, 50]
+print(values[:4])
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. [10, 20, 30, 40]
+
+**Answer:** D. [10, 20, 30, 40]
+
+**Reasoning:** A slice excludes its end index.
+
+### 61. What is the result?
+
+~~~python
 values = [1, 2]
-values.append([3, 4])
+values.append(1)
 print(values)
-```
+~~~
 
-- A. `[1, 2, 3, 4]`
-- B. `[1, 2, [3, 4]]`
-- C. `[[1, 2], [3, 4]]`
-- D. `None`
+- A. [1, 2, 1]
+- B. None
+- C. []
+- D. An exception
 
-### 32. What is printed?
+**Answer:** A. [1, 2, 1]
 
-```python
+**Reasoning:** append() adds one item at the end.
+
+### 62. What is the result?
+
+~~~python
 values = [1, 2]
-values.extend([3, 4])
+values.append(2)
 print(values)
-```
+~~~
 
-- A. `[1, 2, [3, 4]]`
-- B. `[3, 4, 1, 2]`
-- C. `[1, 2, 3, 4]`
-- D. `None`
+- A. None
+- B. [1, 2, 2]
+- C. []
+- D. An exception
 
-### 33. What is printed?
+**Answer:** B. [1, 2, 2]
 
-```python
-values = [0, 1, 2, 3]
-values[1:3] = [8]
+**Reasoning:** append() adds one item at the end.
+
+### 63. What is the result?
+
+~~~python
+values = [1, 2]
+values.append(3)
 print(values)
-```
+~~~
 
-- A. `[0, 8, 3]`
-- B. `[0, 8, 8, 3]`
-- C. `[0, [8], 3]`
-- D. `ValueError`
+- A. None
+- B. []
+- C. [1, 2, 3]
+- D. An exception
 
-### 34. What is printed?
+**Answer:** C. [1, 2, 3]
 
-```python
-first = [1, 2]
-second = first
-second.append(3)
-print(first)
-```
+**Reasoning:** append() adds one item at the end.
 
-- A. `[1, 2]`
-- B. `[1, 2, 3]`
-- C. `[3]`
-- D. `None`
+### 64. What is the result?
 
-### 35. What is printed?
-
-```python
-first = [[1], [2]]
-second = first.copy()
-second[0].append(9)
-print(first)
-```
-
-- A. `[[1], [2]]`
-- B. `[[1, 9], [2]]`
-- C. `[[9], [2]]`
-- D. `TypeError`
-
-### 36. What is printed?
-
-```python
-from copy import deepcopy
-
-first = [[1], [2]]
-second = deepcopy(first)
-second[0].append(9)
-print(first)
-```
-
-- A. `[[1], [2]]`
-- B. `[[1, 9], [2]]`
-- C. `[[9], [2]]`
-- D. `None`
-
-### 37. What is printed?
-
-```python
-result = [number * number for number in range(6) if number % 2 == 0]
-print(result)
-```
-
-- A. `[0, 2, 4]`
-- B. `[0, 4, 16]`
-- C. `[4, 16, 36]`
-- D. `[1, 9, 25]`
-
-### 38. What is printed?
-
-```python
-matrix = [[1, 2], [3, 4]]
-flat = [value for row in matrix for value in row]
-print(flat)
-```
-
-- A. `[[1, 2], [3, 4]]`
-- B. `[1, 3, 2, 4]`
-- C. `[1, 2, 3, 4]`
-- D. `10`
-
-### 39. What is printed?
-
-```python
-rows = [[0] * 2 for _ in range(2)]
-rows[0][0] = 9
-print(rows)
-```
-
-- A. `[[9, 0], [0, 0]]`
-- B. `[[9, 0], [9, 0]]`
-- C. `[[0, 0], [0, 0]]`
-- D. `TypeError`
-
-### 40. What is printed?
-
-```python
-values = [3, 1, 2]
-result = values.sort()
-print(result, values)
-```
-
-- A. `[1, 2, 3] [1, 2, 3]`
-- B. `None [1, 2, 3]`
-- C. `None [3, 1, 2]`
-- D. `[1, 2, 3] None`
-
-### 41. What is printed?
-
-```python
-words = ['pear', 'fig', 'banana']
-result = sorted(words, key=len)
-print(result)
-```
-
-- A. `['banana', 'pear', 'fig']`
-- B. `['fig', 'pear', 'banana']`
-- C. `['fig', 'banana', 'pear']`
-- D. `None`
-
-### 42. What is printed?
-
-```python
-records = [('A', 2), ('B', 1), ('C', 2)]
-print(sorted(records, key=lambda item: item[1]))
-```
-
-- A. `[('B', 1), ('A', 2), ('C', 2)]`
-- B. `[('B', 1), ('C', 2), ('A', 2)]`
-- C. `[('A', 2), ('C', 2), ('B', 1)]`
-- D. `TypeError`
-
-### 43. What is printed?
-
-```python
-letters = ['a', 'b']
-print(list(enumerate(letters, start=1)))
-```
-
-- A. `[(0, 'a'), (1, 'b')]`
-- B. `[(1, 'a'), (2, 'b')]`
-- C. `[('a', 1), ('b', 2)]`
-- D. `[1, 2]`
-
-### 44. What is printed?
-
-```python
-numbers = [1, 2, 3]
-letters = ['a', 'b']
-print(list(zip(numbers, letters)))
-```
-
-- A. `[(1, 'a'), (2, 'b')]`
-- B. `[(1, 'a'), (2, 'b'), (3, None)]`
-- C. `[(1, 2, 3), ('a', 'b')]`
-- D. `ValueError`
-
-### 45. What is printed?
-
-```python
-values = [10, 20, 30]
-removed = values.pop(1)
-print(removed, values)
-```
-
-- A. `10 [20, 30]`
-- B. `20 [10, 30]`
-- C. `20 [10, 20, 30]`
-- D. `None [10, 30]`
-
-### 46. What is printed?
-
-```python
-values = [0, 1, 2, 3, 4]
-print(values[-4:-1])
-```
-
-- A. `[0, 1, 2, 3]`
-- B. `[1, 2, 3]`
-- C. `[1, 2, 3, 4]`
-- D. `[4, 3, 2]`
-
-### 47. What is printed?
-
-```python
-values = [0, 1, 2, 3, 4]
-print(values[::-2])
-```
-
-- A. `[0, 2, 4]`
-- B. `[4, 2, 0]`
-- C. `[4, 3, 2, 1, 0]`
-- D. `[3, 1]`
-
-### 48. What is printed?
-
-```python
-first, *middle, last = [1, 2, 3, 4]
-print(first, middle, last)
-```
-
-- A. `1 (2, 3) 4`
-- B. `1 [2, 3] 4`
-- C. `[1] [2, 3] [4]`
-- D. `ValueError`
-
-### 49. What is printed?
-
-```python
-rows = [[0] * 2] * 2
-rows[0][0] = 9
-print(rows)
-```
-
-- A. `[[9, 0], [0, 0]]`
-- B. `[[9, 0], [9, 0]]`
-- C. `[[0, 0], [0, 0]]`
-- D. `IndexError`
-
-### 50. What is printed?
-
-```python
-values = [1, 2, 2, 3]
-for value in values:
-    if value == 2:
-        values.remove(value)
+~~~python
+values = [1, 2]
+values.append(4)
 print(values)
-```
+~~~
 
-- A. `[1, 3]`
-- B. `[1, 2, 3]`
-- C. `[1, 2, 2, 3]`
-- D. `RuntimeError`
+- A. None
+- B. []
+- C. An exception
+- D. [1, 2, 4]
 
-### 51. What is printed?
+**Answer:** D. [1, 2, 4]
 
-```python
-values = [0, 1, 2, 3, 4]
-del values[1:4]
+**Reasoning:** append() adds one item at the end.
+
+### 65. What is the result?
+
+~~~python
+values = [1, 2]
+values.append(5)
 print(values)
-```
+~~~
 
-- A. `[0, 4]`
-- B. `[1, 2, 3]`
-- C. `[0, 1, 4]`
-- D. `None`
+- A. [1, 2, 5]
+- B. None
+- C. []
+- D. An exception
 
-### 52. What is printed?
+**Answer:** A. [1, 2, 5]
 
-```python
-print(any([0, '', 3]), all([1, 2, 3]))
-```
+**Reasoning:** append() adds one item at the end.
 
-- A. `False False`
-- B. `True False`
-- C. `True True`
-- D. `False True`
+### 66. What is the result?
 
-### 53. What is printed?
-
-```python
-result = [value if value % 2 == 0 else -value for value in range(4)]
-print(result)
-```
-
-- A. `[0, 1, 2, 3]`
-- B. `[0, -1, 2, -3]`
-- C. `[0, 2]`
-- D. `[-1, -3]`
-
-### 54. What is printed?
-
-```python
-matrix = [[1, 2], [3, 4]]
-print(matrix[1][0])
-```
-
-- A. `1`
-- B. `2`
-- C. `3`
-- D. `4`
-
-### 55. What is printed?
-
-```python
-import bisect
-
-values = [1, 3, 4]
-bisect.insort(values, 2)
+~~~python
+values = [1, 2]
+values.append(6)
 print(values)
-```
+~~~
 
-- A. `[2, 1, 3, 4]`
-- B. `[1, 3, 4, 2]`
-- C. `[1, 2, 3, 4]`
-- D. `None`
+- A. None
+- B. [1, 2, 6]
+- C. []
+- D. An exception
 
-### 56. What is printed?
+**Answer:** B. [1, 2, 6]
 
-```python
-import heapq
+**Reasoning:** append() adds one item at the end.
 
-print(heapq.nsmallest(2, [5, 1, 4, 2]))
-```
+### 67. What is the result?
 
-- A. `[5, 4]`
-- B. `[1, 2]`
-- C. `{1, 2}`
-- D. `[2, 1]`
+~~~python
+values = [1, 2]
+values.append(7)
+print(values)
+~~~
 
-### 57. What is printed?
+- A. None
+- B. []
+- C. [1, 2, 7]
+- D. An exception
 
-```python
-from collections import deque
+**Answer:** C. [1, 2, 7]
 
-queue = deque([1, 2, 3])
-queue.popleft()
-print(list(queue))
-```
+**Reasoning:** append() adds one item at the end.
 
-- A. `[1, 2]`
-- B. `[2, 3]`
-- C. `[1, 2, 3]`
-- D. `[3, 2]`
+### 68. What is the result?
 
-### 58. What is printed?
+~~~python
+values = [1, 2]
+values.append(8)
+print(values)
+~~~
 
-```python
-students = [('B', 90), ('A', 90), ('C', 80)]
-students.sort(key=lambda item: (-item[1], item[0]))
-print(students)
-```
+- A. None
+- B. []
+- C. An exception
+- D. [1, 2, 8]
 
-- A. `[('B', 90), ('A', 90), ('C', 80)]`
-- B. `[('C', 80), ('A', 90), ('B', 90)]`
-- C. `[('A', 90), ('B', 90), ('C', 80)]`
-- D. `TypeError`
+**Answer:** D. [1, 2, 8]
 
-### 59. What is printed?
+**Reasoning:** append() adds one item at the end.
 
-```python
+### 69. What is the result?
+
+~~~python
+values = [1, 2]
+values.append(9)
+print(values)
+~~~
+
+- A. [1, 2, 9]
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. [1, 2, 9]
+
+**Reasoning:** append() adds one item at the end.
+
+### 70. What is the result?
+
+~~~python
+values = [1, 2]
+values.append(10)
+print(values)
+~~~
+
+- A. None
+- B. [1, 2, 10]
+- C. []
+- D. An exception
+
+**Answer:** B. [1, 2, 10]
+
+**Reasoning:** append() adds one item at the end.
+
+### 71. What is the result?
+
+~~~python
 values = [1, 2, 3]
-copied = values[:]
-copied[0] = 9
-print(values, copied)
-```
-
-- A. `[9, 2, 3] [9, 2, 3]`
-- B. `[1, 2, 3] [9, 2, 3]`
-- C. `[1, 2, 3] [1, 2, 3]`
-- D. `TypeError`
-
-### 60. What is printed?
-
-```python
-values = [2, -10, 5, -3]
-values.sort(key=abs, reverse=True)
+values.remove(2)
 print(values)
-```
+~~~
 
-- A. `[-10, 5, -3, 2]`
-- B. `[2, -3, 5, -10]`
-- C. `[-10, -3, 2, 5]`
-- D. `None`
+- A. None
+- B. []
+- C. [1, 3]
+- D. An exception
 
-## Part B Answers and Reasons
+**Answer:** C. [1, 3]
 
-31. **B - `[1, 2, [3, 4]]`**. `append()` adds its argument as one item.
-32. **C - `[1, 2, 3, 4]`**. `extend()` adds each item from the iterable.
-33. **A - `[0, 8, 3]`**. Slice assignment may change the list length.
-34. **B - `[1, 2, 3]`**. Both names reference the same list.
-35. **B - `[[1, 9], [2]]`**. A shallow copy still shares nested lists.
-36. **A - `[[1], [2]]`**. `deepcopy()` also copies the nested lists.
-37. **B - `[0, 4, 16]`**. The comprehension squares only even numbers.
-38. **C - `[1, 2, 3, 4]`**. The nested comprehension visits each row, then each value.
-39. **A - `[[9, 0], [0, 0]]`**. The comprehension creates separate inner lists.
-40. **B - `None [1, 2, 3]`**. `sort()` mutates and returns `None`.
-41. **B - `['fig', 'pear', 'banana']`**. `key=len` sorts by length.
-42. **A - `[('B', 1), ('A', 2), ('C', 2)]`**. Stable sorting preserves equal-key order.
-43. **B - `[(1, 'a'), (2, 'b')]`**. Counting starts at one.
-44. **A - `[(1, 'a'), (2, 'b')]`**. `zip()` stops at the shortest iterable.
-45. **B - `20 [10, 30]`**. `pop(1)` removes and returns index one.
-46. **B - `[1, 2, 3]`**. The stop index is excluded.
-47. **B - `[4, 2, 0]`**. A negative step walks backward.
-48. **B - `1 [2, 3] 4`**. A starred target collects a list.
-49. **B - `[[9, 0], [9, 0]]`**. Multiplication repeats the inner-list reference.
-50. **B - `[1, 2, 3]`**. Mutation shifts the next `2` past the iterator.
-51. **A - `[0, 4]`**. `del` removes indices one through three.
-52. **C - `True True`**. One first-list item and all second-list items are truthy.
-53. **B - `[0, -1, 2, -3]`**. Evens stay positive and odds are negated.
-54. **C - `3`**. The indices select row one, column zero.
-55. **C - `[1, 2, 3, 4]`**. `insort()` maintains sorted order.
-56. **B - `[1, 2]`**. `nsmallest()` returns the two smallest values.
-57. **B - `[2, 3]`**. `popleft()` removes the first queue item.
-58. **C - `[('A', 90), ('B', 90), ('C', 80)]`**. The key sorts score descending, then name ascending.
-59. **B - `[1, 2, 3] [9, 2, 3]`**. A full slice creates a separate outer list.
-60. **A - `[-10, 5, -3, 2]`**. Absolute values are sorted largest first.
+**Reasoning:** remove() deletes the first matching value.
+
+### 72. What is the result?
+
+~~~python
+values = [1, 2, 3]
+removed = values.pop()
+print(removed, values)
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. 3 [1, 2]
+
+**Answer:** D. 3 [1, 2]
+
+**Reasoning:** pop() removes and returns the final item.
+
+### 73. What is the result?
+
+~~~python
+values = [1, 2, 3]
+values.remove(2)
+print(values)
+~~~
+
+- A. [1, 3]
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. [1, 3]
+
+**Reasoning:** remove() deletes the first matching value.
+
+### 74. What is the result?
+
+~~~python
+values = [1, 2, 3]
+removed = values.pop()
+print(removed, values)
+~~~
+
+- A. None
+- B. 3 [1, 2]
+- C. []
+- D. An exception
+
+**Answer:** B. 3 [1, 2]
+
+**Reasoning:** pop() removes and returns the final item.
+
+### 75. What is the result?
+
+~~~python
+values = [1, 2, 3]
+values.remove(2)
+print(values)
+~~~
+
+- A. None
+- B. []
+- C. [1, 3]
+- D. An exception
+
+**Answer:** C. [1, 3]
+
+**Reasoning:** remove() deletes the first matching value.
+
+### 76. What is the result?
+
+~~~python
+values = [1, 2, 3]
+removed = values.pop()
+print(removed, values)
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. 3 [1, 2]
+
+**Answer:** D. 3 [1, 2]
+
+**Reasoning:** pop() removes and returns the final item.
+
+### 77. What is the result?
+
+~~~python
+values = [1, 2, 3]
+values.remove(2)
+print(values)
+~~~
+
+- A. [1, 3]
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. [1, 3]
+
+**Reasoning:** remove() deletes the first matching value.
+
+### 78. What is the result?
+
+~~~python
+values = [1, 2, 3]
+removed = values.pop()
+print(removed, values)
+~~~
+
+- A. None
+- B. 3 [1, 2]
+- C. []
+- D. An exception
+
+**Answer:** B. 3 [1, 2]
+
+**Reasoning:** pop() removes and returns the final item.
+
+### 79. What is the result?
+
+~~~python
+values = [1, 2, 3]
+values.remove(2)
+print(values)
+~~~
+
+- A. None
+- B. []
+- C. [1, 3]
+- D. An exception
+
+**Answer:** C. [1, 3]
+
+**Reasoning:** remove() deletes the first matching value.
+
+### 80. What is the result?
+
+~~~python
+values = [1, 2, 3]
+removed = values.pop()
+print(removed, values)
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. 3 [1, 2]
+
+**Answer:** D. 3 [1, 2]
+
+**Reasoning:** pop() removes and returns the final item.
+
+### 81. What is the result?
+
+~~~python
+first = [1, 2]
+second = first[:]
+second.append(1)
+print(first, second)
+~~~
+
+- A. [1, 2] [1, 2, 1]
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. [1, 2] [1, 2, 1]
+
+**Reasoning:** A full slice makes an independent outer list.
+
+### 82. What is the result?
+
+~~~python
+first = [1, 2]
+second = first[:]
+second.append(2)
+print(first, second)
+~~~
+
+- A. None
+- B. [1, 2] [1, 2, 2]
+- C. []
+- D. An exception
+
+**Answer:** B. [1, 2] [1, 2, 2]
+
+**Reasoning:** A full slice makes an independent outer list.
+
+### 83. What is the result?
+
+~~~python
+first = [1, 2]
+second = first[:]
+second.append(3)
+print(first, second)
+~~~
+
+- A. None
+- B. []
+- C. [1, 2] [1, 2, 3]
+- D. An exception
+
+**Answer:** C. [1, 2] [1, 2, 3]
+
+**Reasoning:** A full slice makes an independent outer list.
+
+### 84. What is the result?
+
+~~~python
+first = [1, 2]
+second = first[:]
+second.append(4)
+print(first, second)
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. [1, 2] [1, 2, 4]
+
+**Answer:** D. [1, 2] [1, 2, 4]
+
+**Reasoning:** A full slice makes an independent outer list.
+
+### 85. What is the result?
+
+~~~python
+first = [1, 2]
+second = first[:]
+second.append(5)
+print(first, second)
+~~~
+
+- A. [1, 2] [1, 2, 5]
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. [1, 2] [1, 2, 5]
+
+**Reasoning:** A full slice makes an independent outer list.
+
+### 86. What is the result?
+
+~~~python
+first = [1, 2]
+second = first[:]
+second.append(6)
+print(first, second)
+~~~
+
+- A. None
+- B. [1, 2] [1, 2, 6]
+- C. []
+- D. An exception
+
+**Answer:** B. [1, 2] [1, 2, 6]
+
+**Reasoning:** A full slice makes an independent outer list.
+
+### 87. What is the result?
+
+~~~python
+first = [1, 2]
+second = first[:]
+second.append(7)
+print(first, second)
+~~~
+
+- A. None
+- B. []
+- C. [1, 2] [1, 2, 7]
+- D. An exception
+
+**Answer:** C. [1, 2] [1, 2, 7]
+
+**Reasoning:** A full slice makes an independent outer list.
+
+### 88. What is the result?
+
+~~~python
+first = [1, 2]
+second = first[:]
+second.append(8)
+print(first, second)
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. [1, 2] [1, 2, 8]
+
+**Answer:** D. [1, 2] [1, 2, 8]
+
+**Reasoning:** A full slice makes an independent outer list.
+
+### 89. What is the result?
+
+~~~python
+first = [1, 2]
+second = first[:]
+second.append(9)
+print(first, second)
+~~~
+
+- A. [1, 2] [1, 2, 9]
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. [1, 2] [1, 2, 9]
+
+**Reasoning:** A full slice makes an independent outer list.
+
+### 90. What is the result?
+
+~~~python
+first = [1, 2]
+second = first[:]
+second.append(10)
+print(first, second)
+~~~
+
+- A. None
+- B. [1, 2] [1, 2, 10]
+- C. []
+- D. An exception
+
+**Answer:** B. [1, 2] [1, 2, 10]
+
+**Reasoning:** A full slice makes an independent outer list.
+
+### 91. What is the result?
+
+~~~python
+values = [1, 2, 3]
+print(values * 2)
+~~~
+
+- A. None
+- B. []
+- C. [1, 2, 3, 1, 2, 3]
+- D. An exception
+
+**Answer:** C. [1, 2, 3, 1, 2, 3]
+
+**Reasoning:** * repeats the list sequence.
+
+### 92. What is the result?
+
+~~~python
+values = [1, 2, 3]
+print(sum(values))
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. 6
+
+**Answer:** D. 6
+
+**Reasoning:** sum() adds numeric list items.
+
+### 93. What is the result?
+
+~~~python
+values = [1, 2, 3]
+print(values * 2)
+~~~
+
+- A. [1, 2, 3, 1, 2, 3]
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. [1, 2, 3, 1, 2, 3]
+
+**Reasoning:** * repeats the list sequence.
+
+### 94. What is the result?
+
+~~~python
+values = [1, 2, 3]
+print(sum(values))
+~~~
+
+- A. None
+- B. 6
+- C. []
+- D. An exception
+
+**Answer:** B. 6
+
+**Reasoning:** sum() adds numeric list items.
+
+### 95. What is the result?
+
+~~~python
+values = [1, 2, 3]
+print(values * 2)
+~~~
+
+- A. None
+- B. []
+- C. [1, 2, 3, 1, 2, 3]
+- D. An exception
+
+**Answer:** C. [1, 2, 3, 1, 2, 3]
+
+**Reasoning:** * repeats the list sequence.
+
+### 96. What is the result?
+
+~~~python
+values = [1, 2, 3]
+print(sum(values))
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. 6
+
+**Answer:** D. 6
+
+**Reasoning:** sum() adds numeric list items.
+
+### 97. What is the result?
+
+~~~python
+values = [1, 2, 3]
+print(values * 2)
+~~~
+
+- A. [1, 2, 3, 1, 2, 3]
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. [1, 2, 3, 1, 2, 3]
+
+**Reasoning:** * repeats the list sequence.
+
+### 98. What is the result?
+
+~~~python
+values = [1, 2, 3]
+print(sum(values))
+~~~
+
+- A. None
+- B. 6
+- C. []
+- D. An exception
+
+**Answer:** B. 6
+
+**Reasoning:** sum() adds numeric list items.
+
+### 99. What is the result?
+
+~~~python
+values = [1, 2, 3]
+print(values * 2)
+~~~
+
+- A. None
+- B. []
+- C. [1, 2, 3, 1, 2, 3]
+- D. An exception
+
+**Answer:** C. [1, 2, 3, 1, 2, 3]
+
+**Reasoning:** * repeats the list sequence.
+
+### 100. What is the result?
+
+~~~python
+values = [1, 2, 3]
+print(sum(values))
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. 6
+
+**Answer:** D. 6
+
+**Reasoning:** sum() adds numeric list items.
+
+### 101. What is the result?
+
+~~~python
+values = [1, 1, 2]
+values.reverse()
+print(values)
+~~~
+
+- A. [2, 1, 1]
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. [2, 1, 1]
+
+**Reasoning:** reverse() changes the list in place.
+
+### 102. What is the result?
+
+~~~python
+values = [2, 1, 2]
+print(sorted(values))
+~~~
+
+- A. None
+- B. [1, 2, 2]
+- C. []
+- D. An exception
+
+**Answer:** B. [1, 2, 2]
+
+**Reasoning:** sorted() returns a sorted new list.
+
+### 103. What is the result?
+
+~~~python
+values = [3, 1, 2]
+values.reverse()
+print(values)
+~~~
+
+- A. None
+- B. []
+- C. [2, 1, 3]
+- D. An exception
+
+**Answer:** C. [2, 1, 3]
+
+**Reasoning:** reverse() changes the list in place.
+
+### 104. What is the result?
+
+~~~python
+values = [4, 1, 2]
+print(sorted(values))
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. [1, 2, 4]
+
+**Answer:** D. [1, 2, 4]
+
+**Reasoning:** sorted() returns a sorted new list.
+
+### 105. What is the result?
+
+~~~python
+values = [5, 1, 2]
+values.reverse()
+print(values)
+~~~
+
+- A. [2, 1, 5]
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. [2, 1, 5]
+
+**Reasoning:** reverse() changes the list in place.
+
+### 106. What is the result?
+
+~~~python
+values = [6, 1, 2]
+print(sorted(values))
+~~~
+
+- A. None
+- B. [1, 2, 6]
+- C. []
+- D. An exception
+
+**Answer:** B. [1, 2, 6]
+
+**Reasoning:** sorted() returns a sorted new list.
+
+### 107. What is the result?
+
+~~~python
+values = [7, 1, 2]
+values.reverse()
+print(values)
+~~~
+
+- A. None
+- B. []
+- C. [2, 1, 7]
+- D. An exception
+
+**Answer:** C. [2, 1, 7]
+
+**Reasoning:** reverse() changes the list in place.
+
+### 108. What is the result?
+
+~~~python
+values = [8, 1, 2]
+print(sorted(values))
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. [1, 2, 8]
+
+**Answer:** D. [1, 2, 8]
+
+**Reasoning:** sorted() returns a sorted new list.
+
+### 109. What is the result?
+
+~~~python
+values = [9, 1, 2]
+values.reverse()
+print(values)
+~~~
+
+- A. [2, 1, 9]
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. [2, 1, 9]
+
+**Reasoning:** reverse() changes the list in place.
+
+### 110. What is the result?
+
+~~~python
+values = [10, 1, 2]
+print(sorted(values))
+~~~
+
+- A. None
+- B. [1, 2, 10]
+- C. []
+- D. An exception
+
+**Answer:** B. [1, 2, 10]
+
+**Reasoning:** sorted() returns a sorted new list.
+
+### 111. What is the result?
+
+~~~python
+fruits = ['apple', 'banana', 'mango']
+print(fruits.count('apple'))
+~~~
+
+- A. None
+- B. []
+- C. 1
+- D. An exception
+
+**Answer:** C. 1
+
+**Reasoning:** count() returns the number of matches.
+
+### 112. What is the result?
+
+~~~python
+fruits = ['apple', 'banana', 'mango']
+print(fruits.index('banana'))
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. 1
+
+**Answer:** D. 1
+
+**Reasoning:** index() returns the matching position.
+
+### 113. What is the result?
+
+~~~python
+fruits = ['apple', 'banana', 'mango']
+print(fruits.count('apple'))
+~~~
+
+- A. 1
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. 1
+
+**Reasoning:** count() returns the number of matches.
+
+### 114. What is the result?
+
+~~~python
+fruits = ['apple', 'banana', 'mango']
+print(fruits.index('banana'))
+~~~
+
+- A. None
+- B. 1
+- C. []
+- D. An exception
+
+**Answer:** B. 1
+
+**Reasoning:** index() returns the matching position.
+
+### 115. What is the result?
+
+~~~python
+fruits = ['apple', 'banana', 'mango']
+print(fruits.count('apple'))
+~~~
+
+- A. None
+- B. []
+- C. 1
+- D. An exception
+
+**Answer:** C. 1
+
+**Reasoning:** count() returns the number of matches.
+
+### 116. What is the result?
+
+~~~python
+fruits = ['apple', 'banana', 'mango']
+print(fruits.index('banana'))
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. 1
+
+**Answer:** D. 1
+
+**Reasoning:** index() returns the matching position.
+
+### 117. What is the result?
+
+~~~python
+fruits = ['apple', 'banana', 'mango']
+print(fruits.count('apple'))
+~~~
+
+- A. 1
+- B. None
+- C. []
+- D. An exception
+
+**Answer:** A. 1
+
+**Reasoning:** count() returns the number of matches.
+
+### 118. What is the result?
+
+~~~python
+fruits = ['apple', 'banana', 'mango']
+print(fruits.index('banana'))
+~~~
+
+- A. None
+- B. 1
+- C. []
+- D. An exception
+
+**Answer:** B. 1
+
+**Reasoning:** index() returns the matching position.
+
+### 119. What is the result?
+
+~~~python
+fruits = ['apple', 'banana', 'mango']
+print(fruits.count('apple'))
+~~~
+
+- A. None
+- B. []
+- C. 1
+- D. An exception
+
+**Answer:** C. 1
+
+**Reasoning:** count() returns the number of matches.
+
+### 120. What is the result?
+
+~~~python
+fruits = ['apple', 'banana', 'mango']
+print(fruits.index('banana'))
+~~~
+
+- A. None
+- B. []
+- C. An exception
+- D. 1
+
+**Answer:** D. 1
+
+**Reasoning:** index() returns the matching position.
