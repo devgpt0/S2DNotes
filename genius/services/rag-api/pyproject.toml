@@ -12,6 +12,7 @@ dependencies = [
     "FlagEmbedding>=1.3,<2",
     "sentence-transformers>=3,<4",
     "httpx>=0.27,<1",
+    "python-dotenv>=1,<2",
 ]
 
 [dependency-groups]
@@ -24,12 +25,13 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
+pythonpath = [".", "../.."]
 
 [tool.ruff]
 target-version = "py312"
 
 [tool.pyright]
 include = ["app", "tests"]
+extraPaths = ["../.."]
 pythonVersion = "3.12"
 typeCheckingMode = "standard"

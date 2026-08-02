@@ -26,6 +26,8 @@ use. Never commit .env or real keys.
 | GROQ_API_KEY | Groq chat provider |
 | UPSTASH_VECTOR_REST_URL | Optional Upstash Vector endpoint |
 | UPSTASH_VECTOR_REST_TOKEN | Optional Upstash Vector token |
+| UPSTASH_REDIS_REST_URL | Upstash Redis HTTPS endpoint for the coding-question CLI |
+| UPSTASH_REDIS_REST_TOKEN | Upstash Redis token for the coding-question CLI |
 
 BGE-M3 and the cross-encoder run locally in the RAG container and need no
 external embedding API key. The first startup downloads model weights into the
@@ -64,6 +66,62 @@ DATABASE_URL=file:./data/genius.sqlite before running pnpm dev.
 - Code review: start a random DSA prompt, choose one of the five supported
   languages, and submit code for an LLM-only review. Submitted code is not run.
 
+## Coding question CLI
+
+See [scripts/README.md](scripts/README.md) for the complete command reference
+for every repository script.
+
+The standalone CLI reads `UPSTASH_REDIS_REST_URL` and
+`UPSTASH_REDIS_REST_TOKEN` from the process environment or the uncommitted
+`genius/.env` file. Existing environment variables take precedence. Run these
+commands from the Genius directory:
+
+```text
+uv run --project services/rag-api python scripts/coding_question.py migrate
+uv run --project services/rag-api python scripts/coding_question.py migrate --apply
+
+uv run --project services/rag-api python scripts/coding_question.py get --id <uuid>
+uv run --project services/rag-api python scripts/coding_question.py list --offset 0 --limit 100
+uv run --project services/rag-api python scripts/coding_question.py query --company Anduril --topic Array --difficulty Medium
+uv run --project services/rag-api python scripts/coding_question.py query --title "Game of Life"
+uv run --project services/rag-api python scripts/coding_question.py random --topic Graph --count 5
+```
+
+`migrate` only reads and validates the legacy source string and performs no
+writes.
+`migrate --apply` builds and verifies the hash and indexes, then atomically
+moves the original string to `coding_questions:legacy` and promotes
+`coding_questions` to a hash whose fields are question UUIDs. The original JSON
+remains available at the rollback key.
+
+```text
+coding_questions                         HASH: UUID -> question JSON
+coding_questions:legacy                  STRING: original JSON array
+coding_questions:index:all               SET: every question UUID
+coding_questions:index:title:<value>     SET: matching question UUIDs
+coding_questions:index:<field>:<value>   SET: matching question UUIDs
+```
+
+Company, topic, subtopic, difficulty, status, and exact normalized title
+filters use AND semantics. Substring and fuzzy title search are not supported.
+See [docs/coding-questions-nestjs.md](docs/coding-questions-nestjs.md) for the
+NestJS provider, DTO, service, controller, module, tests, and request examples.
+
+### Copy coding questions between Upstash databases
+
+Set `UPSTASH_REDIS_REST_URL_SRC`, `UPSTASH_REDIS_REST_TOKEN_SRC`,
+`UPSTASH_REDIS_REST_URL_DST`, and `UPSTASH_REDIS_REST_TOKEN_DST` in the
+uncommitted `.env` file. Validate the copy without writing, then apply it:
+
+```text
+uv run --project services/rag-api python scripts/copy_coding_questions.py
+uv run --project services/rag-api python scripts/copy_coding_questions.py --apply
+```
+
+The script copies every `coding_questions*` key, preserving strings, hashes,
+sets, and TTLs. It stages and verifies source data before replacing matching
+destination keys. Unrelated and destination-only keys are not deleted.
+
 ## Validation
 
 Run the web checks with pnpm lint, pnpm test, and pnpm build from apps/web.
@@ -73,6 +131,12 @@ The RAG API uses its committed `services/rag-api/uv.lock`; run its checks with
 `uv run --group dev bandit -q -r app` from `services/rag-api`. To validate
 Compose configuration without real credentials, run
 docker compose --env-file .env.example config from this directory.
+
+The coding-question CLI tests are included in the RAG API test suite. Validate
+the CLI itself with `uv run --project services/rag-api ruff check
+scripts/coding_question.py`, `uv run --project services/rag-api pyright
+scripts/coding_question.py`, and `uv run --project services/rag-api bandit -q
+scripts/coding_question.py` from the Genius directory.
 
 With Docker Desktop running, scripts/smoke-compose.ps1 performs the complete
 credential-free local Compose smoke test and tears the stack down afterward.
