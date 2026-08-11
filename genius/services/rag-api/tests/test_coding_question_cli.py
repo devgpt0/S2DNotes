@@ -3,10 +3,12 @@ from __future__ import annotations
 import json
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
+from fnmatch import fnmatchcase
 from typing import cast
 
 import httpx
 import pytest
+from scripts import audit_coding_question_indexes as audit
 from scripts import coding_question as cq
 
 QUESTION_IDS = (
@@ -112,6 +114,10 @@ class MockUpstash:
             if key in self.sets:
                 return "set"
             return "none"
+        if name == "SCAN":
+            pattern = cast(str, arguments[2])
+            keys = self.strings.keys() | self.hashes.keys() | self.sets.keys()
+            return ["0", sorted(item for item in keys if fnmatchcase(item, pattern))]
         if name == "GET":
             return self.strings.get(key)
         if name == "SET":
@@ -162,6 +168,20 @@ class MockUpstash:
         if name == "SCARD":
             count = len(self.sets.get(key, set()))
             return count + 1 if self.scards_are_wrong else count
+        if name == "RENAME":
+            destination = cast(str, arguments[1])
+            self.strings.pop(destination, None)
+            self.hashes.pop(destination, None)
+            self.sets.pop(destination, None)
+            if key in self.strings:
+                self.strings[destination] = self.strings.pop(key)
+            elif key in self.hashes:
+                self.hashes[destination] = self.hashes.pop(key)
+            elif key in self.sets:
+                self.sets[destination] = self.sets.pop(key)
+            else:
+                raise AssertionError(f"Missing RENAME source {key}.")
+            return "OK"
         if name == "SINTER":
             keys = [cast(str, argument) for argument in arguments]
             if not keys:
@@ -208,6 +228,25 @@ def test_validation_parses_payload_and_preserves_unknown_fields() -> None:
     assert stored["unknown_top_level_field"] == ["preserved"]
     assert stored["question_payload"]["unknown_payload_field"] == {"preserved": True}
     assert len(dataset.all_ids) == 3
+    assert dataset.index_members[f"{cq.INDEX_PREFIX}:topic:array"] == (
+        frozenset(QUESTION_IDS[:2])
+    )
+    assert dataset.index_members[f"{cq.INDEX_PREFIX}:topic:graph"] == frozenset(
+        {QUESTION_IDS[2]}
+    )
+    assert f"{cq.INDEX_PREFIX}:topic:binary_search" not in dataset.index_members
+    assert not any(":subtopic:" in key for key in dataset.index_members)
+
+
+def test_validation_writes_canonical_topic_to_document_and_payload() -> None:
+    dataset = cq.validate_legacy_json(
+        json.dumps([make_record(QUESTION_IDS[0], topic="Mathematics")])
+    )
+
+    stored = json.loads(dataset.questions[0].canonical_json)
+    assert stored["topic"] == "math"
+    assert stored["question_payload"]["topic"] == "math"
+    assert stored["subtopic"] == "Binary Search"
 
 
 def test_unicode_normalization_and_duplicate_titles_share_an_index() -> None:
@@ -217,6 +256,39 @@ def test_unicode_normalization_and_duplicate_titles_share_an_index() -> None:
 
     assert cq.normalize_index_value("ＣＡＦÉ   SEARCH") == normalized_title
     assert dataset.index_members[title_key] == frozenset(QUESTION_IDS[:2])
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("Binary Array", "binary_array"),
+        ("Binary-Array", "binary_array"),
+        ("  Binary\tArray  ", "binary_array"),
+    ],
+)
+def test_index_values_use_underscores(value: str, expected: str) -> None:
+    assert cq.normalize_index_value(value) == expected
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("Mathematics", "math"),
+        ("DFS", "graph"),
+        ("Breadth-First Search", "graph"),
+        ("Hash Table", "hashing"),
+        ("String Manipulation", "string"),
+        ("SQL", "database"),
+        ("Arrays", "array"),
+    ],
+)
+def test_topic_values_consolidate_equivalent_names(value: str, expected: str) -> None:
+    assert cq.normalize_topic_value(value) == expected
+
+
+def test_unknown_topic_is_rejected() -> None:
+    with pytest.raises(cq.DataValidationError, match="Unsupported"):
+        cq.normalize_topic_value("Unreviewed Topic")
 
 
 @pytest.mark.parametrize(
@@ -279,6 +351,9 @@ def test_dry_run_performs_no_writes() -> None:
 def test_migration_get_queries_pagination_duplicate_title_and_random() -> None:
     legacy_json = json.dumps(sample_records())
     server = MockUpstash(legacy_json)
+    server.sets[f"{cq.INDEX_PREFIX}:subtopic:binary%20search"] = {QUESTION_IDS[0]}
+    server.sets[f"{cq.INDEX_PREFIX}:v1:old:topic:array"] = {QUESTION_IDS[0]}
+    server.strings[f"{cq.INDEX_PREFIX}:active"] = "old"
 
     with redis_client(server) as redis:
         summary = cq.migrate(redis, apply=True)
@@ -302,6 +377,14 @@ def test_migration_get_queries_pagination_duplicate_title_and_random() -> None:
     assert server.strings[cq.LEGACY_KEY] == legacy_json
     assert cq.QUESTIONS_KEY not in server.strings
     assert len(server.hashes[cq.QUESTIONS_KEY]) == 3
+    assert f"{cq.INDEX_PREFIX}:topic:array" in server.sets
+    assert f"{cq.INDEX_PREFIX}:topic:graph" in server.sets
+    assert f"{cq.INDEX_PREFIX}:topic:binary_search" not in server.sets
+    assert not any(":subtopic:" in key for key in server.sets)
+    assert not any("%20" in key for key in server.sets)
+    assert not any("-" in key for key in server.sets)
+    assert not any(key.startswith(f"{cq.INDEX_PREFIX}:v1:") for key in server.sets)
+    assert f"{cq.INDEX_PREFIX}:active" not in server.strings
     assert question["id"] == QUESTION_IDS[0]
     assert [item["id"] for item in filtered] == [QUESTION_IDS[1]]
     assert [item["id"] for item in duplicate_title] == list(QUESTION_IDS[:2])
@@ -402,3 +485,36 @@ def test_get_missing_question_fails() -> None:
         cq.migrate(redis, apply=True)
         with pytest.raises(cq.NotFoundError, match="was not found"):
             cq.get_question(redis, "00000000-0000-0000-0000-000000000099")
+
+
+def test_index_audit_applies_and_verifies_topic_aliases() -> None:
+    records = [
+        make_record(
+            QUESTION_IDS[0],
+            topic="Math",
+            subtopic="Abbreviation Generation",
+        ),
+        make_record(
+            QUESTION_IDS[1],
+            topic="Mathematics",
+            subtopic="Abbreviation",
+        ),
+    ]
+    server = MockUpstash(json.dumps(records))
+
+    with redis_client(server) as redis:
+        result = audit.run_audit(redis, apply=True)
+
+    before = cast(dict[str, object], result["before"])
+    after = cast(dict[str, object], result["after"])
+    aliases = cast(dict[str, list[str]], before["topic_aliases"])
+    assert "mathematics" in aliases["math"]
+    assert "numbers" in aliases["math"]
+    assert after["is_clean"] is True
+    assert after["document_mismatch_count"] == 0
+    assert after["canonical_topic_count"] == 1
+    assert after["canonical_topics"] == ["math"]
+    assert f"{cq.INDEX_PREFIX}:topic:math" in server.sets
+    stored = json.loads(server.hashes[cq.QUESTIONS_KEY][QUESTION_IDS[1]])
+    assert stored["topic"] == "math"
+    assert stored["question_payload"]["topic"] == "math"

@@ -102,8 +102,14 @@ coding_questions:index:title:<value>     SET: matching question UUIDs
 coding_questions:index:<field>:<value>   SET: matching question UUIDs
 ```
 
-Company, topic, subtopic, difficulty, status, and exact normalized title
-filters use AND semantics. Substring and fuzzy title search are not supported.
+Company, topic, difficulty, status, and exact normalized title filters use AND
+semantics. Substring and fuzzy title search are not supported.
+
+Question topics use the closed taxonomy in
+[`coding_question_topics.txt`](coding_question_topics.txt). Migration rewrites
+both the top-level `topic` and `question_payload.topic` to the normalized
+lowercase underscore value used by the corresponding topic index.
+The original `subtopic` remains document metadata and is not a topic index.
 See [docs/coding-questions-nestjs.md](docs/coding-questions-nestjs.md) for the
 NestJS provider, DTO, service, controller, module, tests, and request examples.
 

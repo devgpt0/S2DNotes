@@ -1,4 +1,4 @@
-# Python Execution Model - Beginner to Expert
+# PYTHON - EXECUTION MODEL
 
 This chapter explains what Python does when it reads a module, resolves a name, calls a function, raises an exception, imports another module, or pauses an async task.
 
@@ -20,7 +20,7 @@ print(namespace["answer"])
 ```
 
 Output:
- 
+
 ```text
 42
 ```
@@ -166,9 +166,21 @@ count = 10
 def broken() -> None:
     print(count)
     count = 11
+
+
+try:
+    broken()
+except UnboundLocalError as error:
+    print(type(error).__name__)
 ```
 
-Calling `broken()` raises `UnboundLocalError`. Because the body assigns `count`, the compiler treats it as local throughout that function. The read occurs before the local binding.
+Output:
+
+```text
+UnboundLocalError
+```
+
+Because the body assigns `count`, the compiler treats it as local throughout that function. The read occurs before the local binding.
 
 Fix the design by passing and returning data:
 
@@ -507,11 +519,40 @@ if __name__ == "__main__":
     main()
 ```
 
+Output:
+
+```text
+application started
+```
+
 When executed as the main module, `__name__` is `"__main__"`. When imported, the guard prevents `main()` from running. Package console entry points are a cleaner installed-command mechanism.
 
 ## 19. Thread Execution
 
 Threads in one process share objects. The OS and interpreter can switch execution between threads.
+
+```python
+from threading import Thread
+
+items: list[str] = []
+
+
+def worker() -> None:
+    items.append("worker")
+
+
+thread = Thread(target=worker)
+thread.start()
+thread.join()
+
+print(items)
+```
+
+Output:
+
+```text
+['worker']
+```
 
 In a GIL-enabled CPython build, one thread executes Python bytecode at a time per interpreter, but I/O and native code can release the GIL. Shared multi-step invariants still need synchronization.
 
@@ -554,6 +595,29 @@ At `await`, the task may suspend so another ready task can run. Re-check shared-
 
 Separate processes normally have separate Python runtimes and memory spaces. Arguments and results commonly cross process boundaries through serialization and inter-process communication.
 
+```python
+import subprocess
+import sys
+
+state = "parent"
+result = subprocess.run(
+    [sys.executable, "-c", "state = 'child'; print(state)"],
+    capture_output=True,
+    check=True,
+    text=True,
+)
+
+print(state)
+print(result.stdout.strip())
+```
+
+Output:
+
+```text
+parent
+child
+```
+
 Use the `if __name__ == "__main__":` guard around process-starting application code, especially with spawn-based platforms.
 
 ## 22. CPython Bytecode Is Not a Stable API
@@ -568,10 +632,19 @@ def double(value: int) -> int:
     return value * 2
 
 
-dis.dis(double)
+instructions = list(dis.Bytecode(double))
+print(len(instructions) > 0)
+print(all(isinstance(instruction.opname, str) for instruction in instructions))
 ```
 
-Instruction names and specialization can change by Python version. Use bytecode for diagnosis and learning, not application branching.
+Output:
+
+```text
+True
+True
+```
+
+`dis.dis()` can print the instructions, but instruction names and specialization can change by Python version. Use bytecode for diagnosis and learning, not application branching.
 
 ## 23. Debugging Execution
 

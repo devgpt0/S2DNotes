@@ -1,615 +1,774 @@
 # PYTHON - FUNCTIONS
 
-## 1. Core Mental Model
+A function gives a name to reusable behavior.
 
-Python function questions are mostly about:
-- Argument binding rules
-- Default argument evaluation timing
-- Mutability and aliasing
-- Scope and closures (LEGB)
-- Return behavior with try/finally
+## 1. Define and Call a Function
 
-If you simulate these in order, most tricky outputs become predictable.
-
-## 2. Argument Binding Order
-
-Python binds call arguments in this practical sequence:
-1. Positional arguments
-2. Unpacked positional (*iterable)
-3. Keyword arguments
-4. Unpacked keyword (**mapping)
-5. Remaining defaults
-
-Conflict rules:
-- Same parameter assigned twice -> TypeError.
-- Too many positional args -> TypeError.
-- Missing required args -> TypeError.
-
-Keyword argument order in call does not matter for matching by name.
-
-## 3. Positional-Only and Keyword-Only Parameters
-
-Syntax markers:
-- / : parameters before this are positional-only.
-- * : parameters after this are keyword-only (unless captured by *args).
-
-Examples of what these markers enforce are common interview traps.
-
-## 4. Default Arguments: Evaluated Once
-
-Default values are created at function definition time, not each call.
-
-Mutable defaults (list, dict, set) persist across calls:
-- Using append on a default list reuses same list.
-- This causes state leakage between calls.
-
-Safe pattern:
-- Use None default, then create new object inside function.
-
-## 5. Mutation vs Reassignment
-
-Inside function:
-- Mutation changes the same object (visible outside if shared).
-- Reassignment binds local name to a new object (caller object unchanged).
-
-Example distinction:
-- x.append(4) mutates shared list.
-- x = x + [4] creates new list and rebinds local x.
-
-## 6. *args and **kwargs Unpacking
-
-Unpacking expands data into call-site arguments.
-
-Important rules:
-- * provides positional arguments.
-- ** provides keyword arguments.
-- Multiple unpackings are merged left to right, but duplicate keys/targets raise error.
-
-## 7. Closures and Late Binding
-
-Closures capture variables by reference (name lookup at call time).
-
-Classic trap:
-- Lambdas created in loop all use final loop variable value.
-
-Common fix:
-- Bind current value as default parameter, e.g. lambda i=i: i
-
-## 8. LEGB, nonlocal, global
-
-Lookup order: Local -> Enclosing -> Global -> Builtins.
-
-- Assigning to a name in function creates local binding unless declared otherwise.
-- nonlocal updates variable from nearest enclosing function scope.
-- global updates module-level variable.
-
-## 9. Functions as First-Class Objects
-
-In Python, functions can be:
-- Passed as arguments
-- Returned from other functions
-- Stored in variables/collections
-- Wrapped by decorators
-
-Decorator mental model:
-- @decorator replaces original function object with wrapper returned by decorator.
-
-## 10. try/finally Return Behavior
-
-finally always executes before function exits.
-
-Critical rule:
-- If finally has return, it overrides return from try/except.
-
-This mirrors a common interview edge case and can hide errors.
-
-## 11. Introspection and Callability
-
-Useful internals often asked:
-- f.__code__.co_varnames -> local variable names (including params)
-- f.__code__.co_argcount -> positional parameter count
-- callable(obj) -> whether object can be invoked with ()
-
-## 12. Interview Solve Template
-
-For any function snippet:
-1. Bind arguments exactly (including *, **, /, and * markers).
-2. Check for binding conflicts first.
-3. Determine whether operations mutate or rebind.
-4. Apply LEGB for each variable read/write.
-5. For closures, decide if value is late-bound or fixed via default.
-6. Apply try/finally return override last.
-
-## 13. Worksheet Concept Coverage Checklist
-
-- Mutable default argument pitfalls
-- Positional vs keyword binding
-- *args / **kwargs unpacking and conflicts
-- Positional-only (/) and keyword-only (*) rules
-- Mutation vs reassignment for lists
-- Closure late binding and lambda fixes
-- LEGB with nonlocal/global
-- Functions as first-class objects
-- Decorator wrapping behavior
-- try/finally return override
-- map/callable/code object basics
-
-## 14. Decorators (Interview + Real Project Essential)
-
-A decorator is a function that takes another function and returns a wrapped function.
-
-Mental model:
-```text
-decorated_function = decorator(original_function)
-```
-
-`@decorator_name` is just shorthand for that replacement.
-
-Example:
-```python
-from functools import wraps
-
-
-def log_call(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        print(f"[BEFORE] calling {func.__name__} with args={args}, kwargs={kwargs}")
-        result = func(*args, **kwargs)
-        print(f"[AFTER] {func.__name__} returned {result}")
-        return result
-    return wrapper
-
-
-@log_call
-def add(a, b):
-    print("Inside add()")
-    return a + b
-
-
-total = add(10, 20)
-print("Final total:", total)
-print("Function name after decoration:", add.__name__)
-```
-
-Expected output:
-```text
-[BEFORE] calling add with args=(10, 20), kwargs={}
-Inside add()
-[AFTER] add returned 30
-Final total: 30
-Function name after decoration: add
-```
-
-Why `@wraps` matters:
-- preserves original function metadata (`__name__`, docstring)
-- helps debugging and tooling
-
-## 15. Detailed Function Examples (Step by Step)
-
-### 15.1 Argument Binding with `/` and `*`
+`def` creates a function object. The body runs only when the function is called.
 
 ```python
-def build_url(protocol, /, host, *, port=80, path="/"):
-    url = f"{protocol}://{host}:{port}{path}"
-    print("Built URL:", url)
-    return url
+def greet():
+    print("Hello")
 
 
-build_url("https", "example.com", port=443, path="/docs")
-
-try:
-    build_url(protocol="https", host="example.com")
-except TypeError as error:
-    print("Binding error:", error)
+print(type(greet).__name__)
+greet()
 ```
 
-Expected output:
+Output:
+
 ```text
-Built URL: https://example.com:443/docs
-Binding error: build_url() got some positional-only arguments passed as keyword arguments: 'protocol'
+function
+Hello
 ```
 
-### 15.2 Mutable Default Trap vs Safe Pattern
+Why?
+
+- `def` creates the function.
+- `greet()` executes its body.
+
+## 2. Parameters and Arguments
+
+A parameter is a name in the function definition. An argument is the value passed during a call.
 
 ```python
-def add_tag_bad(tag, tags=[]):
-    tags.append(tag)
-    print("BAD tags now:", tags)
-    return tags
-
-
-def add_tag_good(tag, tags=None):
-    tags = [] if tags is None else tags
-    tags.append(tag)
-    print("GOOD tags now:", tags)
-    return tags
-
-
-add_tag_bad("python")
-add_tag_bad("django")
-
-add_tag_good("python")
-add_tag_good("django")
-```
-
-Expected output:
-```text
-BAD tags now: ['python']
-BAD tags now: ['python', 'django']
-GOOD tags now: ['python']
-GOOD tags now: ['django']
-```
-
-### 15.3 Mutation vs Reassignment
-
-```python
-def mutate_list(values):
-    values.append(99)
-    print("Inside mutate_list:", values)
-
-
-def reassign_list(values):
-    values = values + [99]
-    print("Inside reassign_list:", values)
-
-
-numbers1 = [1, 2, 3]
-numbers2 = [1, 2, 3]
-
-mutate_list(numbers1)
-print("After mutate_list:", numbers1)
-
-reassign_list(numbers2)
-print("After reassign_list:", numbers2)
-```
-
-Expected output:
-```text
-Inside mutate_list: [1, 2, 3, 99]
-After mutate_list: [1, 2, 3, 99]
-Inside reassign_list: [1, 2, 3, 99]
-After reassign_list: [1, 2, 3]
-```
-
-### 15.4 Closures and Late Binding Fix
-
-```python
-bad_funcs = []
-for i in range(3):
-    bad_funcs.append(lambda: i)
-
-print("Late binding result:", [func() for func in bad_funcs])
-
-good_funcs = []
-for i in range(3):
-    good_funcs.append(lambda i=i: i)
-
-print("Fixed closure result:", [func() for func in good_funcs])
-```
-
-Expected output:
-```text
-Late binding result: [2, 2, 2]
-Fixed closure result: [0, 1, 2]
-```
-
-### 15.5 `try/finally` Return Override
-
-```python
-def tricky_return():
-    try:
-        print("Inside try block")
-        return "TRY"
-    finally:
-        print("Inside finally block")
-        return "FINALLY"
-
-
-print("Function returned:", tricky_return())
-```
-
-Expected output:
-```text
-Inside try block
-Inside finally block
-Function returned: FINALLY
-```
-
-## 16. Decorator Usage Patterns (More Practical)
-
-### 16.1 Parameterized Decorator
-
-```python
-from functools import wraps
-
-
-def repeat(times):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            result = None
-            for run in range(1, times + 1):
-                print(f"Run {run}/{times}")
-                result = func(*args, **kwargs)
-            return result
-        return wrapper
-    return decorator
-
-
-@repeat(3)
 def greet(name):
     print(f"Hello, {name}")
 
 
-greet("Asha")
+greet("Ravi")
 ```
 
-Expected output:
+Output:
+
 ```text
-Run 1/3
-Hello, Asha
-Run 2/3
-Hello, Asha
-Run 3/3
-Hello, Asha
+Hello, Ravi
 ```
 
-### 16.2 Stacked Decorators and Order
+`name` is the parameter. `"Ravi"` is the argument.
+
+## 3. Return Values
+
+`return` ends the function and sends a value to the caller.
 
 ```python
-from functools import wraps
+def add(left, right):
+    return left + right
 
 
-def make_upper(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
-        transformed = result.upper()
-        print("make_upper applied")
-        return transformed
-    return wrapper
-
-
-def add_exclamation(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
-        transformed = result + "!"
-        print("add_exclamation applied")
-        return transformed
-    return wrapper
-
-
-@add_exclamation
-@make_upper
-def message():
-    print("message() executed")
-    return "python decorators"
-
-
-print("Final message:", message())
+result = add(4, 6)
+print(result)
 ```
 
-Expected output:
+Output:
+
 ```text
-message() executed
-make_upper applied
-add_exclamation applied
-Final message: PYTHON DECORATORS!
+10
 ```
 
-### 16.3 Real Use: Access Control Decorator
+Code after `return` in the same path does not run.
+
+## 4. Implicit `None`
+
+A function with no `return` statement returns `None`.
 
 ```python
-from functools import wraps
+def show_message():
+    print("running")
 
 
-def require_role(required_role):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(user_role, *args, **kwargs):
-            if user_role != required_role:
-                print(f"Access denied for role={user_role}")
-                return None
-            print(f"Access granted for role={user_role}")
-            return func(user_role, *args, **kwargs)
-        return wrapper
-    return decorator
-
-
-@require_role("admin")
-def delete_user(user_role, username):
-    print(f"Deleting user: {username}")
-    return True
-
-
-print("Admin attempt:", delete_user("admin", "ravi"))
-print("Guest attempt:", delete_user("guest", "ravi"))
+result = show_message()
+print(result)
 ```
 
-Expected output:
+Output:
+
 ```text
-Access granted for role=admin
-Deleting user: ravi
-Admin attempt: True
-Access denied for role=guest
-Guest attempt: None
+running
+None
 ```
 
-### 16.4 Real Use: Timing Decorator
+## 5. Returning Multiple Values
+
+Comma-separated return values are packed into a tuple.
 
 ```python
-import time
-from functools import wraps
+def divide_with_remainder(number, divisor):
+    return number // divisor, number % divisor
 
 
-def time_it(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        start = time.perf_counter()
-        result = func(*args, **kwargs)
-        end = time.perf_counter()
-        print(f"{func.__name__} took {(end - start) * 1000:.2f} ms")
-        return result
-    return wrapper
+result = divide_with_remainder(17, 5)
+quotient, remainder = result
 
-
-@time_it
-def compute_sum(n):
-    total = sum(range(n + 1))
-    print("Computed total:", total)
-    return total
-
-
-compute_sum(100000)
+print(result)
+print(quotient, remainder)
 ```
 
-Expected output (time value will vary):
+Output:
+
 ```text
-Computed total: 5000050000
-compute_sum took 1.23 ms
+(3, 2)
+3 2
 ```
 
-### 16.5 Async Function Decorator
+## 6. Positional and Keyword Arguments
+
+Positional arguments use order. Keyword arguments use parameter names.
 
 ```python
-import asyncio
-from functools import wraps
+def describe(name, role):
+    print(name, role)
 
 
-def async_log(func):
-    @wraps(func)
-    async def wrapper(*args, **kwargs):
-        print(f"[ASYNC BEFORE] {func.__name__}")
-        result = await func(*args, **kwargs)
-        print(f"[ASYNC AFTER] {func.__name__} -> {result}")
-        return result
-    return wrapper
-
-
-@async_log
-async def fetch_profile(user_id):
-    await asyncio.sleep(0.1)
-    print(f"Fetching profile for user_id={user_id}")
-    return {"user_id": user_id, "status": "ok"}
-
-
-async def main():
-    data = await fetch_profile(101)
-    print("Final data:", data)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
+describe("Ana", "Developer")
+describe(role="Designer", name="Mia")
 ```
 
-Expected output:
+Output:
+
 ```text
-[ASYNC BEFORE] fetch_profile
-Fetching profile for user_id=101
-[ASYNC AFTER] fetch_profile -> {'user_id': 101, 'status': 'ok'}
-Final data: {'user_id': 101, 'status': 'ok'}
+Ana Developer
+Mia Designer
 ```
 
-## 17. Quick Practice Prompts
+Keyword arguments make meaning explicit and can be reordered.
 
-1. Write a decorator that retries a function 3 times on exception.
-2. Write a decorator that caches function results for same arguments.
-3. Write a decorator that validates all numeric arguments are positive.
-4. Refactor one script in your notes to use a logging decorator.
+## 7. Default Arguments
 
-## 18. Generators as Functions (Missing but Interview-Critical)
-
-A generator function uses `yield` and returns an iterator.
+A default is used when the caller omits that argument.
 
 ```python
-def read_chunks(data: list[int], size: int):
-    for i in range(0, len(data), size):
-        yield data[i : i + size]
+def greet(name, greeting="Hello"):
+    print(f"{greeting}, {name}")
 
 
-for chunk in read_chunks([1, 2, 3, 4, 5], 2):
-    print(chunk)
+greet("Ana")
+greet("Ravi", "Welcome")
 ```
 
-Why it matters:
-- stream processing without loading everything at once.
-- cleaner pipelines than manual index loops.
+Output:
 
-## 19. Function Contracts with Type Hints
+```text
+Hello, Ana
+Welcome, Ravi
+```
 
-Type hints make function intent explicit and tooling-friendly.
+Required parameters must come before default parameters.
+
+## 8. Mutable Default Trap
+
+Defaults are evaluated once when `def` runs, not once per call.
 
 ```python
-from collections.abc import Iterable
+def add_item(item, items=[]):
+    items.append(item)
+    return items
 
 
-def average(values: Iterable[float]) -> float:
-    data = list(values)
-    if not data:
-        raise ValueError("values cannot be empty")
-    return sum(data) / len(data)
+print(add_item("A"))
+print(add_item("B"))
 ```
 
-Practical rule:
-- prioritize hints on public APIs and shared utility functions first.
+Output:
 
-## 20. Callable Injection Pattern (Foundation for Clean Architecture)
+```text
+['A']
+['A', 'B']
+```
 
-Functions can be dependencies too, not only classes.
+Both calls reuse the same list.
+
+Use `None` when each call needs a new mutable object:
 
 ```python
-from collections.abc import Callable
+def add_item(item, items=None):
+    if items is None:
+        items = []
+    items.append(item)
+    return items
 
 
-def process_order(
-    amount: float,
-    tax_fn: Callable[[float], float],
-) -> float:
-    return amount + tax_fn(amount)
+print(add_item("A"))
+print(add_item("B"))
 ```
 
-Benefits:
-- small, testable behavior injection.
-- avoids unnecessary class ceremony.
+Output:
 
-## 21. `functools.singledispatch` for Controlled Ad-hoc Polymorphism
+```text
+['A']
+['B']
+```
 
-Useful when behavior varies by argument type.
+## 9. Positional-Only Parameters
+
+Parameters before `/` cannot be passed by keyword.
 
 ```python
-from functools import singledispatch
+def divide(numerator, denominator, /):
+    return numerator / denominator
 
 
-@singledispatch
-def normalize(value):
-    return str(value)
-
-
-@normalize.register
-def _(value: int):
-    return value
-
-
-@normalize.register
-def _(value: list):
-    return [normalize(v) for v in value]
+print(divide(10, 2))
 ```
 
-Interview note:
-- cleaner than long `isinstance` chains for type-based branching.
+Output:
 
-## 22. High-Value Function Pitfalls
+```text
+5.0
+```
 
-- mutable default args retain state across calls.
-- late binding in closures inside loops.
-- forgetting to preserve metadata in decorators (`@wraps`).
-- catching broad exceptions inside utility decorators and hiding failure.
+This protects parameter names from becoming part of the public API.
 
-## 23. Function Design Checklist (Production-Oriented)
+## 10. Keyword-Only Parameters
 
-1. one clear responsibility.
-2. explicit input/output contract.
-3. safe error behavior.
-4. no hidden global side effects.
-5. composable with other functions.
+Parameters after `*` must be passed by name.
+
+```python
+def connect(host, *, timeout=5):
+    print(host, timeout)
+
+
+connect("example.com", timeout=10)
+```
+
+Output:
+
+```text
+example.com 10
+```
+
+This makes important options clear at the call site.
+
+## 11. Variable Positional Arguments: `*args`
+
+`*args` collects extra positional arguments into a tuple.
+
+```python
+def total(*numbers):
+    print(type(numbers).__name__)
+    return sum(numbers)
+
+
+print(total(2, 3, 5))
+```
+
+Output:
+
+```text
+tuple
+10
+```
+
+`args` is only a convention; the `*` creates the behavior.
+
+## 12. Variable Keyword Arguments: `**kwargs`
+
+`**kwargs` collects extra keyword arguments into a dictionary.
+
+```python
+def show_profile(**details):
+    print(type(details).__name__)
+    print(details["name"], details["role"])
+
+
+show_profile(name="Ana", role="Developer")
+```
+
+Output:
+
+```text
+dict
+Ana Developer
+```
+
+`kwargs` is a convention; `**` creates the behavior.
+
+## 13. Argument Unpacking
+
+`*` unpacks positional values. `**` unpacks keyword values.
+
+```python
+def introduce(name, role):
+    print(f"{name}: {role}")
+
+
+person = ["Mia", "Designer"]
+details = {"name": "Ravi", "role": "Tester"}
+
+introduce(*person)
+introduce(**details)
+```
+
+Output:
+
+```text
+Mia: Designer
+Ravi: Tester
+```
+
+## 14. How Arguments Are Passed
+
+Python binds a parameter to the same object passed by the caller.
+
+### Mutation Is Visible
+
+Mutating a shared object changes what the caller sees.
+
+```python
+def add_score(scores):
+    scores.append(100)
+
+
+results = [80, 90]
+add_score(results)
+print(results)
+```
+
+Output:
+
+```text
+[80, 90, 100]
+```
+
+### Rebinding Is Local
+
+Assigning a new object to the parameter changes only the local name.
+
+```python
+def replace_scores(scores):
+    scores = [100]
+    print("inside", scores)
+
+
+results = [80, 90]
+replace_scores(results)
+print("outside", results)
+```
+
+Output:
+
+```text
+inside [100]
+outside [80, 90]
+```
+
+## 15. Scope: LEGB Rule
+
+Python searches for a name in this order:
+
+1. Local: current function.
+2. Enclosing: outer function.
+3. Global: current module.
+4. Built-in: names such as `len` and `print`.
+
+```python
+label = "global"
+
+
+def outer():
+    label = "enclosing"
+
+    def inner():
+        label = "local"
+        print(label)
+
+    inner()
+    print(label)
+
+
+outer()
+print(label)
+```
+
+Output:
+
+```text
+local
+enclosing
+global
+```
+
+Each assignment creates or updates a name in its own scope.
+
+## 16. Local Scope
+
+A name assigned inside a function is local by default.
+
+```python
+message = "outside"
+
+
+def show():
+    message = "inside"
+    print(message)
+
+
+show()
+print(message)
+```
+
+Output:
+
+```text
+inside
+outside
+```
+
+The local name shadows the global name; it does not replace it.
+
+## 17. `global`
+
+`global` makes assignment target a module-level name.
+
+```python
+count = 0
+
+
+def increment():
+    global count
+    count += 1
+
+
+increment()
+print(count)
+```
+
+Output:
+
+```text
+1
+```
+
+Use global mutation sparingly because it creates hidden shared state.
+
+## 18. `nonlocal`
+
+`nonlocal` makes assignment target the nearest enclosing function scope.
+
+```python
+def make_counter():
+    count = 0
+
+    def increment():
+        nonlocal count
+        count += 1
+        return count
+
+    return increment
+
+
+counter = make_counter()
+print(counter())
+print(counter())
+```
+
+Output:
+
+```text
+1
+2
+```
+
+The inner function keeps access to `count` after `make_counter()` finishes.
+
+## 19. Unbound Local Error
+
+If a function assigns to a name, Python treats that name as local throughout the function.
+
+```python
+count = 10
+
+
+def show_error():
+    try:
+        print(count)
+        count = 20
+    except UnboundLocalError as error:
+        print(type(error).__name__)
+
+
+show_error()
+```
+
+Output:
+
+```text
+UnboundLocalError
+```
+
+The assignment makes `count` local, but it is read before receiving a local value.
+
+## 20. Functions Are Objects
+
+A function can be stored in another name or collection.
+
+```python
+def double(number):
+    return number * 2
+
+
+operation = double
+print(operation(6))
+print(operation is double)
+```
+
+Output:
+
+```text
+12
+True
+```
+
+No parentheses means the function object itself. Parentheses call it.
+
+## 21. Higher-Order Functions
+
+A higher-order function accepts or returns another function.
+
+```python
+def apply(operation, value):
+    return operation(value)
+
+
+def square(number):
+    return number**2
+
+
+print(apply(square, 5))
+```
+
+Output:
+
+```text
+25
+```
+
+## 22. Lambda Functions
+
+`lambda` creates a small anonymous function containing one expression.
+
+```python
+numbers = [3, 1, 2]
+descending = sorted(numbers, key=lambda number: -number)
+
+print(descending)
+```
+
+Output:
+
+```text
+[3, 2, 1]
+```
+
+Use `def` when logic needs a name, multiple statements, or documentation.
+
+## 23. Closures
+
+A closure is an inner function that remembers names from an enclosing scope.
+
+```python
+def make_multiplier(factor):
+    def multiply(number):
+        return number * factor
+
+    return multiply
+
+
+triple = make_multiplier(3)
+print(triple(4))
+```
+
+Output:
+
+```text
+12
+```
+
+`triple` retains access to `factor`.
+
+### Late Binding Trap
+
+Closures look up captured names when called.
+
+```python
+functions = []
+
+for number in range(3):
+    functions.append(lambda: number)
+
+print([function() for function in functions])
+```
+
+Output:
+
+```text
+[2, 2, 2]
+```
+
+All lambdas read the final value of `number`.
+
+Capture the current value with a default:
+
+```python
+functions = []
+
+for number in range(3):
+    functions.append(lambda number=number: number)
+
+print([function() for function in functions])
+```
+
+Output:
+
+```text
+[0, 1, 2]
+```
+
+## 24. Recursion
+
+Recursion occurs when a function calls itself.
+
+A recursive function needs:
+
+- a base case that stops recursion;
+- a recursive case that moves toward the base case.
+
+```python
+def factorial(number):
+    if number == 0:
+        return 1
+    return number * factorial(number - 1)
+
+
+print(factorial(5))
+```
+
+Output:
+
+```text
+120
+```
+
+Call flow:
+
+```text
+factorial(5)
+5 * factorial(4)
+5 * 4 * factorial(3)
+5 * 4 * 3 * factorial(2)
+5 * 4 * 3 * 2 * factorial(1)
+5 * 4 * 3 * 2 * 1 * factorial(0)
+```
+
+### Missing Base Case
+
+Recursion without a reachable base case eventually raises `RecursionError`.
+
+```python
+def repeat():
+    return repeat()
+
+
+try:
+    repeat()
+except RecursionError as error:
+    print(type(error).__name__)
+```
+
+Output:
+
+```text
+RecursionError
+```
+
+Prefer a loop when recursion does not make the problem clearer. Python does not optimize tail recursion.
+
+## 25. Type Hints
+
+Type hints document expected types and support static analysis. Python does not enforce them at runtime.
+
+```python
+def add(left: int, right: int) -> int:
+    return left + right
+
+
+print(add(2, 3))
+print(add("Py", "thon"))
+```
+
+Output:
+
+```text
+5
+Python
+```
+
+Runtime validation is separate from type hints.
+
+## 26. Docstrings
+
+A docstring explains a function's public purpose and contract.
+
+```python
+def area(width, height):
+    """Return the area of a rectangle."""
+    return width * height
+
+
+print(area.__doc__)
+```
+
+Output:
+
+```text
+Return the area of a rectangle.
+```
+
+## 27. Pure Functions and Side Effects
+
+A pure function depends only on inputs and does not change external state.
+
+```python
+def doubled(numbers):
+    return [number * 2 for number in numbers]
+
+
+original = [1, 2, 3]
+result = doubled(original)
+
+print(original)
+print(result)
+```
+
+Output:
+
+```text
+[1, 2, 3]
+[2, 4, 6]
+```
+
+Pure functions are easier to test. Side effects are sometimes necessary, but should be explicit.
+
+## 28. Final Mental Model
+
+When reading a function, ask:
+
+1. What arguments bind to which parameters?
+2. Which objects are shared with the caller?
+3. Does the function mutate an object or rebind a local name?
+4. Where does each name resolve under LEGB?
+5. Is a default object reused?
+6. Does a closure use late binding?
+7. Does recursion have a reachable base case?
+8. What value is returned, or is `None` returned implicitly?
+
+| Concept | Rule |
+| --- | --- |
+| Call | creates a new local frame |
+| Parameter | local name bound to an argument object |
+| `return` | ends the call and sends a value back |
+| Mutable default | reused across calls |
+| `global` | rebinds a module name |
+| `nonlocal` | rebinds an enclosing name |
+| Closure | retains access to enclosing names |
+| Recursion | self-call with a base case |

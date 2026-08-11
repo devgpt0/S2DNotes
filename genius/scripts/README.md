@@ -80,9 +80,36 @@ Select random questions without replacement:
 uv run --project services/rag-api python scripts/coding_question.py random --topic Array --difficulty Easy --count 5
 ```
 
-Supported exact filters are `company`, `topic`, `subtopic`, `difficulty`,
-`status`, and `title`. Query and list limits, and random counts, have a maximum
-of 1,000.
+Supported exact filters are `company`, `topic`, `difficulty`, `status`, and
+`title`. Query and list limits, and random counts, have a maximum of 1,000.
+Topics are restricted to the canonical values in `coding_question_topics.txt`.
+The migration writes that lowercase underscore value to both document topic
+fields and indexes only the canonical top-level topic. Subtopics remain
+document metadata.
+
+## `audit_coding_question_indexes.py`
+
+Audits every coding-question index key, key type, and set membership against
+the validated source dataset. It also reports topic aliases consolidated by
+the canonical naming rules.
+
+Run a read-only audit:
+
+```powershell
+uv run --project services/rag-api python scripts/audit_coding_question_indexes.py
+```
+
+Rebuild the indexes and require a clean post-migration audit:
+
+```powershell
+uv run --project services/rag-api python scripts/audit_coding_question_indexes.py --apply
+```
+
+Write the verified canonical topic list while rebuilding:
+
+```powershell
+uv run --project services/rag-api python scripts/audit_coding_question_indexes.py --apply --topics-output coding_question_topics.txt
+```
 
 ## `copy_coding_questions.py`
 
@@ -155,8 +182,8 @@ uv run --project services/rag-api pytest -q services/rag-api/tests/test_coding_q
 Run formatting, lint, type, and security checks:
 
 ```powershell
-uv run --project services/rag-api ruff format --check scripts/coding_question.py scripts/copy_coding_questions.py
-uv run --project services/rag-api ruff check scripts/coding_question.py scripts/copy_coding_questions.py
-uv run --project services/rag-api pyright scripts/coding_question.py scripts/copy_coding_questions.py
-uv run --project services/rag-api bandit -q scripts/coding_question.py scripts/copy_coding_questions.py
+uv run --project services/rag-api ruff format --check scripts/coding_question.py scripts/audit_coding_question_indexes.py scripts/copy_coding_questions.py
+uv run --project services/rag-api ruff check scripts/coding_question.py scripts/audit_coding_question_indexes.py scripts/copy_coding_questions.py
+uv run --project services/rag-api pyright scripts/coding_question.py scripts/audit_coding_question_indexes.py scripts/copy_coding_questions.py
+uv run --project services/rag-api bandit -q scripts/coding_question.py scripts/audit_coding_question_indexes.py scripts/copy_coding_questions.py
 ```

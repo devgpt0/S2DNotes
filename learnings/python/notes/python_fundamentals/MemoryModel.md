@@ -1,48 +1,66 @@
-# Python Memory Model - Beginner to Expert
+# PYTHON - MEMORY MODEL
 
-Python variables do not contain objects. A variable is a name bound to an object.
+Python programs work with objects and references. Exact memory layout is an implementation detail.
 
-## 1. Names Point to Objects
+## 1. Names Reference Objects
+
+A namespace maps names to objects.
 
 ```python
-course = ["python"]
-alias = course
+number = 10
+alias = number
 
-print(course is alias)
-alias.append("memory")
-print(course)
+print(number == alias)
+print(number is alias)
 ```
 
 Output:
 
 ```text
 True
-['python', 'memory']
+True
 ```
 
-Both names refer to the same list. Mutation through either name is visible through the other.
+Both names currently reference the same integer object.
 
-```text
-course ----+
-           +----> ["python", "memory"]
-alias  ----+
-```
-
-## 2. Identity, Type, and Value
+## 2. Object State, Type, and Identity
 
 Every object has:
 
-- identity: `is` compares whether two references point to the same object;
-- type: `type(value)` reports behavior and representation;
-- value/state: `==` asks the type whether values are equal.
+- a type that defines behavior;
+- a value or state;
+- an identity that distinguishes it from other objects.
 
 ```python
 first = [1, 2]
 second = [1, 2]
 
+print(type(first).__name__)
 print(first == second)
 print(first is second)
-print(type(first).__name__)
+```
+
+Output:
+
+```text
+list
+True
+False
+```
+
+The lists have equal state but different identities.
+
+## 3. `id()`
+
+`id(object)` returns an identity value unique during that object's lifetime.
+
+```python
+items = [1, 2]
+alias = items
+copy = [1, 2]
+
+print(id(items) == id(alias))
+print(id(items) == id(copy))
 ```
 
 Output:
@@ -50,435 +68,344 @@ Output:
 ```text
 True
 False
-list
 ```
 
-Use `is` for identity, especially `value is None`. Use `==` for value equality.
+Do not treat `id()` as a permanent memory address or persistent identifier.
 
-## 3. Assignment Binds a Name
+## 4. Aliasing
+
+Aliasing occurs when multiple references point to one mutable object.
 
 ```python
-left = [1, 2]
-right = left
-right = [3, 4]
+original = [1, 2]
+alias = original
+alias.append(3)
 
-print(left)
-print(right)
+print(original)
+print(alias)
+```
+
+Output:
+
+```text
+[1, 2, 3]
+[1, 2, 3]
+```
+
+Mutation through either name is visible through both.
+
+## 5. Rebinding Does Not Change the Old Object
+
+Rebinding moves one name to another object.
+
+```python
+original = [1, 2]
+alias = original
+alias = [9]
+
+print(original)
+print(alias)
 ```
 
 Output:
 
 ```text
 [1, 2]
-[3, 4]
+[9]
 ```
 
-`right = left` binds a second name to the original list. `right = [3, 4]` later rebinds only `right`; it does not mutate the original.
+## 6. Mutable Objects
 
-## 4. Mutation Versus Rebinding
+Mutation changes object state while preserving identity.
 
 ```python
-values = [1]
-same_values = values
-values += [2]
+items = [1, 2]
+identity_before = id(items)
+items[0] = 9
 
-print(values)
-print(values is same_values)
-
-title = "Py"
-same_title = title
-title += "thon"
-
-print(title)
-print(title is same_title)
+print(items)
+print(id(items) == identity_before)
 ```
 
 Output:
 
 ```text
-[1, 2]
+[9, 2]
 True
+```
+
+## 7. Immutable Objects
+
+An operation on an immutable object returns another object instead of changing the original.
+
+```python
+text = "Py"
+identity_before = id(text)
+text = text + "thon"
+
+print(text)
+print(id(text) == identity_before)
+```
+
+Output:
+
+```text
 Python
 False
 ```
 
-`list.__iadd__` mutates and returns the list. Strings are immutable, so string concatenation creates a new object and rebinds the name.
+## 8. Object Lifetime
 
-Do not memorize that `+=` always mutates or always copies; the type defines in-place behavior.
-
-## 5. Mutable and Immutable Types
-
-Common immutable types:
-
-- `int`, `float`, `bool`, `complex`;
-- `str`, `bytes`;
-- `tuple` when considering tuple structure;
-- `frozenset`;
-- many user-defined value objects designed without mutation.
-
-Common mutable types:
-
-- `list`, `dict`, `set`, `bytearray`;
-- most ordinary user-defined instances.
-
-A tuple cannot replace its elements, but it can refer to a mutable object:
+An object remains reachable while at least one live reference can reach it.
 
 ```python
-record = ("python", ["typing"])
-record[1].append("profiling")
-print(record)
+items = [1, 2]
+alias = items
+del items
+
+print(alias)
 ```
 
 Output:
 
 ```text
-('python', ['typing', 'profiling'])
+[1, 2]
 ```
 
-The tuple structure did not change; the nested list changed.
+Deleting one name does not delete an object still referenced elsewhere.
 
-## 6. Function Arguments Use Object Sharing
+## 9. Garbage Collection
 
-Python evaluates an argument to an object and binds the function parameter to that object. This is often called call by sharing.
-
-```python
-def add_topic(topics: list[str]) -> None:
-    topics.append("memory")
-
-
-def replace_topics(topics: list[str]) -> None:
-    topics = ["replacement"]
-    print(f"inside: {topics}")
-
-
-original = ["python"]
-add_topic(original)
-print(original)
-
-replace_topics(original)
-print(original)
-```
-
-Output:
-
-```text
-['python', 'memory']
-inside: ['replacement']
-['python', 'memory']
-```
-
-Mutation affects the shared list. Rebinding the local parameter does not rebind the caller's name.
-
-## 7. Shallow Copy
-
-A shallow copy creates a new outer container but shares nested objects.
-
-```python
-from copy import copy
-
-original = [["python"], ["rust"]]
-duplicate = copy(original)
-
-duplicate.append(["go"])
-duplicate[0].append("typing")
-
-print(original)
-print(duplicate)
-```
-
-Output:
-
-```text
-[['python', 'typing'], ['rust']]
-[['python', 'typing'], ['rust'], ['go']]
-```
-
-The outer lists differ. Their first nested list is shared.
-
-## 8. Deep Copy
-
-`deepcopy` recursively copies while preserving repeated-reference and cycle relationships through a memo table.
-
-```python
-from copy import deepcopy
-
-original = [["python"], ["rust"]]
-duplicate = deepcopy(original)
-duplicate[0].append("typing")
-
-print(original)
-print(duplicate)
-```
-
-Output:
-
-```text
-[['python'], ['rust']]
-[['python', 'typing'], ['rust']]
-```
-
-Deep copy is not automatically correct. Files, sockets, locks, database sessions, caches, and identity-based domain objects may not be meaningfully copyable. Prefer an explicit domain operation when copy semantics matter.
-
-## 9. Mutable Default Argument Trap
-
-Default arguments are evaluated once when the function is defined.
-
-```python
-def broken_add(topic: str, topics: list[str] = []) -> list[str]:
-    topics.append(topic)
-    return topics
-
-
-print(broken_add("typing"))
-print(broken_add("profiling"))
-```
-
-Output:
-
-```text
-['typing']
-['typing', 'profiling']
-```
-
-Use `None` to request a new list:
-
-```python
-def add_topic(topic: str, topics: list[str] | None = None) -> list[str]:
-    result = [] if topics is None else topics
-    result.append(topic)
-    return result
-
-
-print(add_topic("typing"))
-print(add_topic("profiling"))
-```
-
-Output:
-
-```text
-['typing']
-['profiling']
-```
-
-This function deliberately mutates a provided list. Document that contract or copy the input if callers require isolation.
-
-## 10. Closures Retain Objects
-
-```python
-from collections.abc import Callable
-
-
-def make_reader() -> Callable[[], list[str]]:
-    values = ["python", "memory"]
-
-    def read() -> list[str]:
-        return values.copy()
-
-    return read
-
-
-reader = make_reader()
-print(reader())
-```
-
-Output:
-
-```text
-['python', 'memory']
-```
-
-The returned function's closure keeps `values` alive after `make_reader` returns. Closures, callbacks, task objects, and tracebacks can retain unexpectedly large object graphs.
-
-## 11. Reference Counting in CPython
-
-CPython tracks strong references to most objects. When a non-cyclic object's reference count reaches zero, CPython usually destroys it immediately.
-
-```python
-import sys
-
-values: list[int] = []
-alias = values
-
-before = sys.getrefcount(values)
-del alias
-after = sys.getrefcount(values)
-
-print(after < before)
-```
-
-Output:
-
-```text
-True
-```
-
-`getrefcount` adds a temporary reference for the call, so use it for learning rather than exact production assertions.
-
-Other Python implementations may use different memory-management strategies. Immediate CPython cleanup is not a portable resource-management contract.
-
-## 12. Cyclic Garbage Collection
-
-Two objects can keep each other referenced even when the application can no longer reach them.
+Unreachable objects can be reclaimed. CPython combines reference counting with a cyclic garbage collector.
 
 ```python
 import gc
-
-first: list[object] = []
-second: list[object] = [first]
-first.append(second)
-
-del first
-del second
-
-print(gc.collect() >= 2)
-```
-
-Typical CPython output:
-
-```text
-True
-```
-
-CPython's cyclic collector searches tracked container objects for unreachable cycles. Collection timing and counts can vary.
-
-## 13. Finalizers and Cycles
-
-`__del__` is difficult to reason about:
-
-- execution time is not guaranteed across implementations;
-- interpreter shutdown can remove dependencies first;
-- object resurrection is possible;
-- exceptions cannot be handled by the caller normally.
-
-Use a context manager for deterministic cleanup. Use `weakref.finalize` only when a non-deterministic safety net is genuinely needed.
-
-## 14. Weak References and Non-Ownership
-
-```python
 import weakref
 
 
-class Course:
+class Node:
     pass
 
 
-course = Course()
-reference = weakref.ref(course)
-print(reference() is course)
+gc.disable()
+node = Node()
+node.link = node
+reference = weakref.ref(node)
+del node
 
-del course
-print(reference())
+print(reference() is None)
+gc.collect()
+print(reference() is None)
+gc.enable()
+```
+
+Output:
+
+```text
+False
+True
+```
+
+The self-reference forms a cycle. Explicit collection reclaims it after external references are removed.
+
+Garbage-collection timing is not a reliable resource-management strategy. Use `with` for files, locks, and connections.
+
+## 10. Assignment Versus Copying
+
+Assignment creates another reference. Copying creates another outer object.
+
+```python
+import copy
+
+original = [1, 2]
+alias = original
+duplicate = copy.copy(original)
+
+print(alias is original)
+print(duplicate is original)
+print(duplicate == original)
 ```
 
 Output:
 
 ```text
 True
-None
+False
+True
 ```
 
-A weak reference does not own the object. The caller must handle the object disappearing between observations, especially with concurrency.
+## 11. Shallow Copy
 
-## 15. Why RSS May Stay High
-
-Deleting Python objects does not guarantee the operating system immediately receives memory back. CPython and the platform allocator can retain arenas or pools for future allocations.
-
-Distinguish:
-
-- live Python objects;
-- unused memory retained by allocators;
-- native-library allocations;
-- memory-mapped files;
-- process RSS reported by the OS.
-
-Use `tracemalloc` for Python allocation sources and an OS/native profiler for complete process memory.
-
-## 16. Common Retention Causes
-
-- unbounded dictionaries, lists, or caches;
-- queues whose consumers cannot keep up;
-- completed futures or tasks retained forever;
-- event handlers that are never unregistered;
-- global registries;
-- closures retaining large context;
-- tracebacks stored after failures;
-- cycles containing long-lived objects;
-- per-request data stored in thread-local or context state;
-- native extensions with unclear ownership.
-
-## 17. Diagnose Growth with Snapshots
+A shallow copy creates a new outer container but reuses references to nested objects.
 
 ```python
-import tracemalloc
+import copy
 
-tracemalloc.start(10)
-before = tracemalloc.take_snapshot()
+original = [[1, 2], [3, 4]]
+duplicate = copy.copy(original)
+duplicate[0].append(9)
 
-values = [str(number) for number in range(10_000)]
-
-after = tracemalloc.take_snapshot()
-differences = after.compare_to(before, "lineno")
-
-print(len(values))
-print(len(differences) > 0)
+print(original)
+print(duplicate)
+print(original is duplicate)
+print(original[0] is duplicate[0])
 ```
 
 Output:
 
 ```text
-10000
+[[1, 2, 9], [3, 4]]
+[[1, 2, 9], [3, 4]]
+False
 True
 ```
 
-Repeat the same workload and compare stable checkpoints. One snapshot tells you where allocations exist; repeated retained growth is stronger leak evidence.
+List slicing, `list.copy()`, and `copy.copy()` make shallow copies.
 
-## 18. Memory-Efficient Representations
+## 12. Deep Copy
 
-Consider, based on evidence:
-
-- generators for one-pass streams;
-- `array`, NumPy arrays, or packed binary formats for large homogeneous numeric data;
-- `__slots__` for very large numbers of simple instances;
-- `memoryview` for zero-copy buffer slices;
-- bounded caches and queues;
-- database pagination or streaming cursors;
-- processes when isolation and lifecycle reset are useful.
-
-Every representation has API, dependency, and maintainability costs. Measure peak memory and end-to-end latency.
-
-## 19. Resource Lifetime Is Not Object Lifetime
+A deep copy recursively copies nested mutable objects while preserving the graph structure.
 
 ```python
-from pathlib import Path
+import copy
 
+original = [[1, 2], [3, 4]]
+duplicate = copy.deepcopy(original)
+duplicate[0].append(9)
 
-def read_first_line(path: Path) -> str:
-    with path.open(encoding="utf-8") as stream:
-        return stream.readline().rstrip("\n")
+print(original)
+print(duplicate)
+print(original[0] is duplicate[0])
 ```
 
-The `with` statement closes the file on success or failure. Do not wait for object destruction to release an external resource.
+Output:
 
-## 20. Review Checklist
+```text
+[[1, 2], [3, 4]]
+[[1, 2, 9], [3, 4]]
+False
+```
 
-- Which names and containers own this object?
-- Is mutation visible through aliases?
-- Is a copy shallow, deep, or domain-specific?
-- Can a closure, callback, traceback, or cache retain it?
-- Is a cycle possible?
-- Is external-resource cleanup deterministic?
-- Is the queue/cache/result set bounded?
-- Are Python allocations or native allocations growing?
-- Does the design depend on CPython-specific immediate destruction?
+Deep copying can be expensive and may be unsuitable for objects that represent external resources.
 
-## Final Rules
+## 13. Shared Nested Objects
 
-- names bind to objects;
-- assignment does not copy an object;
-- distinguish mutation from rebinding;
-- define copy semantics explicitly;
-- avoid mutable default arguments;
-- understand strong, weak, and cyclic references;
-- use context managers for resources;
-- diagnose retained objects with repeated evidence;
-- optimize representation only after measuring real memory use.
+Sequence multiplication repeats references; it does not independently copy nested objects.
+
+```python
+rows = [[0] * 2] * 3
+rows[0][0] = 1
+
+print(rows)
+print(rows[0] is rows[1])
+```
+
+Output:
+
+```text
+[[1, 0], [1, 0], [1, 0]]
+True
+```
+
+Create independent rows with a comprehension:
+
+```python
+rows = [[0] * 2 for _ in range(3)]
+rows[0][0] = 1
+
+print(rows)
+print(rows[0] is rows[1])
+```
+
+Output:
+
+```text
+[[1, 0], [0, 0], [0, 0]]
+False
+```
+
+## 14. Function Calls Share Objects
+
+Arguments create local parameter bindings to the same objects.
+
+```python
+def update(items):
+    print(items is original)
+    items.append(3)
+
+
+original = [1, 2]
+update(original)
+print(original)
+```
+
+Output:
+
+```text
+True
+[1, 2, 3]
+```
+
+This is often called call-by-sharing.
+
+## 15. Interning Is an Optimization
+
+Python implementations may reuse some immutable objects. Never use identity to compare normal values.
+
+```python
+first = "python"
+second = "".join(["py", "thon"])
+
+print(first == second)
+print(first is second)
+```
+
+Output:
+
+```text
+True
+False
+```
+
+The construction forces separate string objects in this example. Correct code still depends only on `==`.
+
+## 16. Memory Size Is Implementation-Dependent
+
+Object overhead, caching, allocation, and garbage collection vary by Python implementation and version.
+
+```python
+import platform
+
+implementation = platform.python_implementation()
+print(type(implementation).__name__)
+print(bool(implementation))
+```
+
+Output:
+
+```text
+str
+True
+```
+
+Do not build application logic around a particular object size or collection time.
+
+## 17. Final Mental Model
+
+Think of memory as an object graph:
+
+- objects are nodes;
+- references are edges;
+- assignment creates or changes an edge;
+- mutation changes a node's state;
+- shallow copy creates a new outer node with shared inner edges;
+- deep copy recreates reachable nodes;
+- unreachable nodes become eligible for collection.
+
+For a memory question, ask:
+
+1. Which objects exist?
+2. Which names or containers reference them?
+3. Which references are shared?
+4. Is the operation mutation, rebinding, shallow copy, or deep copy?
+5. Is the object still reachable?

@@ -21,9 +21,94 @@ QUESTIONS_KEY = "coding_questions"
 LEGACY_KEY = "coding_questions:legacy"
 STAGING_KEY = "coding_questions:migration"
 INDEX_PREFIX = "coding_questions:index"
+STAGING_INDEX_PREFIX = "coding_questions:migration:index"
 LOCK_KEY = "coding_questions:migration:lock"
-INDEX_FIELDS = ("company", "topic", "subtopic", "difficulty", "status", "title")
+INDEX_FIELDS = ("company", "topic", "difficulty", "status", "title")
 DIFFICULTIES = frozenset({"Easy", "Medium", "Hard"})
+TOPIC_ALIASES = {
+    "array": "Array",
+    "arrays": "Array",
+    "asynchronous_programming": "Concurrency",
+    "backtracking": "Backtracking",
+    "binary_search": "Binary Search",
+    "binary_search_tree": "Tree",
+    "binary_tree": "Tree",
+    "bit_manipulation": "Bit Manipulation",
+    "board_game": "Simulation",
+    "breadth_first_search": "Graph",
+    "cache": "Design",
+    "combinatorics": "Combinatorics",
+    "concurrency": "Concurrency",
+    "control_flow": "Programming Fundamentals",
+    "data_processing": "Data Processing",
+    "data_structure": "Data Structure",
+    "data_structures": "Data Structure",
+    "data_visualization": "Data Processing",
+    "database": "Database",
+    "databases": "Database",
+    "date_and_time": "Date and Time",
+    "depth_first_search": "Graph",
+    "deque": "Queue",
+    "design": "Design",
+    "dfs": "Graph",
+    "dynamic_programming": "Dynamic Programming",
+    "excel_manipulation": "Data Processing",
+    "finance": "Finance",
+    "function": "Programming Fundamentals",
+    "game": "Simulation",
+    "game_theory": "Game Theory",
+    "geometry": "Geometry",
+    "graph": "Graph",
+    "greedy": "Greedy",
+    "greedy_algorithm": "Greedy",
+    "greedy_algorithms": "Greedy",
+    "grid": "Matrix",
+    "hash_map": "Hashing",
+    "hash_table": "Hashing",
+    "hashing": "Hashing",
+    "heap": "Heap",
+    "integer": "Math",
+    "interval": "Interval",
+    "interval_management": "Interval",
+    "interval_scheduling": "Interval",
+    "intervals": "Interval",
+    "linked_list": "Linked List",
+    "math": "Math",
+    "mathematics": "Math",
+    "matrix": "Matrix",
+    "memory_management": "Memory Management",
+    "networking": "Networking",
+    "number": "Math",
+    "number_manipulation": "Math",
+    "number_theory": "Number Theory",
+    "numbers": "Math",
+    "object_manipulation": "Design",
+    "optimization": "Optimization",
+    "probability": "Probability",
+    "programming_fundamentals": "Programming Fundamentals",
+    "queue": "Queue",
+    "random": "Randomization",
+    "randomization": "Randomization",
+    "recursion": "Recursion",
+    "search": "Binary Search",
+    "searching": "Binary Search",
+    "set": "Hashing",
+    "simulation": "Simulation",
+    "sliding_window": "Sliding Window",
+    "sorting": "Sorting",
+    "sql": "Database",
+    "stack": "Stack",
+    "string": "String",
+    "string_manipulation": "String",
+    "string_parsing": "String",
+    "strings": "String",
+    "system_design": "System Design",
+    "tree": "Tree",
+    "trees": "Tree",
+    "trie": "Trie",
+    "two_pointers": "Two Pointers",
+    "union_find": "Union Find",
+}
 MAX_RESULT_COUNT = 1_000
 PIPELINE_COMMAND_LIMIT = 100
 PIPELINE_BYTE_LIMIT = 512_000
@@ -293,11 +378,27 @@ def _canonical_uuid(value: str, label: str) -> str:
     return canonical
 
 
-def normalize_index_value(value: str) -> str:
-    normalized = " ".join(unicodedata.normalize("NFKC", value).split()).lower()
-    if not normalized:
+def _normalized_index_parts(value: str) -> list[str]:
+    parts = unicodedata.normalize("NFKC", value).lower().replace("-", " ").split()
+    if not parts:
         raise DataValidationError("Index values must not be empty or whitespace-only.")
-    return quote(normalized, safe="")
+    return parts
+
+
+def normalize_index_value(value: str) -> str:
+    return quote("_".join(_normalized_index_parts(value)), safe="")
+
+
+def canonical_topic_name(value: str) -> str:
+    normalized = normalize_index_value(value)
+    canonical = TOPIC_ALIASES.get(normalized)
+    if canonical is None:
+        raise DataValidationError(f"Unsupported coding-question topic {value!r}.")
+    return canonical
+
+
+def normalize_topic_value(value: str) -> str:
+    return normalize_index_value(canonical_topic_name(value))
 
 
 def validate_legacy_json(raw_json: str) -> Dataset:
@@ -354,8 +455,11 @@ def validate_legacy_json(raw_json: str) -> Dataset:
                     f"{label}.{top_key} does not match question_payload.{payload_key}."
                 )
 
+        canonical_topic = normalize_topic_value(topic)
         title = _required_string(payload_value, "title", f"{label}.question_payload")
+        payload_value["topic"] = canonical_topic
         stored_record = dict(item)
+        stored_record["topic"] = canonical_topic
         stored_record["question_payload"] = payload_value
         canonical_json = json.dumps(
             stored_record,
@@ -367,16 +471,20 @@ def validate_legacy_json(raw_json: str) -> Dataset:
 
         all_ids.add(question_id)
         questions.append(Question(question_id, canonical_json))
-        field_values = {
-            "company": company,
-            "topic": topic,
-            "subtopic": subtopic,
-            "difficulty": difficulty,
-            "status": status,
-            "title": title,
-        }
-        for field, display_value in field_values.items():
-            key = f"{INDEX_PREFIX}:{field}:{normalize_index_value(display_value)}"
+        index_values = (
+            ("company", company),
+            ("topic", canonical_topic),
+            ("difficulty", difficulty),
+            ("status", status),
+            ("title", title),
+        )
+        for field, display_value in index_values:
+            normalized_value = (
+                normalize_topic_value(display_value)
+                if field == "topic"
+                else normalize_index_value(display_value)
+            )
+            key = f"{INDEX_PREFIX}:{field}:{normalized_value}"
             indexes.setdefault(key, set()).add(question_id)
 
     questions.sort(key=lambda question: question.question_id)
@@ -459,6 +567,10 @@ def _run_pipeline(
     return results
 
 
+def _index_key(index_key: str, prefix: str) -> str:
+    return f"{prefix}{index_key.removeprefix(INDEX_PREFIX)}"
+
+
 def _write_commands(dataset: Dataset) -> Iterable[RedisCommand]:
     for question_chunk in _chunks(dataset.questions, HASH_FIELDS_PER_COMMAND):
         command: RedisCommand = ["HSET", STAGING_KEY]
@@ -467,11 +579,15 @@ def _write_commands(dataset: Dataset) -> Iterable[RedisCommand]:
         yield command
 
     for member_chunk in _chunks(sorted(dataset.all_ids), SET_MEMBERS_PER_COMMAND):
-        yield ["SADD", f"{INDEX_PREFIX}:all", *member_chunk]
+        yield ["SADD", f"{STAGING_INDEX_PREFIX}:all", *member_chunk]
     for index_key in sorted(dataset.index_members):
         members = sorted(dataset.index_members[index_key])
         for member_chunk in _chunks(members, SET_MEMBERS_PER_COMMAND):
-            yield ["SADD", index_key, *member_chunk]
+            yield [
+                "SADD",
+                _index_key(index_key, STAGING_INDEX_PREFIX),
+                *member_chunk,
+            ]
 
 
 def _verify_hash(redis: RedisRestClient, dataset: Dataset, key: str) -> None:
@@ -494,19 +610,71 @@ def _verify_hash(redis: RedisRestClient, dataset: Dataset, key: str) -> None:
             )
 
 
-def _verify_indexes(redis: RedisRestClient, dataset: Dataset) -> None:
-    all_key = f"{INDEX_PREFIX}:all"
+def _verify_indexes(
+    redis: RedisRestClient, dataset: Dataset, prefix: str = INDEX_PREFIX
+) -> None:
+    all_key = f"{prefix}:all"
     if _redis_int(redis.execute(["SCARD", all_key]), "SCARD") != len(dataset.all_ids):
         raise DataValidationError("All-ID index count verification failed.")
     stored_ids = set(_redis_strings(redis.execute(["SMEMBERS", all_key]), "SMEMBERS"))
     if stored_ids != dataset.all_ids:
         raise DataValidationError("All-ID index membership verification failed.")
 
-    keys = sorted(dataset.index_members)
+    keys = [_index_key(key, prefix) for key in sorted(dataset.index_members)]
     results = _run_pipeline(redis, (["SCARD", key] for key in keys))
-    for key, result in zip(keys, results, strict=True):
-        if _redis_int(result, "SCARD") != len(dataset.index_members[key]):
+    expected_counts = [
+        len(dataset.index_members[key]) for key in sorted(dataset.index_members)
+    ]
+    for key, expected_count, result in zip(keys, expected_counts, results, strict=True):
+        if _redis_int(result, "SCARD") != expected_count:
             raise DataValidationError(f"Index count verification failed for {key!r}.")
+
+
+def _scan_keys(redis: RedisRestClient, pattern: str) -> set[str]:
+    cursor = "0"
+    keys: set[str] = set()
+    while True:
+        result = redis.execute(["SCAN", cursor, "MATCH", pattern, "COUNT", 1_000])
+        if (
+            not isinstance(result, list)
+            or len(result) != 2
+            or not isinstance(result[0], str)
+            or not isinstance(result[1], list)
+            or any(not isinstance(key, str) for key in result[1])
+        ):
+            raise UpstashError("SCAN returned an invalid response.")
+        cursor = result[0]
+        keys.update(result[1])
+        if cursor == "0":
+            return keys
+
+
+def _delete_keys(redis: RedisRestClient, keys: Iterable[str]) -> None:
+    sorted_keys = sorted(keys)
+    commands: Iterable[RedisCommand] = (
+        ["DEL", *chunk] for chunk in _chunks(sorted_keys, SET_MEMBERS_PER_COMMAND)
+    )
+    for result in _run_pipeline(redis, commands):
+        _redis_int(result, "DEL")
+
+
+def _clear_staging(redis: RedisRestClient) -> None:
+    _redis_int(redis.execute(["DEL", STAGING_KEY]), "DEL")
+    _delete_keys(redis, _scan_keys(redis, f"{STAGING_INDEX_PREFIX}:*"))
+
+
+def _promote_indexes(redis: RedisRestClient, dataset: Dataset) -> None:
+    final_keys = {f"{INDEX_PREFIX}:all", *dataset.index_members}
+    commands: Iterable[RedisCommand] = (
+        ["RENAME", _index_key(key, STAGING_INDEX_PREFIX), key]
+        for key in sorted(final_keys)
+    )
+    for result in _run_pipeline(redis, commands):
+        if result != "OK":
+            raise UpstashError("Index promotion returned an invalid result.")
+
+    stale_keys = _scan_keys(redis, f"{INDEX_PREFIX}:*") - final_keys
+    _delete_keys(redis, stale_keys)
 
 
 def _acquire_lock(redis: RedisRestClient, token: str) -> None:
@@ -556,13 +724,15 @@ def migrate(redis: RedisRestClient, *, apply: bool) -> JsonObject:
     _acquire_lock(redis, token)
     try:
         dataset = load_dataset(redis)
-        _redis_int(redis.execute(["DEL", STAGING_KEY]), "DEL")
+        _clear_staging(redis)
         for result in _run_pipeline(redis, _write_commands(dataset)):
             _redis_int(result, "migration write")
         _verify_hash(redis, dataset, STAGING_KEY)
-        _verify_indexes(redis, dataset)
+        _verify_indexes(redis, dataset, STAGING_INDEX_PREFIX)
         _promote(redis)
+        _promote_indexes(redis, dataset)
         _verify_hash(redis, dataset, QUESTIONS_KEY)
+        _verify_indexes(redis, dataset)
         return migration_summary(dataset, "applied")
     finally:
         _release_lock(redis, token)
@@ -590,7 +760,8 @@ def _matching_ids(redis: RedisRestClient, filters: Mapping[str, str]) -> list[st
     if unknown:
         raise DataValidationError(f"Unsupported filters: {', '.join(sorted(unknown))}.")
     keys = [
-        f"{INDEX_PREFIX}:{field}:{normalize_index_value(value)}"
+        f"{INDEX_PREFIX}:{field}:"
+        f"{normalize_topic_value(value) if field == 'topic' else normalize_index_value(value)}"
         for field, value in filters.items()
     ]
     if not keys:
@@ -663,7 +834,6 @@ def _positive_bounded_integer(value: str) -> int:
 def _add_filters(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--company")
     parser.add_argument("--topic")
-    parser.add_argument("--subtopic")
     parser.add_argument("--difficulty", choices=sorted(DIFFICULTIES))
     parser.add_argument("--status")
     parser.add_argument("--title")

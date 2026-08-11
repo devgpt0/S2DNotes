@@ -1,560 +1,463 @@
-# 🐍 PYTHON — LEVEL 1 NOTES: VARIABLES MODEL
+# PYTHON - VARIABLES AND NAME BINDING
 
----
+A Python variable is a name bound to an object. It is not a box that contains a value.
 
-# 🔷 1. WHAT IS A VARIABLE?
+## 1. Assignment Binds a Name
 
-## 🧠 Mental Model
+Assignment evaluates the right side, then binds the left-side name to that object.
 
-> **A variable is a label (reference) pointing to an object in memory**
+```python
+score = 95
 
----
+print(score)
+print(type(score).__name__)
+```
 
-### NOT a Container
-
-> ❌ Variables do NOT store values inside them
-> ✅ Variables REFERENCE objects that store values
-
----
-
-## 🧠 Visualization
+Output:
 
 ```text
-Variable (Stack)     Object (Heap)
-    x  ─────────────► [10]
+95
+int
 ```
 
----
+## 2. Names Are Dynamically Typed
 
-# 🔷 2. CORE PRINCIPLE
-
-## ❗ Everything in Python is an object
-
-* **int** → object
-* **str** → object
-* **list** → object
-* **function** → object
-* **module** → object
-
----
-
-## All objects are stored in HEAP
-
-Variables are just **labels pointing to heap objects**
-
----
-
-# 🔷 3. ASSIGNMENT BEHAVIOR
-
-## 🧠 Rule: Assignment Copies REFERENCE, NOT Object
-
----
-
-### Example 1: Mutable Assignment
+A name can be rebound to an object of another type.
 
 ```python
-a = [1, 2]
-b = a
+result = 10
+print(result, type(result).__name__)
+
+result = "complete"
+print(result, type(result).__name__)
 ```
+
+Output:
 
 ```text
-a ─┐
-   ├──► [1, 2]  (one object in heap)
-b ─┘
+10 int
+complete str
 ```
 
-**Both point to SAME object**
+The objects have types; the name does not have a fixed runtime type.
 
----
+## 3. Identifier Rules
 
-### Example 2: Immutable Assignment
+A variable name:
+
+- may contain letters, digits, and underscores;
+- cannot start with a digit;
+- cannot be a Python keyword;
+- is case-sensitive.
 
 ```python
-x = 10
-y = x
+user_name = "Ana"
+user2 = "Ravi"
+name = "lower"
+Name = "upper"
+
+print(user_name, user2)
+print(name, Name)
 ```
+
+Output:
 
 ```text
-x ─┐
-   ├──► [10]    (immutable, typically same object due to caching)
-y ─┘
+Ana Ravi
+lower upper
 ```
 
-**Reference copied, not value**
+## 4. Naming Conventions
 
----
-
-# 🔷 4. MUTABLE vs IMMUTABLE BEHAVIOR
-
----
-
-## 🔹 Mutable Objects
-
-**list, dict, set**
-
-### Property:
-
-> ❗ Modifications change the SAME object
-
----
-
-### Example
-
-```python
-x = [1, 2]
-y = x
-y.append(3)
-print(x)  # [1, 2, 3]  ← x also changed!
-```
-
-```text
-Before: x ─┐
-           ├──► [1, 2]
-        y ─┘
-
-After:  x ─┐
-           ├──► [1, 2, 3]  ← SAME object modified
-        y ─┘
-```
-
----
-
-## 🔹 Immutable Objects
-
-**int, float, str, tuple**
-
-### Property:
-
-> ❗ Any modification creates NEW object
-
----
-
-### Example
-
-```python
-x = 10
-y = x
-y = y + 1  # or y += 1
-print(x)   # 10  ← x unchanged
-print(y)   # 11
-```
-
-```text
-Before: x ─────► [10]
-        y ─────┘
-
-After:  x ─────► [10]        (original, unchanged)
-        y ─────► [11]        (new object created)
-```
-
----
-
-# 🔷 5. MUTATION vs REBINDING
-
----
-
-## 🔹 Mutation
-
-Changes the object itself
-
-```python
-x = [1, 2]
-x.append(3)  # ← mutation
-```
-
-```text
-x ─────► [1, 2, 3]
-         (same object, modified)
-```
-
----
-
-## 🔹 Rebinding
-
-Points to a different object
-
-```python
-x = [1, 2]
-x = [3, 4]  # ← rebinding
-```
-
-```text
-Before: x ─────► [1, 2]
-After:  x ─────► [3, 4]  (new object)
-```
-
----
-
-## 🧠 CRITICAL DIFFERENCE
-
-| Action    | Mutable | Immutable |
-| --------- | ------- | --------- |
-| Mutation  | Same object | N/A |
-| Rebinding | New reference | New object |
-
----
-
-# 🔷 6. FUNCTION ARGUMENTS (CALL-BY-SHARING)
-
----
-
-## 🧠 Python uses: Call-by-sharing
-
-> Function parameter receives a REFERENCE to the same object
-
----
-
-### Case 1: Mutation (Affects Original)
-
-```python
-def modify(lst):
-    lst.append(10)  # mutation
-
-a = [1, 2]
-modify(a)
-print(a)  # [1, 2, 10]  ← changed!
-```
-
-```text
-Inside function:
-lst ─┐
-     ├──► [1, 2, 10]  ← SAME object modified
-a ─┘
-```
-
----
-
-### Case 2: Rebinding (Local Only)
-
-```python
-def modify(lst):
-    lst = [999]  # rebinding
-
-a = [1, 2]
-modify(a)
-print(a)  # [1, 2]  ← unchanged!
-```
-
-```text
-Inside function:
-lst ─────► [999]  (new local object, function scope only)
-a ─────► [1, 2]   (unchanged, still original)
-```
-
----
-
-# 🔷 7. IDENTITY vs EQUALITY
-
----
-
-```python
-a is b   # → Are they the SAME object? (identity)
-a == b   # → Do they have the SAME value? (equality)
-```
-
----
-
-## 🧠 Key Difference
-
-### `is` → Identity Check
-
-* Checks if both variables point to same object in memory
-* Compares memory addresses
-
-```python
-a = [1, 2]
-b = a
-print(a is b)  # True  (same object)
-```
-
----
-
-### `==` → Equality Check
-
-* Checks if both objects have same value
-* Compares content
-
-```python
-a = [1, 2]
-c = [1, 2]
-print(a == c)  # True  (same value)
-print(a is c)  # False (different objects)
-```
-
----
-
-## 🧠 Table
-
-```python
-a = [1, 2]
-b = a
-c = [1, 2]
-```
-
-| Expression | Result | Why |
+| Name kind | Convention | Example |
 | --- | --- | --- |
-| `a is b` | `True` | Same object in memory |
-| `a == b` | `True` | Same content |
-| `a is c` | `False` | Different objects |
-| `a == c` | `True` | Same content |
+| variable | `snake_case` | `total_price` |
+| function | `snake_case` | `calculate_total` |
+| class | `PascalCase` | `OrderItem` |
+| constant | `UPPER_SNAKE_CASE` | `MAX_RETRIES` |
+| internal name | leading underscore | `_cache` |
 
----
-
-# 🔷 8. COPY vs REFERENCE
-
----
-
-## 🔹 Reference Copy
+Use meaningful names that describe purpose, not implementation detail.
 
 ```python
-b = a
+item_count = 3
+unit_price = 10
+total_price = item_count * unit_price
+
+print(total_price)
 ```
 
-* Creates new variable
-* Points to SAME object
-* Both see mutations
+Output:
 
 ```text
-a ─┐
-   ├──► [1, 2]
-b ─┘
+30
 ```
 
----
+## 5. Assignment Does Not Copy an Object
 
-## 🔹 Shallow Copy
+Assigning one name to another copies the reference.
 
 ```python
-b = a[:]  # or b = a.copy()
+first = [1, 2]
+second = first
+
+print(first is second)
+second.append(3)
+print(first)
 ```
 
-* Creates NEW object
-* Copies content at top level
-* Mutations don't affect original
+Output:
 
 ```text
-a ─────► [1, 2]
-b ─────► [1, 2]  (different object, same content)
+True
+[1, 2, 3]
 ```
 
----
+Both names reference the same list.
 
-# 🔷 9. STEP-BY-STEP MENTAL MODEL
+## 6. Rebinding
 
----
-
-When analyzing code:
-
----
-
-## 🧠 Step 1: Variables are references
-
-* Track which variable points where
-* Not "what value does x hold" but "what object does x refer to"
-
----
-
-## 🧠 Step 2: Identify object type
-
-* Mutable? (list, dict, set)
-* Immutable? (int, str, tuple)
-
----
-
-## 🧠 Step 3: Identify operation
-
-* **Mutation:** `x.append()`, `x[0] = val`, `x.pop()`
-* **Rebinding:** `x = new_value`
-
----
-
-## 🧠 Step 4: Apply rules
-
-* Mutable + mutation → shared object changes
-* Immutable + rebinding → new object created
-* Function argument → reference passed, mutation affects original
-
----
-
-# 🔷 10. COMMON MISTAKES
-
----
-
-### ❌ Mistake 1: "Variables store values"
+Rebinding makes a name reference another object. It does not alter the old object.
 
 ```python
-x = 10  # ❌ "x stores 10"
+first = [1, 2]
+second = first
+second = [9, 10]
+
+print(first)
+print(second)
+print(first is second)
 ```
 
-✔️ Correct: "x is a reference to object 10"
-
----
-
-### ❌ Mistake 2: "Assignment copies the object"
-
-```python
-b = a  # ❌ "copied a to b"
-```
-
-✔️ Correct: "b now references the same object as a"
-
----
-
-### ❌ Mistake 3: "Functions pass by reference"
-
-✔️ Correct: "Functions use call-by-sharing (reference passed)"
-
----
-
-### ❌ Mistake 4: "x += always mutates"
-
-```python
-x = [1]
-x += [2]  # ✔️ Mutates (in-place for lists)
-
-y = 10
-y += 5    # ❌ Does NOT mutate (creates new int)
-```
-
-✔️ Correct: "Immutable objects create new object, mutable objects may mutate in-place"
-
----
-
-# 🔷 11. FINAL MENTAL MODEL (5 GOLDEN RULES)
-
----
-
-### 🧠 Master These 5 Rules
-
-1. **Everything is an object** → stored in heap
-2. **Variables are references** → labels pointing to objects
-3. **Assignment = reference copy** → both point to same object
-4. **Mutable objects** → mutation changes shared object
-5. **Immutable objects** → reassignment creates new object
-
----
-
-# 🎯 HOW TO THINK IN INTERVIEW
-
----
-
-### Process:
+Output:
 
 ```text
-1️⃣ Draw boxes for objects in heap
-2️⃣ Draw arrows for references (variables)
-3️⃣ Identify mutable vs immutable
-4️⃣ Track mutation vs rebinding
-5️⃣ Follow function flow
-6️⃣ Predict output
+[1, 2]
+[9, 10]
+False
 ```
 
----
+## 7. Mutation
 
-# 🚀 LEVEL 1 MASTERY GOALS
+Mutation changes an existing object without changing its identity.
 
-By end of Level 1, you should:
+```python
+numbers = [1, 2]
+identity_before = id(numbers)
+numbers.append(3)
 
-✅ Instantly recognize reference behavior
-✅ Explain mutation vs reassignment clearly
-✅ Predict output without running code
-✅ Distinguish `is` from `==`
-✅ Handle function arguments confidently
+print(numbers)
+print(id(numbers) == identity_before)
+```
 
----
+Output:
 
-**Ready to test?** Go to `assignement/test` folder!
+```text
+[1, 2, 3]
+True
+```
 
-**Next Level:** Level 2 = nested structures, default arguments, integer caching, string interning, deep copy
+## 8. Immutable Reassignment
 
----
+Immutable values cannot change. An apparent update creates and binds a new object.
 
-## Level 2
+```python
+number = 10
+identity_before = id(number)
+number += 1
 
-### Mental Model
-Names bind to objects. Assignment rebinds names; mutation changes objects. Keep these two operations separate in your mind.
+print(number)
+print(id(number) == identity_before)
+```
 
-### Solve Steps
-1. Draw name -> object bindings after each line.
-2. Mark object as mutable or immutable.
-3. Track aliasing when multiple names point to one object.
-4. For functions, treat arguments as new local names bound to passed objects.
+Output:
 
-## Level 3
+```text
+11
+False
+```
 
-### Mental Model
-Scope and binding time are key: LEGB lookup, closure capture, and default-argument evaluation can preserve unexpected state.
+## 9. Multiple Assignment
 
-### Solve Steps
-1. Resolve each variable by LEGB.
-2. For closures in loops, test late binding assumptions.
-3. Check whether defaults are evaluated once at function definition.
-4. Fix with explicit rebinding or immutable defaults when needed.
+Python can bind several names in one statement.
 
----
+```python
+name, age, active = "Ana", 25, True
 
-### Level 2 Questions
-1. After `a=[1,2]; b=a; b.append(3)`, why does `a` change?
-2. In a function, what differs between `x.append(1)` and `x=[1]`?
-3. Why can two variables have equal values but different identities?
+print(name)
+print(age)
+print(active)
+```
 
-### Level 3 Questions
-1. How does late binding in closures create surprising loop behavior?
-2. Why are mutable default arguments a state-retention trap?
-3. Which LEGB step do you check first when debugging shadowed variables?
+Output:
 
----
+```text
+Ana
+25
+True
+```
 
-## 🔷 2. EXECUTION MODEL
+The number of target names must match the number of values unless starred unpacking is used.
 
-Understand how this topic runs in actual program flow:
+## 10. Chained Assignment
 
-- Read statement
-- Resolve type/object/reference
-- Execute operation (assignment, mutation, call, return)
-- Update memory state (stack/heap bindings)
-- Re-check final output from updated state
+Chained assignment binds every name to the same object.
+
+```python
+first = second = []
+first.append("shared")
+
+print(second)
+print(first is second)
+```
+
+Output:
+
+```text
+['shared']
+True
+```
+
+Avoid chained assignment with mutable objects when independent values are intended.
+
+## 11. Sequence Unpacking
+
+Unpacking binds items from an iterable to separate names.
+
+```python
+point = (4, 7)
+x, y = point
+
+print(x)
+print(y)
+```
+
+Output:
+
+```text
+4
+7
+```
+
+## 12. Starred Unpacking
+
+A starred target collects remaining items into a list.
+
+```python
+first, *middle, last = [1, 2, 3, 4, 5]
+
+print(first)
+print(middle)
+print(last)
+```
+
+Output:
+
+```text
+1
+[2, 3, 4]
+5
+```
+
+Only one target may be starred in one assignment level.
+
+## 13. Swapping Values
+
+Python evaluates the right side before binding the left side.
+
+```python
+left = 10
+right = 20
+left, right = right, left
+
+print(left, right)
+```
+
+Output:
+
+```text
+20 10
+```
+
+No temporary variable is required.
+
+## 14. Augmented Assignment
+
+Augmented assignment reads, operates, then rebinds or mutates depending on the type.
+
+```python
+number = 5
+number += 2
+
+items = [1]
+alias = items
+items += [2]
+
+print(number)
+print(items)
+print(alias)
+```
+
+Output:
+
+```text
+7
+[1, 2]
+[1, 2]
+```
+
+Integer `+=` creates a new integer. List `+=` mutates the list.
+
+## 15. Deleting a Name
+
+`del name` removes the binding. It does not necessarily destroy the object.
+
+```python
+first = [1, 2]
+second = first
+del first
+
+print(second)
+
+try:
+    print(first)
+except NameError as error:
+    print(type(error).__name__)
+```
+
+Output:
+
+```text
+[1, 2]
+NameError
+```
+
+The list remains alive because `second` still references it.
+
+## 16. Variable Annotations
+
+An annotation documents the expected type. It does not enforce the type at runtime.
+
+```python
+count: int = 3
+print(count, type(count).__name__)
+
+count = "three"
+print(count, type(count).__name__)
+```
+
+Output:
+
+```text
+3 int
+three str
+```
+
+Static type checkers can report the incompatible reassignment.
+
+## 17. Function Parameters Are Local Bindings
+
+A parameter becomes a local name bound to the passed object.
+
+```python
+def append_item(items):
+    print(items is original)
+    items.append(3)
 
 
----
+original = [1, 2]
+append_item(original)
+print(original)
+```
 
-## 🔷 3. INTERVIEW MENTAL MODEL (STEP-BY-STEP)
+Output:
 
-When you see ANY question:
+```text
+True
+[1, 2, 3]
+```
 
----
+Python uses object sharing: mutation is visible, local rebinding is not.
 
-### 🧠 Step 1: Identify variable type
+```python
+def replace(items):
+    items = [9]
+    print(items)
 
-* Primitive? → value
-* Object? → reference
 
----
+original = [1, 2]
+replace(original)
+print(original)
+```
 
-### 🧠 Step 2: Where is it stored?
+Output:
 
-* Primitive → stack
-* Object → heap (via reference)
+```text
+[9]
+[1, 2]
+```
 
----
+## 18. Local and Global Names
 
-### 🧠 Step 3: Assignment behavior
+Assignment inside a function creates a local name unless declared `global` or `nonlocal`.
 
-* Primitive → copy value
-* Object → copy reference
+```python
+status = "global"
 
----
 
-### 🧠 Step 4: Operation type
+def show_status():
+    status = "local"
+    print(status)
 
-* Field change → mutation
-* `new` → new object (reassignment)
 
----
+show_status()
+print(status)
+```
 
-### 🧠 Step 5: Function call
+Output:
 
-* Always pass-by-value
-* Object → reference copied
+```text
+local
+global
+```
 
----
+Prefer parameters and return values to mutable global state.
+
+## 19. Common Assignment Error
+
+Reading a name before binding it raises `NameError`.
+
+```python
+try:
+    print(total)
+except NameError as error:
+    print(type(error).__name__)
+
+total = 10
+print(total)
+```
+
+Output:
+
+```text
+NameError
+10
+```
+
+## 20. Final Mental Model
+
+For each assignment, trace:
+
+1. Which right-side expression is evaluated?
+2. Which object is produced or fetched?
+3. Which name is bound to that object?
+4. Do multiple names share the object?
+5. Does the next operation mutate the object or rebind the name?
+
+Remember:
+
+- assignment binds names; it does not copy objects;
+- mutation changes an object;
+- rebinding changes a name-to-object connection;
+- `del` removes a binding;
+- parameters are local bindings to argument objects.
