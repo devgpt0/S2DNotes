@@ -57,7 +57,15 @@ print(dog.name)     # inherited state
 print(dog.speak())  # overridden behavior
 ```
 
-Expected output:
+Output:
+
+```text
+Bruno
+Bark
+```
+
+Output:
+
 ```text
 Bruno
 Bark
@@ -119,7 +127,17 @@ print(AdminUser.is_valid_username("A1"))
 print(AdminUser.is_valid_username("Asha01"))
 ```
 
-Expected output:
+Output:
+
+```text
+user=Asha01, platform=NotesApp
+user=guest, platform=NotesApp
+False
+True
+```
+
+Output:
+
 ```text
 user=Asha01, platform=NotesApp
 user=guest, platform=NotesApp
@@ -174,7 +192,14 @@ manager = Manager("E101", "Asha", 5)
 print(manager.employee_id, manager.name, manager.team_size)
 ```
 
-Expected output:
+Output:
+
+```text
+E101 Asha 5
+```
+
+Output:
+
 ```text
 E101 Asha 5
 ```
@@ -203,7 +228,14 @@ class PdfReport(Report):
 print(PdfReport().render())
 ```
 
-Expected output:
+Output:
+
+```text
+PDF report
+```
+
+Output:
+
 ```text
 PDF report
 ```
@@ -224,7 +256,15 @@ class AuditLogger(Logger):
 AuditLogger().log("Payment completed")
 ```
 
-Expected output:
+Output:
+
+```text
+[INFO] Payment completed
+[AUDIT] stored: Payment completed
+```
+
+Output:
+
 ```text
 [INFO] Payment completed
 [AUDIT] stored: Payment completed
@@ -267,10 +307,18 @@ class D(B, C):
 
 
 print(D().who())   # B
-print(D.mro())     # [D, B, C, A, object]
+print([class_.__name__ for class_ in D.mro()])
 ```
 
-Expected output:
+Output:
+
+```text
+B
+['D', 'B', 'C', 'A', 'object']
+```
+
+Output:
+
 ```text
 B
 [<class '__main__.D'>, <class '__main__.B'>, <class '__main__.C'>, <class '__main__.A'>, <class 'object'>]
@@ -294,16 +342,6 @@ Diamond shape:
 
 If `B` and `C` both inherit `A`, and `D` inherits both, method ambiguity can happen.
 MRO solves this by fixed order.
-
-Debug command:
-```python
-print(D.mro())
-```
-
-Expected output:
-```text
-[<class '__main__.D'>, <class '__main__.B'>, <class '__main__.C'>, <class '__main__.A'>, <class 'object'>]
-```
 
 ---
 
@@ -340,7 +378,14 @@ obj = D()
 print(obj.a, obj.b, obj.c, obj.d)
 ```
 
-Expected output:
+Output:
+
+```text
+True True True True
+```
+
+Output:
+
 ```text
 True True True True
 ```
@@ -404,7 +449,14 @@ class UpiProcessor(PaymentProcessor):
 UpiProcessor().process(2500)
 ```
 
-Expected output:
+Output:
+
+```text
+UPI processed: 2500
+```
+
+Output:
+
 ```text
 UPI processed: 2500
 ```
@@ -439,7 +491,8 @@ user.touch()
 print(hasattr(user, "updated_at"))
 ```
 
-Expected output:
+Output:
+
 ```text
 False
 True
@@ -466,16 +519,16 @@ Good mixin traits:
 
 ## 16. Inheritance Smells and Refactoring
 
-Smell: deep hierarchy (`A -> B -> C -> D -> E`)  
+Smell: deep hierarchy (`A -> B -> C -> D -> E`)
 Refactor: flatten hierarchy + composition.
 
-Smell: subclass exists only to share utility functions  
+Smell: subclass exists only to share utility functions
 Refactor: extract helper/service class.
 
-Smell: parent keeps changing and breaks many children  
+Smell: parent keeps changing and breaks many children
 Refactor: split parent responsibilities; stabilize contract.
 
-Smell: many `if role == ...` in one class  
+Smell: many `if role == ...` in one class
 Refactor: move role behavior to subclasses.
 
 ---
@@ -496,7 +549,15 @@ print(calculate_bonus("developer", 100000))
 print(calculate_bonus("manager", 100000))
 ```
 
-Expected output:
+Output:
+
+```text
+20000.0
+30000.0
+```
+
+Output:
+
 ```text
 20000.0
 30000.0
@@ -530,7 +591,15 @@ print(Developer(100000).calculate_bonus())
 print(Manager(100000).calculate_bonus())
 ```
 
-Expected output:
+Output:
+
+```text
+20000.0
+30000.0
+```
+
+Output:
+
 ```text
 20000.0
 30000.0
@@ -588,13 +657,3 @@ Example idea:
 - If inheritance feels forced, composition is probably better.
 
 ---
-
-## 22. Practice Assignment
-
-Build a shipping module:
-- abstract base class `Shipment`
-- child classes `StandardShipment`, `ExpressShipment`, `InternationalShipment`
-- method `calculate_cost(weight)`
-- common validation in parent
-- no `if shipment_type == ...` in client code
-- write tests for each subclass and one substitutability test

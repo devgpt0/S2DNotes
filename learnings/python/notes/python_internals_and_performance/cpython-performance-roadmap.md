@@ -1,166 +1,61 @@
-# CPython Internals and Performance Roadmap: Beginner-to-Expert Notes
+# CPython Internals and Performance - Roadmap
 
-## 1. Learning goals
+## 1. Core rule
 
-By the end of this track, you should be able to:
-
-- explain how CPython executes Python code at a high level;
-- reason about performance using profiling instead of guessing;
-- know when native extensions are worth the complexity;
-- understand the tradeoffs among Python, Cython, and pybind11.
-
-## 2. Prerequisites
-
-- Solid Python fundamentals
-- Basic comfort with functions, modules, and types
-
-## 3. Topic at a glance
-
-This folder teaches how Python runs under the hood and how to reason about speed and extension choices.
-It is the map for understanding runtime behavior and performance tradeoffs.
-
-### Roadmap at a glance
-
-```mermaid
-flowchart TD
-    A[CPython runtime] --> B[Profiling and measurement]
-    B --> C[Optimization decisions]
-    C --> D[Cython extensions]
-    C --> E[pybind11 extensions]
-```
-
-## 4. Core vocabulary
-
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| CPython | the standard Python implementation | default Python runtime |
-| Runtime | how code behaves while running | execution model |
-| Profiling | measuring where time goes | `cProfile` |
-| Optimization | making code faster or lighter | better algorithm |
-| Extension | native code module for Python | Cython, pybind11 |
-
-## 5. Mental model
-
-```mermaid
-flowchart TD
-    A[Python code] --> B[CPython runtime]
-    B --> C[Measure]
-    C --> D[Change the slow part]
-    D --> E[Measure again]
-```
-
-## 6. Foundations
-
-### 6.1 Understand runtime behavior
-
-### 6.2 Measure before optimizing
-
-### 6.3 Choose the simplest tool that solves the bottleneck
-
-## 7. How it works
-
-CPython executes bytecode and manages objects, memory, and calls.
-Performance work starts with identifying where time or memory is actually spent.
-
-## 8. Core topics in this module
-
-### 8.1 CPython runtime internals
-
-### 8.2 Profiling and performance optimization
-
-### 8.3 Cython native extensions
-
-### 8.4 pybind11 C++ extensions
-
-## 9. Guided examples
-
-### Example 1: Measure first
+Correctness comes first. Measure a representative workload, change the proven
+bottleneck, then measure again.
 
 ```text
-find the bottleneck before changing code
+correct program -> representative measurement -> bottleneck -> one change -> verification
 ```
 
-### Example 2: Optimize only the hot path
+## 2. Study order
 
-```text
-change the slowest part, not the whole codebase
-```
+| Order | Note | Responsibility |
+| ---: | --- | --- |
+| 1 | `cpython-runtime-internals.md` | implementation model and its practical costs |
+| 2 | `profiling-and-performance-optimization.md` | CPU, wall-time, memory, and benchmark workflow |
+| 3 | `cython-native-extensions.md` | compile measured Python/Cython hot paths |
+| 4 | `pybind11-cpp-extensions.md` | expose an existing or justified C++ implementation |
 
-### Example 3: Use native code only when needed
+The fundamentals notes own Python's language model. These notes discuss
+CPython implementation behavior and optimization choices.
 
-```text
-use extension modules for real hotspots and integration needs
-```
+## 3. Decision guide
 
-## 10. Common patterns and real-world applications
-
-- profile application hotspots;
-- improve algorithms before using native extensions;
-- use Cython or pybind11 only for real bottlenecks;
-- keep performance changes measurable.
-
-## 11. Common mistakes, misconceptions, and failure cases
-
-- guessing where the slowdown is;
-- optimizing low-impact code;
-- introducing native complexity too early;
-- measuring only once and trusting the first result.
-
-## 12. Comparison and decision guide
-
-| Need | Best choice | Why |
-| --- | --- | --- |
-| Understand runtime behavior | CPython internals | foundation for reasoning |
-| Find bottlenecks | profiling | shows where time goes |
-| Speed up hot loops | algorithm changes first | simplest win |
-| Native extension | Cython or pybind11 | only for proven hotspots |
-
-## 13. Efficiency, limitations, safety, and best practices
-
-- measure before and after;
-- prefer algorithmic fixes first;
-- keep native boundaries small;
-- preserve test coverage around optimization work.
-
-## 14. Advanced concepts
-
-- memory layout and object overhead;
-- interpreter dispatch;
-- extension module boundaries;
-- native interoperability tradeoffs.
-
-## 15. Interview or assessment knowledge
-
-- Why profile before optimizing?
-- When is a native extension justified?
-- What is the difference between CPython and Python as a language?
-
-## 16. Practice exercises
-
-1. Explain why profiling comes before optimization.
-2. Explain when to use a native extension.
-3. Explain why algorithmic improvements come first.
-4. Explain one risk of premature optimization.
-5. Explain what a bottleneck is.
-
-## 17. Summary cheat sheet
-
-| Topic | Remember |
+| Evidence | First action |
 | --- | --- |
-| Runtime | how code executes |
-| Profiling | measure first |
-| Optimization | change the hot spot |
-| Extensions | use only when needed |
+| slow algorithm | choose a better algorithm or data structure |
+| repeated I/O wait | use batching, caching, or an appropriate concurrency model |
+| high allocation rate | reduce unnecessary objects and copies |
+| hot Python loop | try a built-in operation, then consider Cython |
+| existing C++ library | expose a narrow API with pybind11 |
+| no measured bottleneck | do not optimize |
 
-## 18. Mastery checklist and next steps
+## 4. Required evidence
 
-- [ ] I can explain the track goals.
-- [ ] I know that measurement comes first.
-- [ ] I understand when native extensions make sense.
+- State the workload, input size, Python version, platform, and dependency versions.
+- Use production-like data without exposing sensitive information.
+- Record a baseline and multiple runs; a single duration is not evidence.
+- Verify output and tests before comparing speed.
+- Include build, packaging, deployment, and debugging cost in native-code decisions.
 
-Next topics:
+## 5. Completion checklist
 
-- `01-cpython-runtime-internals.md`
-- `02-profiling-and-performance-optimization.md`
-- `03-cython-native-extensions.md`
-- `04-pybind11-cpp-extensions.md`
+You are ready to optimize when you can answer all five questions:
+
+1. Which metric is failing?
+2. Which measured function or allocation dominates it?
+3. What simpler change was tried first?
+4. How will correctness and performance regressions be detected?
+5. Is the improvement worth its maintenance cost?
+
+## 6. Mental model
+
+| Stage | Question |
+| --- | --- |
+| Observe | What is slow or memory-heavy? |
+| Locate | Where is the measured cost? |
+| Change | What is the smallest correct improvement? |
+| Verify | Did results stay correct? |
+| Compare | Did the target metric improve consistently? |

@@ -1,31 +1,14 @@
-# Generators: Beginner-to-Expert Notes
+# Generators
 
-## 1. Learning goals
-
-By the end of this note, you should be able to:
-
-- write a generator function with `yield`;
-- explain why generators are lazy;
-- use generators for one-pass pipelines;
-- recognize generator exhaustion and common mistakes.
-
-## 2. Prerequisites
-
-- Iterators
-- Functions and loops
-
-## 3. Topic at a glance
+## 1. Core truth
 
 A generator is a lazy way to produce values one at a time.
 It is often simpler than a custom iterator class.
-
-### Minimal first example
 
 ```python
 def numbers():
     yield 1
     yield 2
-
 
 print(list(numbers()))
 ```
@@ -36,41 +19,16 @@ Output:
 [1, 2]
 ```
 
-Why this output?
-
 Each `yield` sends one value to the caller, and the generator resumes later from the same place.
 
-Roadmap: first we build the mental model, then we learn `yield`, then we compare generators with iterators, and finally we practice simple pipelines.
+## 2. Generator foundations
 
-## 4. Core vocabulary
-
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| Generator function | Function that uses `yield` | `def numbers(): yield 1` |
-| Generator object | The lazy object returned by the function | `numbers()` |
-| `yield` | Produces one value and pauses | `yield value` |
-| Lazy | Work happens only when needed | generator pipeline |
-
-## 5. Mental model
-
-```mermaid
-flowchart TD
-    A[Call generator function] --> B[Get generator object]
-    B --> C[next()]
-    C --> D[yield value]
-    D --> E[pause]
-    E --> C
-```
-
-## 6. Foundations
-
-### 6.1 `yield` pauses and resumes
+### `yield` pauses and resumes
 
 ```python
 def count():
     yield 1
     yield 2
-
 
 g = count()
 print(next(g))
@@ -84,12 +42,11 @@ Output:
 2
 ```
 
-### 6.2 Generators are one-pass
+### Generators are one-pass
 
 ```python
 def count():
     yield 1
-
 
 g = count()
 print(list(g))
@@ -103,13 +60,12 @@ Output:
 []
 ```
 
-### 6.3 Generators can simplify pipelines
+### Generators can simplify pipelines
 
 ```python
 def doubled(values):
     for value in values:
         yield value * 2
-
 
 print(list(doubled([1, 2, 3])))
 ```
@@ -120,12 +76,7 @@ Output:
 [2, 4, 6]
 ```
 
-## 7. How it works
-
-When Python reaches `yield`, it returns one value and saves the function state.
-The next `next()` call resumes from the saved point.
-
-## 8. Core operations or methods
+## 3. Generator operations
 
 - `yield` creates lazy output.
 - `yield from` delegates to another iterator or generator.
@@ -134,7 +85,6 @@ The next `next()` call resumes from the saved point.
 ```python
 def values():
     yield from [1, 2, 3]
-
 
 print(list(values()))
 ```
@@ -145,7 +95,7 @@ Output:
 [1, 2, 3]
 ```
 
-## 9. Guided examples
+## 4. Practical generator pipelines
 
 ### Example 1: Simple generator
 
@@ -153,7 +103,6 @@ Output:
 def letters():
     yield "a"
     yield "b"
-
 
 print(list(letters()))
 ```
@@ -172,7 +121,6 @@ def evens(values):
         if value % 2 == 0:
             yield value
 
-
 print(list(evens([1, 2, 3, 4])))
 ```
 
@@ -188,11 +136,9 @@ Output:
 def one():
     yield 1
 
-
 def two():
     yield from one()
     yield 2
-
 
 print(list(two()))
 ```
@@ -203,14 +149,12 @@ Output:
 [1, 2]
 ```
 
-## 10. Common patterns and real-world applications
-
 - stream lines from files;
 - produce filtered or transformed values;
 - build memory-friendly processing pipelines;
 - stop early when only part of the data is needed.
 
-## 11. Common mistakes, misconceptions, and failure cases
+## 5. Generator mistakes
 
 ### Mistake 1: Forgetting that generators are exhausted
 
@@ -218,7 +162,7 @@ Output:
 
 ### Mistake 3: Mixing side effects and yielding without a clear order
 
-## 12. Comparison and decision guide
+## 6. Lazy-processing decision guide
 
 | Need | Best choice | Why |
 | --- | --- | --- |
@@ -226,99 +170,19 @@ Output:
 | Lazy one-pass values | generator | memory-friendly |
 | Custom iteration state | generator often simpler | less boilerplate |
 
-## 13. Efficiency, limitations, safety, and best practices
+## 7. Performance and safety
 
 - generators are efficient for large inputs;
 - they are one-pass and must be recreated for reuse;
 - keep generator bodies small and readable.
 
-## 14. Advanced concepts
+## 8. Advanced generator behavior
 
 - generator expressions;
 - generator delegation with `yield from`;
 - interaction with `send`, `throw`, and `close` in advanced code.
 
-## 15. Interview or assessment knowledge
-
-- What is the difference between a generator and a list?
-- Why do generators save memory?
-- What does `yield` do?
-- What does `yield from` do?
-
-## 16. Practice exercises
-
-1. Write a generator that yields `1`, `2`, and `3`.
-2. Write a generator that filters even numbers.
-3. Show that a generator is exhausted after one pass.
-4. Explain `yield from`.
-5. Explain when a generator is better than a list.
-
-### Solutions
-
-#### Solution 1
-
-```python
-def values():
-    yield 1
-    yield 2
-    yield 3
-
-
-print(list(values()))
-```
-
-Output:
-
-```text
-[1, 2, 3]
-```
-
-#### Solution 2
-
-```python
-def evens(values):
-    for value in values:
-        if value % 2 == 0:
-            yield value
-
-
-print(list(evens([1, 2, 3, 4])))
-```
-
-Output:
-
-```text
-[2, 4]
-```
-
-#### Solution 3
-
-```python
-def values():
-    yield 1
-
-
-g = values()
-print(list(g))
-print(list(g))
-```
-
-Output:
-
-```text
-[1]
-[]
-```
-
-#### Solution 4
-
-`yield from` delegates yielding to another iterable or generator.
-
-#### Solution 5
-
-Use a generator when one-pass lazy processing is enough.
-
-## 17. Summary cheat sheet
+## 9. Mental model
 
 | Concept | Remember |
 | --- | --- |
@@ -327,15 +191,69 @@ Use a generator when one-pass lazy processing is enough.
 | `yield from` | delegate to another iterator |
 | Exhaustion | one-pass behavior |
 
-## 18. Mastery checklist and next steps
+## 10. Delegation and return values
 
-- [ ] I can write a generator function.
-- [ ] I understand lazy behavior.
-- [ ] I can explain exhaustion.
-- [ ] I know when to use a generator instead of a list.
+`yield from` forwards values and captures the delegated generator's return value.
 
-Next topics:
+```python
+def child():
+    yield 1
+    yield 2
+    return "complete"
 
-- `12_json.md`
-- `13_csv.md`
-- `17_basic_scripting_and_automation.md`
+
+def parent():
+    result = yield from child()
+    yield result
+
+
+print(list(parent()))
+```
+
+Output:
+
+```text
+[1, 2, 'complete']
+```
+
+Inside a generator, `return value` becomes `StopIteration.value`. A `for` loop
+consumes that exception and ignores the value.
+
+## 11. Cleanup and early termination
+
+Closing a generator raises `GeneratorExit` at its suspension point. Put owned
+resource cleanup in `finally` or, preferably, open resources in a surrounding
+context manager with an obvious owner.
+
+```python
+def values():
+    try:
+        yield 1
+        yield 2
+    finally:
+        print("closed")
+
+
+iterator = values()
+print(next(iterator))
+iterator.close()
+```
+
+Output:
+
+```text
+1
+closed
+```
+
+Do not yield after receiving `GeneratorExit`. Unhandled `StopIteration` raised
+inside generator code becomes `RuntimeError`; use `return` to end normally.
+
+## 12. Pipeline ownership
+
+- Keep generators single-purpose and free of hidden writes when possible.
+- Document whether partial consumption is allowed.
+- Bound upstream reads; laziness does not protect against an infinite downstream
+  consumer or unbounded buffering in another tool.
+- Prefer ordinary arguments over `send()` unless bidirectional coroutine behavior
+  is genuinely required.

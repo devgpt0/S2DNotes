@@ -1,4 +1,4 @@
-﻿# Why OOP Exists - Classes and Objects
+# Why OOP Exists - Classes and Objects
 
 ## 1. Why OOP Exists
 
@@ -263,7 +263,18 @@ print("Static method -> valid:", Employee.is_valid_work_email("asha@abccorp.com"
 print("Static method -> invalid:", Employee.is_valid_work_email("ashabccorp.com"))
 ```
 
-Expected output:
+Output:
+
+```text
+Instance method -> annual salary: 600000
+Class method -> monthly salary: 60000.0
+Class method -> employee count: 2
+Static method -> valid: True
+Static method -> invalid: False
+```
+
+Output:
+
 ```text
 Instance method -> annual salary: 600000
 Class method -> monthly salary: 60000.0
@@ -450,7 +461,19 @@ print("merged cart:", merged)
 print("len(merged):", len(merged))
 ```
 
-Expected output:
+Output:
+
+```text
+str(cart1): Cart with 2 item(s): ['pen', 'book']
+repr(cart1): Cart(items=['pen', 'book'])
+len(cart1): 2
+cart1 == cart3: True
+merged cart: Cart with 3 item(s): ['pen', 'book', 'bottle']
+len(merged): 3
+```
+
+Output:
+
 ```text
 str(cart1): Cart with 2 item(s): ['pen', 'book']
 repr(cart1): Cart(items=['pen', 'book'])
@@ -508,28 +531,6 @@ State and operations stay together. Less dictionary-key mistakes, better discove
 ### Strong answer pattern
 - define concept
 - show mini code example
-- explain real project 
-
----
-
-## 16. Assignment (Post Lecture)
-Build a Library Management mini-model with clean OOP:
-
-Classes:
-- `Book`
-- `Member`
-- `Library`
-
-Minimum features:
-- add book
-- register member
-- borrow book
-- return book
-
-Clean code requirements:
-- meaningful naming
-- constructor validation where required
-- no long god-methods
-- no shared mutable class-level lists
+- explain real project
 
 ---

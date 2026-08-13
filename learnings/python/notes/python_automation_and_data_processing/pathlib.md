@@ -1,31 +1,15 @@
-# `pathlib`: Beginner-to-Expert Notes
+# `pathlib`
 
-## 1. Learning goals
-
-By the end of this note, you should be able to:
-
-- create and combine paths with `Path`;
-- inspect path properties;
-- read and write text files with `pathlib`;
-- understand why `pathlib` is preferred for new path code.
-
-## 2. Prerequisites
-
-- Files and directories
-- Basic object usage
-
-## 3. Topic at a glance
+## 1. Core truth
 
 `pathlib` gives you a clean object-oriented way to work with filesystem paths.
 It is usually easier to read than manual string-based path handling.
 
-### Minimal first example
-
 ```python
 from pathlib import Path
 
 path = Path("data") / "report.csv"
-print(path)
+print(path.as_posix())
 ```
 
 Output:
@@ -33,42 +17,18 @@ Output:
 ```text
 data/report.csv
 ```
-
-Why this output?
 
 The `/` operator joins path parts in a readable way.
 
-Roadmap: first we build the mental model, then we learn the core methods, then we compare with `os`, and finally we practice safe file handling.
+## 2. Path foundations
 
-## 4. Core vocabulary
-
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| `Path` | object representing a file or directory path | `Path("data")` |
-| Parent | enclosing directory | `path.parent` |
-| Name | final path component | `path.name` |
-| Suffix | file extension | `path.suffix` |
-| Exists | whether the path is present | `path.exists()` |
-
-## 5. Mental model
-
-```mermaid
-flowchart TD
-    A[Path string] --> B[Path object]
-    B --> C[Inspect]
-    B --> D[Join]
-    B --> E[Read or write]
-```
-
-## 6. Foundations
-
-### 6.1 Join path parts
+### Join path parts
 
 ```python
 from pathlib import Path
 
 path = Path("data") / "report.csv"
-print(path)
+print(path.as_posix())
 ```
 
 Output:
@@ -77,7 +37,7 @@ Output:
 data/report.csv
 ```
 
-### 6.2 Inspect path parts
+### Inspect path parts
 
 ```python
 from pathlib import Path
@@ -94,7 +54,7 @@ report.csv
 .csv
 ```
 
-### 6.3 Read and write text
+### Read and write text
 
 ```python
 from pathlib import Path
@@ -112,12 +72,7 @@ Output:
 hello
 ```
 
-## 7. How it works
-
-`Path` objects keep path behavior together.
-That makes code easier to read, test, and refactor than manual string operations.
-
-## 8. Core operations or methods
+## 3. Path APIs
 
 - `Path(...)`
 - `/` path joining
@@ -126,14 +81,14 @@ That makes code easier to read, test, and refactor than manual string operations
 - `read_text()`
 - `write_text()`
 
-## 9. Guided examples
+## 4. Practical path operations
 
 ### Example 1: Join paths
 
 ```python
 from pathlib import Path
 
-print(Path("logs") / "app.log")
+print((Path("logs") / "app.log").as_posix())
 ```
 
 Output:
@@ -177,14 +132,12 @@ Output:
 Python
 ```
 
-## 10. Common patterns and real-world applications
-
 - build file paths safely;
 - read and write config or report files;
 - inspect extensions before processing;
 - avoid manual string concatenation for paths.
 
-## 11. Common mistakes, misconceptions, and failure cases
+## 5. Path mistakes
 
 ### Mistake 1: Using raw string concatenation for paths
 
@@ -192,99 +145,26 @@ Python
 
 ### Mistake 3: Treating paths like plain strings when methods exist
 
-## 12. Comparison and decision guide
+## 6. Path decision guide
 
 | Need | Best choice | Why |
 | --- | --- | --- |
 | New path code | `pathlib` | readable and modern |
 | Low-level compatibility | `os.path` | system-style helpers |
 
-## 13. Efficiency, limitations, safety, and best practices
+## 7. Security and portability
 
 - use `pathlib` by default for path manipulation;
 - be explicit about encoding for text files;
 - validate paths before using them in scripts.
 
-## 14. Advanced concepts
+## 8. Advanced path behavior
 
 - globbing;
 - recursive search;
 - path resolution.
 
-## 15. Interview or assessment knowledge
-
-- Why is `pathlib` preferred in new code?
-- What does `path.parent` mean?
-- Why is `/` used for joining paths?
-
-## 16. Practice exercises
-
-1. Join two path parts with `Path`.
-2. Print the file name and suffix.
-3. Write and read a short text file.
-4. Explain why `pathlib` is easier to read than string concatenation.
-5. Explain what `exists()` checks.
-
-### Solutions
-
-#### Solution 1
-
-```python
-from pathlib import Path
-
-print(Path("data") / "report.csv")
-```
-
-Output:
-
-```text
-data/report.csv
-```
-
-#### Solution 2
-
-```python
-from pathlib import Path
-
-path = Path("data/report.csv")
-print(path.name)
-print(path.suffix)
-```
-
-Output:
-
-```text
-report.csv
-.csv
-```
-
-#### Solution 3
-
-```python
-from pathlib import Path
-import tempfile
-
-with tempfile.TemporaryDirectory() as tmp:
-    file_path = Path(tmp) / "x.txt"
-    file_path.write_text("hello", encoding="utf-8")
-    print(file_path.read_text(encoding="utf-8"))
-```
-
-Output:
-
-```text
-hello
-```
-
-#### Solution 4
-
-`pathlib` is easier to read because path behavior is represented by objects instead of manual strings.
-
-#### Solution 5
-
-`exists()` checks whether the path is present on the filesystem.
-
-## 17. Summary cheat sheet
+## 9. Mental model
 
 | Method | Use |
 | --- | --- |
@@ -295,14 +175,59 @@ hello
 | `read_text()` | read file text |
 | `write_text()` | write file text |
 
-## 18. Mastery checklist and next steps
+## 10. Validate containment after resolution
 
-- [ ] I can use `Path` to build paths.
-- [ ] I can inspect file name and suffix.
-- [ ] I can read and write text files.
-- [ ] I prefer `pathlib` for new code.
+Joining an untrusted absolute path discards the trusted base, and `..` can escape
+it. Resolve the candidate and verify containment before access.
 
-Next topics:
+```python
+from pathlib import Path
 
-- `16_datetime.md`
-- `17_basic_scripting_and_automation.md`
+base = Path("/srv/uploads").resolve()
+candidate = (base / "reports" / "summary.txt").resolve()
+print(candidate.is_relative_to(base))
+```
+
+Output:
+
+```text
+True
+```
+
+The example demonstrates lexical resolution. A hostile process can still swap a
+symlink between validation and use; security-critical code needs descriptor-based
+filesystem APIs or an isolated storage boundary.
+
+## 11. Atomic writes
+
+Write the complete replacement beside the destination, then use `replace()`.
+
+```python
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
+with TemporaryDirectory() as directory:
+    target = Path(directory) / "state.txt"
+    temporary = target.with_suffix(".tmp")
+    temporary.write_text("ready", encoding="utf-8")
+    temporary.replace(target)
+    print(target.read_text(encoding="utf-8"))
+```
+
+Output:
+
+```text
+ready
+```
+
+Replacement is atomic only under the filesystem's guarantees and normally must
+stay on the same filesystem. Flush and synchronize when crash durability matters.
+
+## 12. Traversal details
+
+- `Path.walk()` provides top-down or bottom-up traversal on current Python.
+- Globbing order is unspecified; sort paths when output order matters.
+- Decide whether symlinks are allowed before recursive traversal.
+- Catch specific `OSError` subclasses at the boundary that can handle them.
+- `Path.resolve(strict=True)` verifies that every component exists; the default
+  is useful for normalization but is not proof that a later operation is safe.

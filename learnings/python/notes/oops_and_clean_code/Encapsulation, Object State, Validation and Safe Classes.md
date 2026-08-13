@@ -28,6 +28,12 @@ account = BankAccount("John", 10000)
 account.balance = -50000  # Invalid state
 print(account.balance)
 ```
+
+Output:
+
+```text
+-50000
+```
 Issue:
 - any code can break business rules
 - invalid objects enter the system
@@ -134,7 +140,7 @@ class Student:
 Accessing `student.__name` raises `AttributeError`.
 
 Why:
-- Python applies name mangling  
+- Python applies name mangling
 - `__name` becomes `_Student__name`
 
 Demo:
@@ -352,17 +358,3 @@ To prevent invalid states and maintain object correctness.
 A method pair (`getter/setter`) that behaves like an attribute and allows validation without changing public API usage.
 
 ---
-
-## 12. Practice Task
-
-Build a `BankAccount` system with:
-- `deposit()`
-- `withdraw()`
-- `transfer()`
-
-Rules:
-- balance can never be negative
-- all amounts must be positive
-- use protected attributes
-- use properties where needed
-- keep methods small and meaningful

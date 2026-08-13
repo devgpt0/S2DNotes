@@ -38,6 +38,13 @@ class IndiaTax(TaxStrategy):
 print("Total:", IndiaTax().apply(100))
 ```
 
+Output:
+
+```text
+ABC strategy used
+Total: 118.0
+```
+
 ### Way B: Duck Typing (no inheritance, same method shape)
 - Best when you want flexibility and less boilerplate.
 - Pythonic for internal code where team discipline is good.
@@ -57,6 +64,13 @@ def bill(amount, strategy):
 bill(100, FlatTax())
 ```
 
+Output:
+
+```text
+Duck-typed strategy used
+Total: 120
+```
+
 ### Way C: Function-Based Style (higher-order functions)
 - Best for small algorithms and lightweight strategy/command.
 - Less ceremony than classes.
@@ -73,6 +87,13 @@ def checkout(amount, discount_fn):
 
 
 checkout(500, weekend_discount)
+```
+
+Output:
+
+```text
+Function strategy used
+Final amount: 450.0
 ```
 
 ### Way D: Data-Driven Registry (dict mapping)
@@ -95,6 +116,13 @@ registry = {
 
 registry["email"]("Welcome")
 registry["sms"]("OTP 1234")
+```
+
+Output:
+
+```text
+EMAIL: Welcome
+SMS: OTP 1234
 ```
 
 ### Way E: Decorator Registration Style
@@ -121,6 +149,13 @@ def export_pdf(data):
 handlers["pdf"]("sales-report")
 ```
 
+Output:
+
+```text
+Registered handler: pdf
+Exporting PDF: sales-report
+```
+
 ### Way F: Metaclass or `__new__` Control
 - Best only for advanced creation control (Singleton, class registration).
 - Use rarely; harder to read for beginners.
@@ -137,6 +172,13 @@ class Config:
 
 
 print("Same?", Config() is Config())
+```
+
+Output:
+
+```text
+Config created once via __new__
+Same? True
 ```
 
 ### Way G: Async Variant (`async`/`await`)
@@ -238,6 +280,15 @@ logger1.log("Order created")
 logger2.log("Payment received")
 ```
 
+Output:
+
+```text
+Creating Logger instance once
+Same instance? True
+[LOG] Order created
+[LOG] Payment received
+```
+
 ---
 
 ## 3. Factory Method Pattern
@@ -292,6 +343,13 @@ class NotifierFactory:
 for ch in ["email", "sms"]:
     notifier = NotifierFactory.create(ch)
     notifier.send(f"Welcome via {ch}")
+```
+
+Output:
+
+```text
+EMAIL -> Welcome via email
+SMS -> Welcome via sms
 ```
 
 ---
@@ -350,6 +408,15 @@ Checkout(RegularDiscount()).total(1000)
 Checkout(PremiumDiscount()).total(1000)
 ```
 
+Output:
+
+```text
+Applying 5% regular discount
+Final amount: 950.0
+Applying 20% premium discount
+Final amount: 800.0
+```
+
 ---
 
 ## 5. Observer Pattern
@@ -401,6 +468,16 @@ subject.subscribe(AnalyticsObserver())
 subject.notify("order_placed")
 ```
 
+Output:
+
+```text
+Subscriber added: EmailObserver
+Subscriber added: AnalyticsObserver
+Notifying observers for event: order_placed
+[EmailObserver] handled order_placed
+[AnalyticsObserver] tracked order_placed
+```
+
 ---
 
 ## 6. Adapter Pattern
@@ -443,6 +520,13 @@ class LegacyGatewayAdapter(PaymentProcessor):
 
 processor = LegacyGatewayAdapter(LegacyGateway())
 processor.pay(2500)
+```
+
+Output:
+
+```text
+Adapter translating pay() -> make_payment()
+Legacy gateway paid: 2500
 ```
 
 ---
@@ -497,6 +581,16 @@ class OrderFacade:
 
 
 OrderFacade().place_order("ITEM-101", 1999)
+```
+
+Output:
+
+```text
+Order workflow started
+Inventory reserved for ITEM-101
+Payment charged: 1999
+Shipment created for ITEM-101
+Order workflow completed
 ```
 
 ---
@@ -562,6 +656,15 @@ for cmd in commands:
     cmd.execute()
 ```
 
+Output:
+
+```text
+Executing LightOnCommand
+Light turned ON
+Executing LightOffCommand
+Light turned OFF
+```
+
 ---
 
 ## 9. Template Method Pattern
@@ -588,7 +691,7 @@ from abc import ABC, abstractmethod
 
 
 class ReportTemplate(ABC):
-    def generate(self, data):
+    def generate(self, data: list[str]) -> None:
         print("Step 1: validate data")
         self.validate(data)
         print("Step 2: format data")
@@ -596,29 +699,44 @@ class ReportTemplate(ABC):
         print("Step 3: save output")
         self.save(output)
 
-    def validate(self, data):
+    def validate(self, data: list[str]) -> None:
         print("Common validation:", bool(data))
 
     @abstractmethod
-    def format_data(self, data):
+    def format_data(self, data: list[str]) -> str:
         pass
 
-    def save(self, output):
+    def save(self, output: str) -> None:
         print("Saved output ->", output)
 
 
 class CsvReport(ReportTemplate):
-    def format_data(self, data):
+    def format_data(self, data: list[str]) -> str:
         return ",".join(data)
 
 
 class JsonReport(ReportTemplate):
-    def format_data(self, data):
+    def format_data(self, data: list[str]) -> str:
         return str({"items": data})
 
 
 CsvReport().generate(["A", "B", "C"])
 JsonReport().generate(["A", "B", "C"])
+```
+
+Output:
+
+```text
+Step 1: validate data
+Common validation: True
+Step 2: format data
+Step 3: save output
+Saved output -> A,B,C
+Step 1: validate data
+Common validation: True
+Step 2: format data
+Step 3: save output
+Saved output -> {'items': ['A', 'B', 'C']}
 ```
 
 ---
@@ -682,6 +800,15 @@ notifier = LoggingDecorator(EncryptionDecorator(BasicNotifier()))
 notifier.send("Payment done")
 ```
 
+Output:
+
+```text
+[LoggingDecorator] before send
+[EncryptionDecorator] encrypted message created
+Basic send: enc(Payment done)
+[LoggingDecorator] after send
+```
+
 ---
 
 ## 11. State Pattern
@@ -709,45 +836,45 @@ from abc import ABC, abstractmethod
 
 class OrderState(ABC):
     @abstractmethod
-    def next(self, order):
+    def next(self, order: "Order") -> None:
         pass
 
     @abstractmethod
-    def label(self):
+    def label(self) -> str:
         pass
 
 
 class CreatedState(OrderState):
-    def next(self, order):
+    def next(self, order: "Order") -> None:
         print("Transition: CREATED -> PAID")
         order.state = PaidState()
 
-    def label(self):
+    def label(self) -> str:
         return "CREATED"
 
 
 class PaidState(OrderState):
-    def next(self, order):
+    def next(self, order: "Order") -> None:
         print("Transition: PAID -> SHIPPED")
         order.state = ShippedState()
 
-    def label(self):
+    def label(self) -> str:
         return "PAID"
 
 
 class ShippedState(OrderState):
-    def next(self, order):
+    def next(self, order: "Order") -> None:
         print("Already SHIPPED, no next state")
 
-    def label(self):
+    def label(self) -> str:
         return "SHIPPED"
 
 
 class Order:
-    def __init__(self):
-        self.state = CreatedState()
+    def __init__(self) -> None:
+        self.state: OrderState = CreatedState()
 
-    def advance(self):
+    def advance(self) -> None:
         print("Current state:", self.state.label())
         self.state.next(self)
         print("New state:", self.state.label())
@@ -757,6 +884,20 @@ order = Order()
 order.advance()
 order.advance()
 order.advance()
+```
+
+Output:
+
+```text
+Current state: CREATED
+Transition: CREATED -> PAID
+New state: PAID
+Current state: PAID
+Transition: PAID -> SHIPPED
+New state: SHIPPED
+Current state: SHIPPED
+Already SHIPPED, no next state
+New state: SHIPPED
 ```
 
 ---
@@ -859,3 +1000,34 @@ When: many states/transitions and clean extension needed.
 When: small-medium workflows; lower complexity.
 - Variant 3: table-driven state machine.
 When: transitions loaded from config/rules.
+
+## 14. Prefer Python-native forms when they are sufficient
+
+First-class functions often replace a strategy class hierarchy, and a context
+manager often replaces manual acquire/release template code.
+
+```python
+from collections.abc import Callable
+
+
+def calculate(price: int, discount: Callable[[int], int]) -> int:
+    return price - discount(price)
+
+
+def ten_percent(price: int) -> int:
+    return price // 10
+
+
+print(calculate(500, ten_percent))
+```
+
+Output:
+
+```text
+450
+```
+
+Structural pattern matching is useful for a closed set of data shapes. Strategy
+or state objects are better when behavior must be added independently. Choose a
+named pattern only when it reduces change cost; do not translate concise Python
+into ceremony merely to match a catalog diagram.

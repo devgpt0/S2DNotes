@@ -441,20 +441,6 @@ What improved:
 
 ---
 
-## 16. Assignment (Post Lecture)
-Build a Student Grade Management script with clean code rules:
-- meaningful names only
-- max 20 lines per function (target guideline)
-- no duplicated grade logic
-- no magic numbers
-- one function for one responsibility
-
-Deliverables:
-- `student_grade_clean.py`
-- short note: "3 clean code improvements I made"
-
----
-
 ## 17. Missing Critical Concept: Boundary-First Design
 
 Clean code scales better when boundaries are explicit:

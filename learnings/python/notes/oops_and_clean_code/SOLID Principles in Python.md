@@ -1,4 +1,4 @@
-# SOLID Principles in Python 
+# SOLID Principles in Python
 
 ## 1. Why SOLID Matters
 
@@ -43,7 +43,14 @@ total = calculator.total_with_tax(invoice)
 printer.print_invoice(invoice, total)
 ```
 
-Expected output:
+Output:
+
+```text
+Invoice for Asha: base=1000, total=1180.0
+```
+
+Output:
+
 ```text
 Invoice for Asha: base=1000, total=1180.0
 ```
@@ -90,7 +97,19 @@ checkout(1200, CardPayment())
 checkout(1200, UpiPayment())
 ```
 
-Expected output:
+Output:
+
+```text
+Starting checkout...
+Card payment processed: 1200
+Checkout complete
+Starting checkout...
+UPI payment processed: 1200
+Checkout complete
+```
+
+Output:
+
 ```text
 Starting checkout...
 Card payment processed: 1200
@@ -139,7 +158,15 @@ dispatch(BikeDelivery(), "PKG101")
 dispatch(DroneDelivery(), "PKG102")
 ```
 
-Expected output:
+Output:
+
+```text
+Bike partner delivered package PKG101
+Drone partner delivered package PKG102
+```
+
+Output:
+
 ```text
 Bike partner delivered package PKG101
 Drone partner delivered package PKG102
@@ -202,7 +229,16 @@ start_shift(robot)
 lunch_break(human)
 ```
 
-Expected output:
+Output:
+
+```text
+Human is coding
+Robot is assembling parts
+Human is eating lunch
+```
+
+Output:
+
 ```text
 Human is coding
 Robot is assembling parts
@@ -255,7 +291,17 @@ email_service.place_order("ORD-5001")
 sms_service.place_order("ORD-5002")
 ```
 
-Expected output:
+Output:
+
+```text
+Order placed: ORD-5001
+EMAIL -> Your order ORD-5001 is confirmed
+Order placed: ORD-5002
+SMS -> Your order ORD-5002 is confirmed
+```
+
+Output:
+
 ```text
 Order placed: ORD-5001
 EMAIL -> Your order ORD-5001 is confirmed
@@ -275,19 +321,6 @@ Why DIP here:
 - L: child should safely replace parent
 - I: small interfaces, no forced methods
 - D: depend on abstraction, inject dependency
-
----
-
-## 8. Mini Practice
-
-Try redesigning a notification module with:
-- channels: email, sms, slack
-- user preferences
-- retry policy
-
-Goal:
-- add new channel without changing existing business flow
-- keep each class focused
 
 ---
 

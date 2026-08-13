@@ -1,25 +1,9 @@
-# CSV: Beginner-to-Expert Notes
+# CSV
 
-## 1. Learning goals
-
-By the end of this note, you should be able to:
-
-- read CSV rows with `csv.reader` and `csv.DictReader`;
-- write CSV rows with `csv.writer`;
-- handle headers and newline handling correctly;
-- recognize when CSV is a better fit than JSON.
-
-## 2. Prerequisites
-
-- Lists, dictionaries, and files
-- Basic knowledge of rows and columns
-
-## 3. Topic at a glance
+## 1. Core truth
 
 CSV is a simple text format for table-like data.
 It is useful when your data is naturally arranged in rows and columns.
-
-### Minimal first example
 
 ```python
 import csv
@@ -39,36 +23,11 @@ Output:
 ['Ana', '30']
 ```
 
-Why this output?
-
 CSV reads each line as a row and splits it into columns.
 
-Roadmap: first we build the mental model, then we learn reader and writer tools, then we compare CSV with JSON, and finally we practice common pitfalls.
+## 2. CSV foundations
 
-## 4. Core vocabulary
-
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| CSV | Comma-separated values | `name,age` |
-| Row | One line of table data | `Ana,30` |
-| Header | First row with column names | `name,age` |
-| `reader` | Reads rows as lists | `csv.reader(...)` |
-| `DictReader` | Reads rows as dictionaries | `csv.DictReader(...)` |
-| `writer` | Writes rows to CSV | `csv.writer(...)` |
-
-## 5. Mental model
-
-```mermaid
-flowchart TD
-    A[CSV text] --> B[csv.reader]
-    B --> C[list rows]
-    A --> D[csv.DictReader]
-    D --> E[dict rows]
-```
-
-## 6. Foundations
-
-### 6.1 `reader` returns rows as lists
+### `reader` returns rows as lists
 
 ```python
 import csv
@@ -84,7 +43,7 @@ Output:
 ['name', 'age']
 ```
 
-### 6.2 `DictReader` returns rows as dictionaries
+### `DictReader` returns rows as dictionaries
 
 ```python
 import csv
@@ -100,18 +59,18 @@ Output:
 {'name': 'Ana', 'age': '30'}
 ```
 
-### 6.3 `writer` writes rows
+### `writer` writes rows
 
 ```python
 import csv
 from io import StringIO
 
 buffer = StringIO()
-writer = csv.writer(buffer)
+writer = csv.writer(buffer, lineterminator="\n")
 writer.writerow(["name", "age"])
 writer.writerow(["Ana", 30])
 
-print(buffer.getvalue())
+print(buffer.getvalue(), end="")
 ```
 
 Output:
@@ -121,12 +80,7 @@ name,age
 Ana,30
 ```
 
-## 7. How it works
-
-CSV is plain text, so everything is stored as strings.
-If you need numbers or booleans, convert them explicitly after reading.
-
-## 8. Core operations or methods
+## 3. Reader and writer APIs
 
 - `csv.reader(...)`
 - `csv.DictReader(...)`
@@ -134,7 +88,7 @@ If you need numbers or booleans, convert them explicitly after reading.
 - `writerow()`
 - `writerows()`
 
-## 9. Guided examples
+## 4. Practical CSV processing
 
 ### Example 1: Read rows as lists
 
@@ -177,11 +131,11 @@ import csv
 from io import StringIO
 
 buffer = StringIO()
-writer = csv.writer(buffer)
+writer = csv.writer(buffer, lineterminator="\n")
 writer.writerow(["city", "country"])
 writer.writerow(["Pune", "India"])
 
-print(buffer.getvalue())
+print(buffer.getvalue(), end="")
 ```
 
 Output:
@@ -191,14 +145,12 @@ city,country
 Pune,India
 ```
 
-## 10. Common patterns and real-world applications
-
 - exporting rows from a report;
 - importing spreadsheet-like data;
 - simple data interchange when a table is enough;
 - batch processing from flat files.
 
-## 11. Common mistakes, misconceptions, and failure cases
+## 5. CSV mistakes
 
 ### Mistake 1: Forgetting that CSV values are strings
 
@@ -212,103 +164,26 @@ If your CSV has a header row, use `DictReader` or skip the header intentionally.
 
 When working with real files, open them correctly to avoid blank-line issues.
 
-## 12. Comparison and decision guide
+## 6. Format decision guide
 
 | Need | Best choice | Why |
 | --- | --- | --- |
 | Table-like flat data | CSV | simple and widely supported |
 | Nested structured data | JSON | supports dictionaries inside dictionaries |
 
-## 13. Efficiency, limitations, safety, and best practices
+## 7. Performance and safety
 
 - CSV is simple but limited;
 - values are text, so type conversion is your job;
 - be careful with delimiters, quoting, and headers.
 
-## 14. Advanced concepts
+## 8. Advanced CSV behavior
 
 - custom delimiters;
 - quoting rules;
 - streaming larger files row by row.
 
-## 15. Interview or assessment knowledge
-
-- What is CSV good for?
-- Why are all CSV values strings when read?
-- When is `DictReader` useful?
-- Why is CSV less expressive than JSON?
-
-## 16. Practice exercises
-
-1. Read the first row from a CSV string.
-2. Read a CSV row as a dictionary.
-3. Write two rows to a CSV buffer.
-4. Explain why numbers come back as strings.
-5. Explain when CSV is the right choice.
-
-### Solutions
-
-#### Solution 1
-
-```python
-import csv
-from io import StringIO
-
-reader = csv.reader(StringIO("a,b\n1,2\n"))
-print(next(reader))
-```
-
-Output:
-
-```text
-['a', 'b']
-```
-
-#### Solution 2
-
-```python
-import csv
-from io import StringIO
-
-reader = csv.DictReader(StringIO("name,age\nAna,30\n"))
-print(next(reader))
-```
-
-Output:
-
-```text
-{'name': 'Ana', 'age': '30'}
-```
-
-#### Solution 3
-
-```python
-import csv
-from io import StringIO
-
-buffer = StringIO()
-writer = csv.writer(buffer)
-writer.writerow(["x", "y"])
-writer.writerow([1, 2])
-print(buffer.getvalue())
-```
-
-Output:
-
-```text
-x,y
-1,2
-```
-
-#### Solution 4
-
-CSV is plain text, so it does not preserve numeric types automatically.
-
-#### Solution 5
-
-Use CSV for flat table data that should stay easy to open in many tools.
-
-## 17. Summary cheat sheet
+## 9. Mental model
 
 | Tool | Use |
 | --- | --- |
@@ -316,15 +191,62 @@ Use CSV for flat table data that should stay easy to open in many tools.
 | `DictReader` | rows as dictionaries |
 | `writer` | write rows |
 
-## 18. Mastery checklist and next steps
+## 10. Validate the table contract
 
-- [ ] I can read CSV rows.
-- [ ] I can write CSV rows.
-- [ ] I know when to use `DictReader`.
-- [ ] I understand that CSV values are text.
+CSV has no schema; every field starts as text. Validate headers before rows and
+convert each value explicitly.
 
-Next topics:
+```python
+import csv
+from io import StringIO
 
-- `14_os_module.md`
-- `15_pathlib.md`
-- `17_basic_scripting_and_automation.md`
+
+def read_ages(text: str) -> list[int]:
+    reader = csv.DictReader(StringIO(text))
+    if reader.fieldnames != ["name", "age"]:
+        raise ValueError("expected columns: name, age")
+
+    ages: list[int] = []
+    for row_number, row in enumerate(reader, start=2):
+        try:
+            ages.append(int(row["age"]))
+        except ValueError as error:
+            raise ValueError(f"row {row_number}: age must be an integer") from error
+    return ages
+
+
+print(read_ages("name,age\nAna,30\nRaj,41\n"))
+```
+
+Output:
+
+```text
+[30, 41]
+```
+
+Reject duplicate or unexpected headers before using `DictReader`; duplicate
+names otherwise overwrite earlier columns in each dictionary.
+
+## 11. File and dialect correctness
+
+Open real CSV files with `newline=""` so the `csv` module owns newline handling,
+and specify an encoding.
+
+```python
+with open("records.csv", newline="", encoding="utf-8") as file:
+    reader = csv.DictReader(file)
+```
+
+This is a contextual file fragment. For external feeds, configure the delimiter,
+quote character, escape behavior, and header policy from a trusted contract.
+`csv.Sniffer` is a heuristic, not validation.
+
+## 12. Streaming and spreadsheet safety
+
+- Process rows from the reader instead of calling `list(reader)` for large files.
+- Set `csv.field_size_limit()` when untrusted fields must have an upper bound.
+- Bound the file size and row count before expensive processing.
+- Reject or deliberately escape cells beginning with `=`, `+`, `-`, or `@`
+  when output will be opened in spreadsheet software.
+- Write to a temporary file and replace the destination only after every row is
+  valid.

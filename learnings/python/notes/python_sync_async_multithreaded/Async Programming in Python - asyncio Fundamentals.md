@@ -13,7 +13,7 @@ Core idea:
 ## 2. Key Terms (Must Know for Interviews)
 
 ### Coroutine
-Function declared with `async def`.  
+Function declared with `async def`.
 It returns a coroutine object and runs when awaited/scheduled.
 
 ### Event loop
@@ -62,43 +62,38 @@ This is still sequential because calls are awaited one by one.
 
 ```python
 import asyncio
-import time
 
 
 async def fetch_user():
-    await asyncio.sleep(2)
+    await asyncio.sleep(0)
     return {"id": 1, "name": "Asha"}
 
 
 async def fetch_orders():
-    await asyncio.sleep(2)
+    await asyncio.sleep(0)
     return [{"order_id": 101}, {"order_id": 102}]
 
 
 async def main():
-    start = time.perf_counter()
-
     user_task = asyncio.create_task(fetch_user())
     orders_task = asyncio.create_task(fetch_orders())
 
     user = await user_task
     orders = await orders_task
 
-    elapsed = time.perf_counter() - start
     print(user)
     print(orders)
-    print(f"Total time: {elapsed:.2f}s")
 
 
 if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-Expected output:
+Output:
+
 ```text
 {'id': 1, 'name': 'Asha'}
 [{'order_id': 101}, {'order_id': 102}]
-Total time: 2.00s
 ```
 
 ---
@@ -141,7 +136,8 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-Expected output:
+Output:
+
 ```text
 ['A done', 'B done', 'C done']
 ```
@@ -205,7 +201,8 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
-Expected output:
+Output:
+
 ```text
 Timed out
 ```
@@ -294,12 +291,33 @@ Avoid async when:
 
 ---
 
-## 14. Practice Assignment
+## 15. Queues coordinate ownership, not parallelism
 
-Build async product aggregator:
-- concurrently call 3 mock APIs (`price`, `inventory`, `reviews`)
-- use `asyncio.gather`
-- add timeout (`wait_for`)
-- if one API fails, return fallback value
-- measure total runtime
+`asyncio.Queue` transfers work between event-loop tasks. `maxsize` provides
+backpressure; `task_done()` and `join()` track completion.
 
+```python
+import asyncio
+
+
+async def main() -> None:
+    queue: asyncio.Queue[int] = asyncio.Queue(maxsize=1)
+    await queue.put(7)
+    value = await queue.get()
+    queue.task_done()
+    await queue.join()
+    print(value)
+
+
+asyncio.run(main())
+```
+
+Output:
+
+```text
+7
+```
+
+Queue items remain in one thread unless consumers explicitly offload work. Define
+how consumers stop, how failed items are handled, and whether shutdown drains or
+rejects queued work.

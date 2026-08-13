@@ -1,5 +1,4 @@
-# Python Sets - Beginner to Advanced (Student-Friendly Notes)
-
+# Python `set`
 ## 1. What Is a Set?
 
 A **set** is a built-in Python collection type that:
@@ -10,13 +9,13 @@ A **set** is a built-in Python collection type that:
 
 ```python
 s = {1, 2, 3}
-print(s)
+print(sorted(s))
 print(type(s))
 ```
 
 Output:
 ```python
-{1, 2, 3}
+[1, 2, 3]
 <class 'set'>
 ```
 
@@ -24,13 +23,13 @@ Output:
 
 ```python
 s = {1, 2, 2, 3, 3, 3}
-print(s)
+print(sorted(s))
 print(len(s))
 ```
 
 Output:
 ```python
-{1, 2, 3}
+[1, 2, 3]
 3
 ```
 
@@ -58,17 +57,13 @@ Order is not guaranteed.
 
 ```python
 s = {10, 20, 30, 40}
-print(s)
+print(sorted(s))
 ```
 
-Possible Output:
-```python
-{40, 10, 20, 30}
-```
+Output:
 
-Another possible output:
-```python
-{10, 20, 30, 40}
+```text
+[10, 20, 30, 40]
 ```
 
 ## 5. No Indexing in Sets
@@ -189,14 +184,15 @@ Output:
 ```python
 s = {10, 20, 30}
 removed = s.pop()
-print(removed)
-print(s)
+print(removed in {10, 20, 30})
+print(len(s))
 ```
 
-Possible Output:
-```python
-10
-{20, 30}
+Output:
+
+```text
+True
+2
 ```
 
 ### `clear()` (remove all items)
@@ -232,12 +228,13 @@ False
 
 ```python
 s = {10, 20, 30}
-for x in s:
+for x in sorted(s):
     print(x)
 ```
 
-Possible Output:
-```python
+Output:
+
+```text
 10
 20
 30
@@ -368,8 +365,9 @@ unique = list(set(nums))
 print(unique)
 ```
 
-Possible Output:
-```python
+Output:
+
+```text
 [1, 2, 3]
 ```
 
@@ -395,12 +393,13 @@ Valid:
 
 ```python
 s = {1, 2.5, "hello", (1, 2), True}
-print(s)
+print(len(s), 1 in s, "hello" in s, (1, 2) in s)
 ```
 
-Possible Output:
-```python
-{1, 2.5, 'hello', (1, 2)}
+Output:
+
+```text
+4 True True True
 ```
 
 Note: `True` and `1` are considered equal in Python, so only one may appear.
@@ -601,7 +600,13 @@ active_users = {"u1", "u3"}
 banned_users = {"u4"}
 
 eligible = (all_users & active_users) - banned_users
-print(eligible)  # {'u1', 'u3'}
+print(sorted(eligible))
+```
+
+Output:
+
+```text
+['u1', 'u3']
 ```
 
 This pattern appears in access control, feature flags, and reconciliation jobs.
@@ -619,6 +624,12 @@ pricing = {
 print(pricing[frozenset({"sandwich", "coffee"})])
 ```
 
+Output:
+
+```text
+199
+```
+
 Great when combination order should not matter.
 
 ## 26. Set Comprehension with Conditions
@@ -627,6 +638,12 @@ Great when combination order should not matter.
 values = [-4, -1, 0, 3, 3, 5]
 positive_squares = {x * x for x in values if x > 0}
 print(positive_squares)  # {9, 25}
+```
+
+Output:
+
+```text
+{9, 25}
 ```
 
 ## 27. Missing Reliability and Performance Notes
@@ -664,6 +681,12 @@ a &= b          # mutate a
 print(a, c)
 ```
 
+Output:
+
+```text
+{3} {3}
+```
+
 When to use:
 - immutable flow/readability: prefer new set.
 - memory-sensitive in-place transform: use update operators.
@@ -678,6 +701,12 @@ ids = {"u3", "u1", "u2"}
 print(sorted(ids))  # ['u1', 'u2', 'u3']
 ```
 
+Output:
+
+```text
+['u1', 'u2', 'u3']
+```
+
 ## 32. `frozenset` for Undirected Graph Edges
 
 Use `frozenset({u, v})` for order-independent pair keys.
@@ -688,6 +717,12 @@ edges = {
     frozenset({"B", "C"}),
 }
 print(frozenset({"B", "A"}) in edges)  # True
+```
+
+Output:
+
+```text
+True
 ```
 
 ## 33. Missing Pitfalls in Real Projects

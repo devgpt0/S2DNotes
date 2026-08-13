@@ -1,211 +1,178 @@
-# Reliability, Timeouts, Retries, and Backpressure: Beginner-to-Expert Notes
+# Timeouts, Retries, and Backpressure
 
-## 1. Learning goals
+## 1. Bound every wait
 
-By the end of this note, you should be able to:
-
-- explain why timeouts are essential in concurrent systems;
-- retry only operations that are safe to retry;
-- understand backpressure and why it protects systems;
-- design failure handling that fails fast instead of hanging.
-
-## 2. Prerequisites
-
-- Basic concurrency ideas
-- Exceptions and error handling
-
-## 3. Topic at a glance
-
-Reliable concurrent systems do not just work when everything is perfect.
-They also handle slow, failing, and overloaded conditions in a controlled way.
-
-### Minimal first example
+A timeout limits how long the caller waits for an operation. It does not prove
+that underlying remote, thread, or process work has stopped.
 
 ```python
-def retry_once(success: bool) -> str:
-    if success:
-        return "ok"
-    raise TimeoutError("request timed out")
+import asyncio
 
 
-print(retry_once(True))
+async def slow_operation() -> str:
+    await asyncio.sleep(1)
+    return "done"
+
+
+async def main() -> None:
+    try:
+        async with asyncio.timeout(0.01):
+            await slow_operation()
+    except TimeoutError:
+        print("timed out")
+
+
+asyncio.run(main())
 ```
 
 Output:
 
 ```text
-ok
+timed out
 ```
 
-Why this output?
+Use the dependency's own connection, read, write, and pool-acquisition timeouts
+when available; an outer deadline alone may leave resources occupied.
 
-The function returns success immediately when the operation completes in time.
+## 2. Propagate a deadline across calls
 
-Roadmap: first we build the mental model, then we learn timeouts and retries, then we learn backpressure, and finally we practice safe failure handling.
+Independent full timeouts let nested work exceed the request budget. Compute a
+monotonic deadline once and pass the remaining budget to each boundary.
 
-## 4. Core vocabulary
+Never use wall-clock timestamps for elapsed-time decisions because system time
+can move.
 
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| Timeout | maximum wait time | `timeout=5` |
-| Retry | try again after failure | repeat on timeout |
-| Backpressure | slow the producer when the consumer is busy | bounded queue |
-| Idempotent | safe to repeat | same result on retry |
+## 3. Retry only transient, safe operations
 
-## 5. Mental model
-
-```mermaid
-flowchart TD
-    A[Request] --> B{Done in time?}
-    B -->|Yes| C[Return result]
-    B -->|No| D[Timeout]
-    D --> E{Retry safe?}
-    E -->|Yes| F[Retry with limit]
-    E -->|No| G[Fail fast]
-```
-
-## 6. Foundations
-
-### 6.1 Timeouts prevent indefinite waiting
-
-### 6.2 Retries need limits and conditions
-
-### 6.3 Backpressure keeps producers and consumers balanced
-
-## 7. How it works
-
-Timeouts turn waiting into a bounded decision.
-Retries can hide temporary failures but must not turn into endless loops.
-Backpressure protects the system by refusing to accept more work than it can safely handle.
-
-## 8. Core operations or methods
-
-- set a timeout;
-- retry with a cap and backoff;
-- bound queues or concurrency;
-- stop or shed load when needed.
-
-## 9. Guided examples
-
-### Example 1: Successful result
+A retry repeats the operation. Restrict it by exception, attempt count, total
+deadline, and idempotency.
 
 ```python
-def reply(success: bool) -> str:
-    return "ok" if success else "timeout"
+def fetch_with_retry() -> str:
+    outcomes = iter([ConnectionError("temporary"), "ok"])
+
+    for attempt in range(1, 4):
+        outcome = next(outcomes)
+        if isinstance(outcome, ConnectionError):
+            print(f"attempt {attempt} failed")
+            continue
+        return outcome
+
+    raise RuntimeError("retry budget exhausted")
 
 
-print(reply(True))
+print(fetch_with_retry())
 ```
 
 Output:
 
 ```text
+attempt 1 failed
 ok
 ```
 
-### Example 2: Retry decision
+The example is deterministic and omits sleeping. Production retries normally
+use capped exponential backoff with jitter to avoid synchronized retry storms.
 
-```text
-retry only when failure is temporary and safe to repeat
+## 4. Idempotency prevents duplicated effects
+
+An idempotent operation has the same intended effect when repeated with the
+same key. Payments, messages, and order creation need an idempotency design
+before automatic retry.
+
+```python
+processed: dict[str, str] = {}
+
+
+def create_order(key: str) -> str:
+    if key not in processed:
+        processed[key] = f"ORDER-{len(processed) + 1}"
+    return processed[key]
+
+
+print(create_order("request-7"))
+print(create_order("request-7"))
 ```
 
-### Example 3: Backpressure idea
+Output:
 
 ```text
-limit the queue so overload becomes visible early
+ORDER-1
+ORDER-1
 ```
 
-## 10. Common patterns and real-world applications
+Real idempotency storage must use an atomic database or service operation; the
+in-memory teaching example is not safe across workers.
 
-- network requests with timeouts;
-- limited retries for transient errors;
-- bounded queues for worker systems;
-- controlled load shedding under pressure.
+## 5. Backpressure bounds admitted work
 
-## 11. Common mistakes, misconceptions, and failure cases
+Backpressure slows or rejects producers when consumers are saturated. Use
+bounded queues, semaphores, rate limits, or explicit rejection.
 
-### Mistake 1: Retrying non-idempotent actions blindly
+```python
+import asyncio
 
-### Mistake 2: Omitting timeouts
 
-### Mistake 3: Letting queues grow without bounds
+async def main() -> None:
+    queue: asyncio.Queue[str] = asyncio.Queue(maxsize=1)
+    await queue.put("first")
 
-## 12. Comparison and decision guide
+    try:
+        queue.put_nowait("second")
+    except asyncio.QueueFull:
+        print("queue full")
 
-| Need | Best choice | Why |
-| --- | --- | --- |
-| Temporary failure | retry with limit | can recover |
-| Slow dependency | timeout | prevents hangs |
-| Overload control | backpressure | protects the system |
+    print(await queue.get())
+    queue.task_done()
 
-## 13. Efficiency, limitations, safety, and best practices
 
-- set explicit deadlines;
-- retry only safe operations;
-- add backoff between retries;
-- make queue limits visible and intentional.
+asyncio.run(main())
+```
 
-## 14. Advanced concepts
+Output:
 
-- exponential backoff;
-- jitter;
-- circuit breakers;
-- load shedding.
+```text
+queue full
+first
+```
 
-## 15. Interview or assessment knowledge
+An unbounded queue converts overload into memory growth and extreme latency.
 
-- Why are timeouts important?
-- When is retry safe?
-- What is backpressure?
-- Why should queues be bounded?
+## 6. Limit active concurrency
 
-## 16. Practice exercises
+A semaphore bounds work already admitted for execution; a queue bounds work
+waiting to execute. Many systems need both.
 
-1. Explain why timeouts matter.
-2. Explain why retries need limits.
-3. Explain what backpressure does.
-4. Explain when a retry is unsafe.
-5. Explain why bounded queues help reliability.
+Keep the limit in configuration with a strictly validated positive integer.
+Choose it from dependency capacity and measurements, not an arbitrary large
+number.
 
-### Solutions
+## 7. Avoid retry amplification
 
-#### Solution 1
+If every service layer retries three times, one request can multiply into many
+downstream calls. Assign retry ownership to one layer, keep a total deadline,
+and expose attempt and rejection metrics.
 
-Timeouts prevent indefinite waiting.
+Do not retry:
 
-#### Solution 2
+- validation or authentication failures;
+- deterministic business-rule failures;
+- permanent not-found results unless the contract says they are transient;
+- non-idempotent effects without an idempotency mechanism.
 
-Retries need limits so failures do not loop forever.
+## 8. Reliability decision table
 
-#### Solution 3
-
-Backpressure slows input when the system is busy.
-
-#### Solution 4
-
-A retry is unsafe when the operation is not idempotent.
-
-#### Solution 5
-
-Bounded queues stop overload from growing silently.
-
-## 17. Summary cheat sheet
-
-| Concept | Remember |
+| Failure | Control |
 | --- | --- |
-| Timeout | bounded wait |
-| Retry | limited repetition |
-| Backpressure | controlled input |
-| Idempotent | safe to repeat |
+| operation may wait forever | timeout or deadline |
+| transient dependency failure | bounded conditional retry |
+| producer outruns consumer | bounded queue and rejection |
+| too many active calls | semaphore or worker limit |
+| repeated dependency failure | circuit breaker after measurement and clear policy |
+| duplicate side effect | idempotency key and atomic storage |
 
-## 18. Mastery checklist and next steps
+## 9. Mental model
 
-- [ ] I understand why timeouts are essential.
-- [ ] I can explain safe retries.
-- [ ] I know what backpressure means.
-
-Next topics:
-
-- `12_concurrency_debugging_profiling_observability.md`
-- `13_concurrency_design_patterns.md`
-- `14_async_thread_process_integration.md`
+```text
+admission bound -> execution bound -> deadline -> selective retry -> observable result
+```

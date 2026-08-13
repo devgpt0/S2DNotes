@@ -1,32 +1,12 @@
-# Class Creation, Descriptors, and Metaclasses: Beginner-to-Expert Notes
-
-## 1. Learning goals
-
-By the end of this note, you should be able to:
-
-- explain that classes are objects too;
-- understand the order of class creation hooks;
-- use descriptors to control attribute access;
-- use `__init_subclass__` and class decorators before metaclasses;
-- explain when a metaclass is justified and when it is not.
-
-## 2. Prerequisites
-
-- Classes, methods, and inheritance
-- Basic understanding of object attributes
-- Familiarity with ABCs or protocols is helpful but not required
-
-## 3. Topic at a glance
+# Class Creation, Descriptors, and Metaclasses
+## 1. Core truth
 
 Python lets you customize how classes are built and how attributes behave.
 This is powerful, but it is also advanced, so the simple tools should come first.
 
-### Minimal first example
-
 ```python
 class Course:
     category = "programming"
-
 
 print(type(Course).__name__)
 print(Course.category)
@@ -39,47 +19,15 @@ type
 programming
 ```
 
-Why this output?
-
 `Course` is itself an object, and its class is `type`.
 
-Roadmap: first we build the mental model, then we learn descriptors and class hooks, then we compare simpler alternatives with metaclasses, and finally we practice safe usage.
+## 2. Class creation foundations
 
-## 4. Core vocabulary
-
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| Metaclass | A class that creates classes | `type` |
-| Descriptor | An object that controls attribute access | `property`-style field |
-| `__set_name__` | Hook that tells a descriptor its attribute name | field name setup |
-| `__init_subclass__` | Hook that runs when a class is subclassed | registration |
-| Class decorator | Function that receives and may replace a class | `@registered` |
-| `__prepare__` | Hook that chooses the class-body namespace | custom mapping |
-| ABCMeta | Metaclass used by abstract base classes | `ABC` |
-
-## 5. Mental model
-
-```mermaid
-flowchart TD
-    A[class statement] --> B[prepare namespace]
-    B --> C[execute class body]
-    C --> D[create class object]
-    D --> E[run descriptor __set_name__]
-    E --> F[run __init_subclass__ on parents]
-    F --> G[apply class decorators]
-```
-
-The class body runs immediately when Python reaches the class statement.
-The metaclass and related hooks decide how the final class object is built.
-
-## 6. Foundations
-
-### 6.1 Classes are objects
+### Classes are objects
 
 ```python
 class Course:
     category = "programming"
-
 
 print(type(Course).__name__)
 print(Course.category)
@@ -94,16 +42,14 @@ programming
 
 Practical takeaway: a class can be inspected and manipulated like any other object.
 
-### 6.2 The class body executes immediately
+### The class body executes immediately
 
 ```python
 print("before")
 
-
 class Course:
     print("inside class body")
     title = "Python"
-
 
 print(Course.title)
 ```
@@ -118,7 +64,7 @@ Python
 
 Practical takeaway: class bodies run at definition time, which is usually import time.
 
-### 6.3 A descriptor controls attribute access
+### A descriptor controls attribute access
 
 ```python
 class PositiveInteger:
@@ -137,13 +83,11 @@ class PositiveInteger:
             raise ValueError("value must be positive")
         setattr(instance, self.storage_name, value)
 
-
 class Course:
     duration_hours = PositiveInteger()
 
     def __init__(self, duration_hours: int) -> None:
         self.duration_hours = duration_hours
-
 
 course = Course(12)
 print(course.duration_hours)
@@ -157,14 +101,7 @@ Output:
 
 Practical takeaway: descriptors are a clean way to centralize attribute rules.
 
-## 7. How it works
-
-Class creation is a pipeline.
-The class body creates names, the metaclass turns that namespace into a class object, descriptors receive their attribute names, and subclass hooks or decorators may add more behavior.
-
-This is why the order matters: each hook has a different job.
-
-## 8. Core operations or methods
+## 3. Class creation hooks
 
 ### `__set_name__`
 
@@ -190,7 +127,6 @@ Control class construction itself.
 def title(self: object) -> str:
     return "Python Internals"
 
-
 Course = type(
     "Course",
     (),
@@ -202,7 +138,7 @@ Course = type(
 
 course = Course()
 print(type(course).__name__)
-print(course.title())
+print(getattr(course, "title")())
 ```
 
 Output:
@@ -212,14 +148,13 @@ Course
 Python Internals
 ```
 
-## 9. Guided examples
+## 4. Practical class customization
 
 ### Example 1: Dynamic class creation
 
 ```python
 def title(self: object) -> str:
     return "Python Internals"
-
 
 Course = type(
     "Course",
@@ -230,10 +165,9 @@ Course = type(
     },
 )
 
-
 course = Course()
 print(type(course).__name__)
-print(course.title())
+print(getattr(course, "title")())
 ```
 
 Output:
@@ -255,10 +189,8 @@ class Parser:
             raise ValueError("format_name must not be empty")
         cls._registry[format_name] = cls
 
-
 class JsonParser(Parser, format_name="json"):
     pass
-
 
 print(Parser._registry["json"].__name__)
 ```
@@ -274,16 +206,13 @@ JsonParser
 ```python
 registry: dict[str, type[object]] = {}
 
-
 def registered(cls):
     registry[cls.__name__] = cls
     return cls
 
-
 @registered
 class Course:
     pass
-
 
 print(registry["Course"].__name__)
 ```
@@ -294,14 +223,12 @@ Output:
 Course
 ```
 
-## 10. Common patterns and real-world applications
-
 - Descriptors power `property`, ORMs, validation fields, and computed attributes.
 - `__init_subclass__` is good for subclass registration and simple class rules.
 - Class decorators are good for registration or small class-level transformations.
 - Metaclasses are used by frameworks that need to control class construction deeply.
 
-## 11. Common mistakes, misconceptions, and failure cases
+## 5. Metaprogramming mistakes
 
 ### Mistake 1: Reaching for a metaclass first
 
@@ -319,7 +246,7 @@ If you just need an abstract interface, `ABC` is clearer.
 
 Attribute hooks should be predictable and documented.
 
-## 12. Comparison and decision guide
+## 6. Customization decision guide
 
 | Need | Best choice | Why | Avoid when |
 | --- | --- | --- | --- |
@@ -335,7 +262,7 @@ Selection rule:
 - Prefer the simplest hook that solves the problem.
 - Use a metaclass only when simpler tools cannot enforce the requirement.
 
-## 13. Efficiency, limitations, safety, and best practices
+## 7. Safety and maintainability
 
 - Keep class-creation hooks deterministic.
 - Avoid hidden I/O in class bodies, decorators, or metaclasses.
@@ -348,7 +275,7 @@ Best practices:
 - Prefer `__init_subclass__` and decorators first.
 - Keep advanced hooks narrow and intentional.
 
-## 14. Advanced concepts
+## 8. Metaclass behavior
 
 ### `__prepare__`
 
@@ -360,7 +287,6 @@ class PreparedMeta(type):
     def __prepare__(metacls, name, bases, **kwargs):
         print(f"prepare {name}")
         return {}
-
 
 class Course(metaclass=PreparedMeta):
     pass
@@ -377,12 +303,10 @@ prepare Course
 ```python
 from abc import ABC, abstractmethod
 
-
 class Repository(ABC):
     @abstractmethod
     def find(self, course_id: str) -> str | None:
         raise NotImplementedError
-
 
 print("defined")
 ```
@@ -393,77 +317,7 @@ Output:
 defined
 ```
 
-## 15. Interview or assessment knowledge
-
-- Why are classes objects in Python?
-- What is a descriptor?
-- When is `__init_subclass__` better than a metaclass?
-- Why should metaclasses be rare in application code?
-- Why do ABCs already cover many interface problems?
-
-## 16. Practice exercises
-
-1. Explain what `type(Course).__name__` prints and why.
-2. Write a simple descriptor that validates a positive integer.
-3. Explain why `__init_subclass__` is usually enough for registration.
-4. Show one reason to prefer a class decorator over a metaclass.
-5. Explain what `__prepare__` does in one sentence.
-
-### Solutions
-
-#### Solution 1
-
-It prints `type` because the class object `Course` is itself created by the `type` metaclass.
-
-#### Solution 2
-
-```python
-class PositiveInteger:
-    def __set_name__(self, owner, name) -> None:
-        self.storage_name = f"_{name}"
-
-    def __get__(self, instance, owner):
-        if instance is None:
-            return self
-        return getattr(instance, self.storage_name)
-
-    def __set__(self, instance, value: int) -> None:
-        if not isinstance(value, int):
-            raise TypeError("value must be an int")
-        if value <= 0:
-            raise ValueError("value must be positive")
-        setattr(instance, self.storage_name, value)
-
-
-class Course:
-    duration_hours = PositiveInteger()
-
-    def __init__(self, duration_hours: int) -> None:
-        self.duration_hours = duration_hours
-
-
-print(Course(3).duration_hours)
-```
-
-Output:
-
-```text
-3
-```
-
-#### Solution 3
-
-`__init_subclass__` is simpler because it runs only when a subclass is defined and does not replace the class construction process.
-
-#### Solution 4
-
-A class decorator is easier to read when you only want to register or lightly adjust the finished class.
-
-#### Solution 5
-
-`__prepare__` chooses the mapping used for the class body namespace.
-
-## 17. Summary cheat sheet
+## 9. Mental model
 
 | Hook | Best use |
 | --- | --- |
@@ -473,17 +327,35 @@ A class decorator is easier to read when you only want to register or lightly ad
 | `__prepare__` | customize class namespace |
 | Metaclass | rare deep class-construction control |
 
-## 18. Mastery checklist and next steps
+## 10. Descriptor lookup precedence
 
-- [ ] I know that classes are objects too.
-- [ ] I understand the class creation pipeline.
-- [ ] I can explain a descriptor in plain language.
-- [ ] I can choose `__init_subclass__` or a decorator before a metaclass.
-- [ ] I know when a metaclass is justified.
+A data descriptor defines `__set__` or `__delete__` and takes precedence over an
+instance dictionary entry. A non-data descriptor defines only `__get__`; an
+instance attribute can shadow it.
 
-Next topics:
+```python
+class NonDataDescriptor:
+    def __get__(self, instance: object, owner: type) -> str:
+        return "descriptor"
 
-- `10_dataclasses_protocols_and_domain_modeling.md`
-- `12_dunder_methods_and_object_lifecycle.md`
-- `Abstraction, API Design and Abstract Classes.md`
-- `SOLID Principles in Python.md`
+
+class Example:
+    value = NonDataDescriptor()
+
+
+example = Example()
+print(example.value)
+example.__dict__["value"] = "instance"
+print(example.value)
+```
+
+Output:
+
+```text
+descriptor
+instance
+```
+
+Functions are non-data descriptors, which is how attribute access creates bound
+methods. `property` is a data descriptor, so normal instance assignment cannot
+silently bypass its setter policy.

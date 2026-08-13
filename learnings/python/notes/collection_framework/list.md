@@ -1,5 +1,4 @@
-# Python List Notes
-
+# Python `list`
 ## 1) What Is a List
 A list is an ordered, mutable sequence type.
 
@@ -250,7 +249,6 @@ Index-based:
 for i in range(len(fruits)):
     print(i, fruits[i])
 ```
-
 Preferred indexed loop:
 
 ```python
@@ -377,16 +375,6 @@ first_col = [row[0] for row in matrix]
 - Using `list.sort()` and assigning its return (it returns `None`)
 - Off-by-one slicing mistakes (`end` exclusive)
 
-## 18) Recommended Practice Flow
-
-1. Master create/read/update/delete operations
-2. Practice slicing and negative indices
-3. Practice copy semantics (alias vs shallow vs deep)
-4. Build list comprehension problems daily
-5. Solve nested-list matrix-style tasks
-6. Practice sort with `key`, `lambda`, `reverse`
-7. Practice 20+ output-prediction snippets
-
 ## 19) Missing but Important: `deque` vs `list` for Queue Use-Cases
 
 `list` is great for stack-style operations (`append`, `pop()` from end).
@@ -400,6 +388,12 @@ q.append(4)      # right side
 q.appendleft(0)  # left side
 first = q.popleft()
 print(first, q)
+```
+
+Output:
+
+```text
+0 deque([1, 2, 3, 4])
 ```
 
 Interview takeaway:
@@ -418,6 +412,12 @@ insort(arr, 30)
 print(arr)  # [10, 20, 30, 40]
 ```
 
+Output:
+
+```text
+[10, 20, 30, 40]
+```
+
 Use when:
 - data is mostly sorted
 - incremental inserts happen over time
@@ -432,6 +432,12 @@ top3 = heapq.nlargest(3, scores)
 print(top3)  # [90, 70, 60]
 ```
 
+Output:
+
+```text
+[90, 70, 60]
+```
+
 Why this belongs in list notes:
 - heap operations are list-backed and common in interview problems.
 
@@ -441,6 +447,12 @@ Why this belongs in list notes:
 nums = [1, 2, 3, 4, 5]
 nums[1:4] = [20, 30]
 print(nums)  # [1, 20, 30, 5]
+```
+
+Output:
+
+```text
+[1, 20, 30, 5]
 ```
 
 Useful for:
@@ -486,6 +498,14 @@ nums[1:6:2] = [10, 30, 50]   # lengths must match when step != 1
 print(nums)
 ```
 
+Output:
+
+```text
+[0, 2, 4, 6]
+[6, 5, 4, 3, 2, 1, 0]
+[0, 10, 2, 30, 4, 50, 6]
+```
+
 Common trap:
 - For stepped slice assignment, replacement length mismatch raises `ValueError`.
 
@@ -509,6 +529,12 @@ mutate list and return `None`.
 nums = [3, 1, 2]
 nums.sort()
 print(nums)  # [1, 2, 3]
+```
+
+Output:
+
+```text
+[1, 2, 3]
 ```
 
 Wrong pattern:

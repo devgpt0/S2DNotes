@@ -2,7 +2,7 @@
 
 ## 1. Why This Lecture Matters
 
-Many design problems are not about syntax.  
+Many design problems are not about syntax.
 They are about choosing the right relationship between classes.
 
 The most common OOP mistake:
@@ -73,7 +73,15 @@ print(manager.annual_salary())
 print(manager.bonus())
 ```
 
-Expected output:
+Output:
+
+```text
+1200000
+20000.0
+```
+
+Output:
+
 ```text
 1200000
 20000.0
@@ -105,7 +113,14 @@ car = Car(Engine())
 print(car.start())
 ```
 
-Expected output:
+Output:
+
+```text
+Car: Engine started
+```
+
+Output:
+
 ```text
 Car: Engine started
 ```
@@ -168,7 +183,15 @@ logger = AuditFileLogger()
 logger.log("Payment success")
 ```
 
-Expected output:
+Output:
+
+```text
+FILE: Payment success
+AUDIT ENTRY WRITTEN
+```
+
+Output:
+
 ```text
 FILE: Payment success
 AUDIT ENTRY WRITTEN
@@ -208,7 +231,15 @@ service2 = PaymentService(JsonLogger())
 service2.pay(750)
 ```
 
-Expected output:
+Output:
+
+```text
+CONSOLE: Paid 500
+{"message": "Paid 750"}
+```
+
+Output:
+
 ```text
 CONSOLE: Paid 500
 {"message": "Paid 750"}
@@ -248,7 +279,14 @@ class OrderService:
 OrderService(ConsoleLogger()).place_order("ORD-101")
 ```
 
-Expected output:
+Output:
+
+```text
+CONSOLE: Order placed: ORD-101
+```
+
+Output:
+
 ```text
 CONSOLE: Order placed: ORD-101
 ```
@@ -277,7 +315,15 @@ class UserService(Database):  # wrong: UserService is not a Database
 UserService().create_user("ravi")
 ```
 
-Expected output:
+Output:
+
+```text
+DB connected
+Created user: ravi
+```
+
+Output:
+
 ```text
 DB connected
 Created user: ravi
@@ -302,7 +348,15 @@ class UserService:
 UserService(Database()).create_user("ravi")
 ```
 
-Expected output:
+Output:
+
+```text
+DB connected
+Created user: ravi
+```
+
+Output:
+
 ```text
 DB connected
 Created user: ravi
@@ -351,7 +405,15 @@ print(Checkout(NoDiscount()).total(1000))
 print(Checkout(FestivalDiscount()).total(1000))
 ```
 
-Expected output:
+Output:
+
+```text
+1000
+900.0
+```
+
+Output:
+
 ```text
 1000
 900.0
@@ -386,7 +448,14 @@ service.bill(300)
 print(fake_logger.messages)
 ```
 
-Expected output:
+Output:
+
+```text
+['Billed 300']
+```
+
+Output:
+
 ```text
 ['Billed 300']
 ```
@@ -407,16 +476,16 @@ Expected output:
 
 ## 15. Common Smells and Fixes
 
-Smell: `UserService` extends `Database`  
+Smell: `UserService` extends `Database`
 Fix: `UserService` should contain/use `Database`.
 
-Smell: Deep hierarchy (`A -> B -> C -> D`)  
+Smell: Deep hierarchy (`A -> B -> C -> D`)
 Fix: flatten hierarchy and compose behavior.
 
-Smell: parent class has many optional methods children do not need  
+Smell: parent class has many optional methods children do not need
 Fix: split parent into smaller contracts or use strategies.
 
-Smell: changing parent breaks all children  
+Smell: changing parent breaks all children
 Fix: reduce parent surface and stabilize contract.
 
 ---
@@ -459,20 +528,33 @@ No. It is powerful when used for real hierarchy and stable abstraction.
 
 ---
 
-## 19. Practice Assignment (Lecture 6)
+## 19. Delegation keeps the public API small
 
-Build notification module in two versions:
+Composition often uses delegation: the owner forwards one operation to a
+collaborator without exposing the collaborator itself.
 
-Version A (inheritance):
-- `NotificationSender` base class
-- child classes `EmailSender`, `SmsSender`, `PushSender`
+```python
+class JsonWriter:
+    def write(self, value: str) -> str:
+        return f'{{"value": "{value}"}}'
 
-Version B (composition + strategy):
-- `NotificationService(channel_strategy)`
-- strategies `EmailChannel`, `SmsChannel`, `PushChannel`
 
-Tasks:
-1. Compare both designs in a short note.
-2. Add one new channel (`Slack`) in both designs.
-3. Mention which design changed fewer existing files and why.
+class ReportService:
+    def __init__(self, writer: JsonWriter) -> None:
+        self._writer = writer
 
+    def export(self, value: str) -> str:
+        return self._writer.write(value)
+
+
+print(ReportService(JsonWriter()).export("ready"))
+```
+
+Output:
+
+```text
+{"value": "ready"}
+```
+
+Delegate only the behavior the owner promises. Forwarding every collaborator
+method leaks the internal design and creates a second, harder-to-maintain API.

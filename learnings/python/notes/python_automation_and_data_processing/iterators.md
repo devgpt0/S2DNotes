@@ -1,25 +1,9 @@
-# Iterators: Beginner-to-Expert Notes
+# Iterators
 
-## 1. Learning goals
-
-By the end of this note, you should be able to:
-
-- explain the difference between iterable and iterator;
-- use `iter()` and `next()` correctly;
-- recognize iterator exhaustion;
-- write a simple custom iterator when needed.
-
-## 2. Prerequisites
-
-- Lists, loops, and function calls
-- Basic understanding of `for` loops
-
-## 3. Topic at a glance
+## 1. Core truth
 
 An iterator is an object that returns values one at a time.
 It is useful when you want to process data step by step instead of all at once.
-
-### Minimal first example
 
 ```python
 items = iter(["a", "b"])
@@ -34,36 +18,11 @@ a
 b
 ```
 
-Why this output?
-
 `next()` asks the iterator for the next value until it runs out.
 
-Roadmap: first we build the mental model, then we learn the core operations, then we compare iterators with lists, and finally we practice using them safely.
+## 2. Iterator foundations
 
-## 4. Core vocabulary
-
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| Iterable | Something you can loop over | `list`, `range`, `str` |
-| Iterator | One-pass object that yields values | `iter([1, 2, 3])` |
-| Exhausted | No more values left | calling `next()` after the end |
-| `iter()` | Creates an iterator from an iterable | `iter(items)` |
-| `next()` | Gets the next value from an iterator | `next(items)` |
-
-## 5. Mental model
-
-```mermaid
-flowchart TD
-    A[Iterable] --> B[iter()]
-    B --> C[Iterator]
-    C --> D[next()]
-    D --> E[Value]
-    D --> F[StopIteration when empty]
-```
-
-## 6. Foundations
-
-### 6.1 An iterable can become an iterator
+### An iterable can become an iterator
 
 ```python
 items = ["a", "b"]
@@ -79,7 +38,7 @@ a
 b
 ```
 
-### 6.2 Iterators are one-pass
+### Iterators are one-pass
 
 ```python
 items = iter([1, 2])
@@ -94,7 +53,7 @@ Output:
 []
 ```
 
-### 6.3 `for` loops use iterators internally
+### `for` loops use iterators internally
 
 ```python
 for item in [1, 2, 3]:
@@ -109,12 +68,7 @@ Output:
 3
 ```
 
-## 7. How it works
-
-The `for` loop repeatedly asks for the next item.
-When the iterator is empty, Python stops the loop automatically.
-
-## 8. Core operations or methods
+## 3. Iterator protocol operations
 
 - `iter(obj)` creates an iterator.
 - `next(it)` returns the next item.
@@ -131,7 +85,7 @@ Output:
 x
 ```
 
-## 9. Guided examples
+## 4. Practical iteration
 
 ### Example 1: Manual iteration
 
@@ -178,14 +132,12 @@ Output:
 []
 ```
 
-## 10. Common patterns and real-world applications
-
 - stream values from large inputs;
 - consume file-like or data-source iterables;
 - build generator pipelines later;
 - stop early when you only need part of the data.
 
-## 11. Common mistakes, misconceptions, and failure cases
+## 5. Iterator mistakes
 
 ### Mistake 1: Treating an iterator like a reusable list
 
@@ -199,7 +151,7 @@ If there are no values left, Python raises `StopIteration`.
 
 An iterable can produce an iterator, but it is not necessarily one itself.
 
-## 12. Comparison and decision guide
+## 6. Iteration decision guide
 
 | Need | Best choice | Why |
 | --- | --- | --- |
@@ -207,87 +159,19 @@ An iterable can produce an iterator, but it is not necessarily one itself.
 | One-pass traversal | iterator | memory-friendly |
 | Lazy pipeline | generator/iterator | no intermediate list |
 
-## 13. Efficiency, limitations, safety, and best practices
+## 7. Performance and safety
 
 - iterators are efficient for streaming;
 - they are not reusable without recreating them;
 - do not assume you can index them like a list.
 
-## 14. Advanced concepts
+## 8. Advanced iterator behavior
 
 - custom iterator classes;
 - iterator chaining;
 - interaction with generator functions.
 
-## 15. Interview or assessment knowledge
-
-- What is the difference between iterable and iterator?
-- Why are iterators one-pass?
-- What does `next()` do?
-- How does a `for` loop consume an iterator?
-
-## 16. Practice exercises
-
-1. Create an iterator from a list.
-2. Print the first two values with `next()`.
-3. Show that an iterator is exhausted after use.
-4. Explain `StopIteration`.
-5. Explain when an iterator is better than a list.
-
-### Solutions
-
-#### Solution 1
-
-```python
-items = iter([1, 2, 3])
-print(type(items).__name__)
-```
-
-Output:
-
-```text
-list_iterator
-```
-
-#### Solution 2
-
-```python
-items = iter(["x", "y"])
-print(next(items))
-print(next(items))
-```
-
-Output:
-
-```text
-x
-y
-```
-
-#### Solution 3
-
-```python
-items = iter([1])
-print(list(items))
-print(list(items))
-```
-
-Output:
-
-```text
-[1]
-[]
-```
-
-#### Solution 4
-
-`StopIteration` is the signal that an iterator has no more items.
-
-#### Solution 5
-
-Use an iterator when you want one-pass, memory-friendly processing.
-
-## 17. Summary cheat sheet
+## 9. Mental model
 
 | Concept | Remember |
 | --- | --- |
@@ -297,15 +181,57 @@ Use an iterator when you want one-pass, memory-friendly processing.
 | `next()` | gets next value |
 | Exhaustion | iterator is empty |
 
-## 18. Mastery checklist and next steps
+## 10. Iterable versus iterator ownership
 
-- [ ] I can explain iterable versus iterator.
-- [ ] I can use `iter()` and `next()`.
-- [ ] I understand exhaustion.
-- [ ] I know that iterators are one-pass.
+An iterable normally creates a fresh iterator. An iterator returns itself and is
+consumed in place.
 
-Next topics:
+```python
+values = [10, 20]
+first = iter(values)
+second = iter(values)
 
-- `11_generators.md`
-- `12_json.md`
-- `17_basic_scripting_and_automation.md`
+print(first is second)
+print(next(first), next(second))
+```
+
+Output:
+
+```text
+False
+10 10
+```
+
+Returning a fresh iterator from `__iter__` makes a container reusable; returning
+`self` makes a stateful iterator one-pass.
+
+## 11. Callable-sentinel iteration
+
+`iter(callable, sentinel)` repeatedly calls a zero-argument callable until the
+returned value equals the sentinel.
+
+```python
+from io import StringIO
+
+stream = StringIO("first\nsecond\n")
+lines = [line.strip() for line in iter(stream.readline, "")]
+print(lines)
+```
+
+Output:
+
+```text
+['first', 'second']
+```
+
+This form is useful for chunked reads without a manual `while True` loop.
+
+## 12. Subtle iterator costs
+
+- `itertools.tee()` may buffer all values consumed by the faster branch; it is
+  not a free copy and is not generally thread-safe.
+- `operator.length_hint()` is an optimization hint, not an exact-size contract.
+- Mutating a source during iteration can skip values, duplicate work, or raise;
+  iterate over a snapshot or redesign ownership.
+- A `for` loop handles `StopIteration`; direct `next()` calls need a default or a
+  specific exception boundary.

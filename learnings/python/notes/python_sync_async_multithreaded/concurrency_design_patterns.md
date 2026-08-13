@@ -1,195 +1,174 @@
-# Concurrency Design Patterns: Beginner-to-Expert Notes
+# Concurrency Design Patterns
 
-## 1. Learning goals
+## 1. Producer-consumer
 
-By the end of this note, you should be able to:
-
-- recognize common concurrency patterns;
-- know when to use producer-consumer, fan-out/fan-in, and worker pools;
-- keep ownership and communication clear;
-- avoid overcomplicated concurrency design.
-
-## 2. Prerequisites
-
-- Sync, async, threads, and processes
-- Reliability concepts like timeouts and backpressure
-
-## 3. Topic at a glance
-
-Concurrency design patterns are repeatable ways to structure concurrent work.
-They help you keep systems understandable as they grow.
-
-### Minimal first example
+Producers create work; consumers own processing. A bounded queue defines the
+handoff and provides backpressure.
 
 ```python
-print("producer -> consumer")
+import asyncio
+
+
+async def producer(queue: asyncio.Queue[int | None]) -> None:
+    for value in [3, 1, 2]:
+        await queue.put(value)
+    await queue.put(None)
+
+
+async def consumer(
+    queue: asyncio.Queue[int | None], results: list[int]
+) -> None:
+    while True:
+        value = await queue.get()
+        try:
+            if value is None:
+                return
+            results.append(value * value)
+        finally:
+            queue.task_done()
+
+
+async def main() -> None:
+    queue: asyncio.Queue[int | None] = asyncio.Queue(maxsize=2)
+    results: list[int] = []
+
+    producer_task = asyncio.create_task(producer(queue))
+    consumer_task = asyncio.create_task(consumer(queue, results))
+    await producer_task
+    await queue.join()
+    await consumer_task
+
+    print(results)
+
+
+asyncio.run(main())
 ```
 
 Output:
 
 ```text
-producer -> consumer
+[9, 1, 4]
 ```
 
-Why this output?
+One sentinel stops one consumer. With multiple consumers, send one sentinel per
+consumer or use an explicit cancellation and shutdown protocol.
 
-The pattern name shows the basic direction of work.
+## 2. Worker pool
 
-Roadmap: first we build the mental model, then we learn the main patterns, then we compare them, and finally we practice choosing the simplest one.
+A worker pool caps active concurrency and reuses workers. It does not bound
+submitted work unless admission is separately limited.
 
-## 4. Core vocabulary
+```python
+from concurrent.futures import ThreadPoolExecutor
 
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| Producer-consumer | one side makes work, the other processes it | queue pipeline |
-| Fan-out/fan-in | split work, then combine it | parallel steps |
-| Worker pool | fixed set of workers | thread/process pool |
-| Pipeline | staged work flow | step 1 -> step 2 |
 
-## 5. Mental model
+def normalize(value: str) -> str:
+    return value.strip().lower()
 
-```mermaid
-flowchart TD
-    A[Producer] --> B[Queue or channel]
-    B --> C[Consumer]
-    D[Worker pool] --> E[Fan-out]
-    E --> F[Fan-in]
+
+with ThreadPoolExecutor(max_workers=2) as executor:
+    results = list(executor.map(normalize, [" A ", " B ", " C "]))
+
+print(results)
 ```
 
-## 6. Foundations
-
-### 6.1 Producer-consumer keeps roles clear
-
-### 6.2 Fan-out/fan-in helps parallelize independent work
-
-### 6.3 Worker pools cap concurrency
-
-## 7. How it works
-
-Patterns help answer two questions:
-
-- who creates the work?
-- who processes the work?
-
-Clear answers make systems easier to reason about and debug.
-
-## 8. Core operations or methods
-
-- producer-consumer queues;
-- worker pools;
-- pipelines;
-- fan-out/fan-in flows.
-
-## 9. Guided examples
-
-### Example 1: Producer-consumer
+Output:
 
 ```text
-make work, then consume work
+['a', 'b', 'c']
 ```
 
-### Example 2: Worker pool
+Use a thread pool for blocking I/O. Use a process pool for sufficiently large
+CPU-bound Python work.
+
+## 3. Fan-out and fan-in
+
+Fan-out starts independent operations; fan-in combines their results. Structured
+concurrency keeps child tasks owned by one scope.
+
+```python
+import asyncio
+
+
+async def double(value: int) -> int:
+    await asyncio.sleep(0)
+    return value * 2
+
+
+async def main() -> None:
+    async with asyncio.TaskGroup() as group:
+        tasks = [group.create_task(double(value)) for value in [1, 2, 3]]
+
+    print([task.result() for task in tasks])
+
+
+asyncio.run(main())
+```
+
+Output:
 
 ```text
-limit the number of active workers
+[2, 4, 6]
 ```
 
-### Example 3: Pipeline
+`TaskGroup` waits for all children and groups concurrent failures. Retain task
+handles when results are needed in a defined order.
+
+## 4. Pipeline
+
+A pipeline assigns each stage one transformation. Separate queues let stages
+run concurrently but add buffering, failure propagation, and shutdown work.
+
+Use a normal function chain when stages do not benefit from overlap.
+
+```python
+def parse(raw: str) -> int:
+    return int(raw)
+
+
+def transform(value: int) -> int:
+    return value * 10
+
+
+def run_pipeline(raw_values: list[str]) -> list[int]:
+    return [transform(parse(raw)) for raw in raw_values]
+
+
+print(run_pipeline(["1", "2", "3"]))
+```
+
+Output:
 
 ```text
-parse -> transform -> save
+[10, 20, 30]
 ```
 
-## 10. Common patterns and real-world applications
+This synchronous pipeline is the correct baseline before adding concurrent
+queues.
 
-- file processing pipelines;
-- task queues;
-- request fan-out;
-- staged data processing.
+## 5. Ownership and shutdown
 
-## 11. Common mistakes, misconceptions, and failure cases
+Every pattern must define:
 
-### Mistake 1: Using a pattern because it sounds advanced
+- who creates and closes workers;
+- who owns queued work and results;
+- how the first failure affects siblings;
+- how cancellation crosses each boundary;
+- whether queued work is drained, rejected, or discarded on shutdown;
+- which bounds prevent overload.
 
-### Mistake 2: Not defining ownership of work
+## 6. Decision guide
 
-### Mistake 3: Building a pipeline when a simple loop is enough
-
-## 12. Comparison and decision guide
-
-| Pattern | Best use | Why |
-| --- | --- | --- |
-| Producer-consumer | queued work | clear ownership |
-| Fan-out/fan-in | parallel subtasks | easy to split and combine |
-| Worker pool | bounded concurrency | avoids overload |
-| Pipeline | staged transformations | readable flow |
-
-## 13. Efficiency, limitations, safety, and best practices
-
-- choose the simplest pattern that fits;
-- keep communication channels clear;
-- bound concurrency deliberately;
-- document ownership and shutdown behavior.
-
-## 14. Advanced concepts
-
-- staged pipelines;
-- cancellation propagation;
-- error aggregation;
-- backpressure-aware queues.
-
-## 15. Interview or assessment knowledge
-
-- What is producer-consumer?
-- Why use a worker pool?
-- When is a pipeline a good choice?
-- Why is bounded concurrency important?
-
-## 16. Practice exercises
-
-1. Explain producer-consumer.
-2. Explain fan-out/fan-in.
-3. Explain worker pools.
-4. Explain when a pipeline is useful.
-5. Explain why bounded concurrency matters.
-
-### Solutions
-
-#### Solution 1
-
-Producer-consumer separates work creation from work processing.
-
-#### Solution 2
-
-Fan-out/fan-in splits work and then combines results.
-
-#### Solution 3
-
-Worker pools limit how many workers run at once.
-
-#### Solution 4
-
-A pipeline is useful when work happens in clear stages.
-
-#### Solution 5
-
-Bounded concurrency matters because it prevents overload.
-
-## 17. Summary cheat sheet
-
-| Pattern | Remember |
+| Need | Pattern |
 | --- | --- |
-| Producer-consumer | queue-based flow |
-| Fan-out/fan-in | split and combine |
-| Worker pool | bounded workers |
-| Pipeline | staged processing |
+| decouple production and consumption | producer-consumer |
+| cap reusable executors | worker pool |
+| run independent subtasks then combine | fan-out/fan-in |
+| transform through meaningful stages | pipeline |
+| no demonstrated overlap or capacity need | synchronous loop |
 
-## 18. Mastery checklist and next steps
+## 7. Mental model
 
-- [ ] I can name the common concurrency patterns.
-- [ ] I know when to use each one.
-- [ ] I understand why bounded concurrency matters.
-
-Next topics:
-
-- `14_async_thread_process_integration.md`
+```text
+owner -> bounded admission -> bounded workers -> result/error -> deterministic shutdown
+```

@@ -63,7 +63,15 @@ checkout(CardPayment(), 1000)
 checkout(UpiPayment(), 1000)
 ```
 
-Expected output:
+Output:
+
+```text
+Card payment: 1000
+UPI payment: 1000
+```
+
+Output:
+
 ```text
 Card payment: 1000
 UPI payment: 1000
@@ -101,7 +109,15 @@ notify(EmailNotifier(), "Welcome")
 notify(SmsNotifier(), "OTP sent")
 ```
 
-Expected output:
+Output:
+
+```text
+Email: Welcome
+SMS: OTP sent
+```
+
+Output:
+
 ```text
 Email: Welcome
 SMS: OTP sent
@@ -159,7 +175,14 @@ def broadcast(notifier: SupportsSend, message: str) -> None:
 broadcast(PushNotifier(), "Build complete")
 ```
 
-Expected output:
+Output:
+
+```text
+Push: Build complete
+```
+
+Output:
+
 ```text
 Push: Build complete
 ```
@@ -186,7 +209,15 @@ print(first_item([10, 20, 30]))
 print(first_item(["A", "B", "C"]))
 ```
 
-Expected output:
+Output:
+
+```text
+10
+A
+```
+
+Output:
+
 ```text
 10
 A
@@ -211,7 +242,15 @@ print(to_text(7))
 print(to_text("hello"))
 ```
 
-Expected output:
+Output:
+
+```text
+int:7
+hello
+```
+
+Output:
+
 ```text
 int:7
 hello
@@ -234,7 +273,14 @@ v3 = v1 + v2
 print(v3.x, v3.y)
 ```
 
-Expected output:
+Output:
+
+```text
+6 8
+```
+
+Output:
+
 ```text
 6 8
 ```
@@ -295,7 +341,14 @@ except ValueError as error:
     print(error)
 ```
 
-Expected output:
+Output:
+
+```text
+amount must be >= 1000
+```
+
+Output:
+
 ```text
 amount must be >= 1000
 ```
@@ -348,7 +401,14 @@ def generate_report(kind: str, data: dict) -> str:
 print(generate_report("pdf", {"id": 1}))
 ```
 
-Expected output:
+Output:
+
+```text
+PDF:{'id': 1}
+```
+
+Output:
+
 ```text
 PDF:{'id': 1}
 ```
@@ -388,7 +448,16 @@ print(export(CsvReportGenerator(), {"id": 1}))
 print(export(JsonReportGenerator(), {"id": 1}))
 ```
 
-Expected output:
+Output:
+
+```text
+PDF:{'id': 1}
+CSV:{'id': 1}
+JSON:{'id': 1}
+```
+
+Output:
+
 ```text
 PDF:{'id': 1}
 CSV:{'id': 1}
@@ -404,6 +473,18 @@ You often combine polymorphism with composition:
 - runtime decides implementation
 
 ```python
+from typing import Protocol
+
+
+class Payment(Protocol):
+    def pay(self, amount: float) -> None: ...
+
+
+class CardPayment:
+    def pay(self, amount: float) -> None:
+        print(f"Card payment: {amount}")
+
+
 class OrderService:
     def __init__(self, payment: Payment):
         self.payment = payment
@@ -416,7 +497,8 @@ service = OrderService(CardPayment())
 service.place_order(2500)
 ```
 
-Expected output:
+Output:
+
 ```text
 Card payment: 2500
 ```
@@ -483,13 +565,3 @@ Rule:
 - Add new behavior by adding classes, not editing old branches.
 
 ---
-
-## 20. Practice Assignment
-
-Build a pricing engine with polymorphism:
-- base contract `PricingStrategy` (`calculate(price)`)
-- implementations:
-`RegularPricing`, `FestivalPricing`, `MemberPricing`, `BulkPricing`
-- service `CheckoutService(strategy)` uses injected strategy
-- no `if price_type == ...` in checkout code
-- write one contract test suite to validate all strategies

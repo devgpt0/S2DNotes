@@ -1,202 +1,215 @@
-# CPython Runtime Internals: Beginner-to-Expert Notes
+# CPython Runtime Internals
 
-## 1. Learning goals
+## 1. CPython is an implementation
 
-By the end of this note, you should be able to:
-
-- explain what CPython is at a high level;
-- understand that Python code becomes bytecode executed by the interpreter;
-- reason about objects, references, and runtime overhead;
-- know why internals matter for performance decisions.
-
-## 2. Prerequisites
-
-- Python fundamentals
-- Basic familiarity with functions, modules, and objects
-
-## 3. Topic at a glance
-
-CPython is the standard Python interpreter most people use.
-It runs your code, manages objects, and executes bytecode step by step.
-
-### Minimal first example
+Python is a language; CPython is its most common implementation. Reference
+counting, bytecode shape, object layout, and interpreter specialization are
+CPython details, not portable language guarantees.
 
 ```python
-def add(left: int, right: int) -> int:
-    return left + right
+import platform
+
+print(platform.python_implementation() == "CPython")
+```
+
+Output on CPython:
+
+```text
+True
+```
+
+Other Python implementations may correctly print `False`.
+
+## 2. Source becomes code objects
+
+CPython parses source, compiles it to code objects, and executes their
+instructions. The exact bytecode changes between Python releases.
+
+```python
+def double(value: int) -> int:
+    return value * 2
 
 
-print(add(2, 3))
+code = double.__code__
+print(code.co_name)
+print(code.co_argcount)
+print(isinstance(code.co_code, bytes))
 ```
 
 Output:
 
 ```text
-5
+double
+1
+True
 ```
 
-Why this output?
+Use `dis.dis(double)` for diagnosis, but do not test exact bytecode text across
+Python versions.
 
-The function returns the sum of the two integers, and CPython executes that function through its interpreter runtime.
+## 3. Names reference objects
 
-Roadmap: first we build the mental model, then we learn the runtime pieces, then we compare behavior costs, and finally we practice reasoning about internals.
-
-## 4. Core vocabulary
-
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| CPython | standard Python implementation | interpreter |
-| Bytecode | low-level instructions Python executes | compiled function code |
-| Object | runtime value with identity and type | list, int, str |
-| Reference | a pointer-like connection to an object | assignment |
-| Interpreter | program that runs Python code | CPython executable |
-
-## 5. Mental model
-
-```mermaid
-flowchart TD
-    A[Python source] --> B[Compile to bytecode]
-    B --> C[Interpreter executes bytecode]
-    C --> D[Objects and references]
-```
-
-## 6. Foundations
-
-### 6.1 Python source is compiled before execution
-
-### 6.2 Objects live at runtime and are referenced, not copied by default
-
-### 6.3 Interpreter overhead matters in tight loops
-
-## 7. How it works
-
-CPython turns source into bytecode, then executes that bytecode through the interpreter loop.
-That runtime model explains why small design choices can matter in hot code paths.
-
-## 8. Core operations or methods
-
-- object creation and reference handling;
-- bytecode execution;
-- function call overhead;
-- import and module loading behavior.
-
-## 9. Guided examples
-
-### Example 1: A simple function
+Assignment binds a name to an object; it does not copy the object. Mutating a
+shared mutable object is visible through every alias.
 
 ```python
-def add(left: int, right: int) -> int:
-    return left + right
+primary = [1, 2]
+alias = primary
+alias.append(3)
 
-
-print(add(2, 3))
-```
-
-Output:
-
-```text
-5
-```
-
-### Example 2: Reference behavior
-
-```python
-values = [1, 2]
-other = values
-other.append(3)
-print(values)
+print(primary)
+print(primary is alias)
 ```
 
 Output:
 
 ```text
 [1, 2, 3]
+True
 ```
 
-### Example 3: Function calls are runtime work
+Rebinding a name changes only that binding.
 
 ```python
-def identity(value: int) -> int:
-    return value
+primary = [1, 2]
+alias = primary
+alias = [9]
 
-
-print(identity(7))
+print(primary)
+print(alias)
 ```
 
 Output:
 
 ```text
-7
+[1, 2]
+[9]
 ```
 
-## 10. Common patterns and real-world applications
+## 4. Object lifetime is implementation-sensitive
 
-- reason about aliasing and mutability;
-- understand why repeated function calls cost something;
-- identify where interpreter overhead is acceptable and where it is not.
+CPython normally combines reference counting with a cyclic garbage collector.
+Never depend on an object being finalized immediately when its last visible
+name disappears; use context managers for deterministic resource cleanup.
 
-## 11. Common mistakes, misconceptions, and failure cases
+```python
+from io import StringIO
 
-### Mistake 1: Treating Python like a compiled language with zero runtime overhead
+buffer = StringIO("data")
+with buffer:
+    print(buffer.read())
 
-### Mistake 2: Ignoring reference behavior for mutable objects
+print(buffer.closed)
+```
 
-### Mistake 3: Assuming imports are free
+Output:
 
-## 12. Comparison and decision guide
+```text
+data
+True
+```
 
-| Need | Best choice | Why |
+`sys.getrefcount()` is a diagnostic implementation detail and its raw value is
+not stable enough for application logic or universal example output.
+
+## 5. Function calls and objects have cost
+
+Every Python-level call creates runtime work. Keep code readable first; remove
+call or allocation overhead only after a profiler proves it matters.
+
+```python
+def square(value: int) -> int:
+    return value * value
+
+
+via_calls = [square(value) for value in range(4)]
+inline = [value * value for value in range(4)]
+print(via_calls == inline)
+```
+
+Output:
+
+```text
+True
+```
+
+Equivalent output does not prove equivalent speed. Benchmark the real workload.
+
+## 6. Imports execute module code once per interpreter cache entry
+
+The first normal import finds, loads, and executes a module. Later imports
+usually reuse `sys.modules`.
+
+```python
+import json
+import json as second
+import sys
+
+first = json
+
+print(first is second)
+print(sys.modules["json"] is first)
+```
+
+Output:
+
+```text
+True
+True
+```
+
+Import-time side effects slow startup and make modules harder to test.
+
+## 7. The GIL depends on the build
+
+Traditional CPython builds use a Global Interpreter Lock (GIL) to protect
+interpreter state. Free-threaded CPython builds are a separate configuration;
+code must not infer the active mode from the Python version alone.
+
+- Threads remain useful for blocking I/O.
+- Processes remain a portable option for CPU parallelism.
+- Free-threaded execution does not make shared mutable application state safe.
+- Native extensions must explicitly support the interpreter build they run on.
+
+See the concurrency notes for model selection and synchronization.
+
+## 8. Safe inspection tools
+
+| Tool | Use | Stability warning |
 | --- | --- | --- |
-| Understand execution model | CPython internals | explains runtime behavior |
-| Optimize a hot path | measure first | avoids guesswork |
-| Reduce object overhead | simpler data structures | less runtime cost |
+| `dis` | inspect instructions | output is version-specific |
+| `sys.getsizeof()` | shallow CPython object size | excludes referenced objects |
+| `gc` | inspect cyclic-GC state | do not build business logic on it |
+| `tracemalloc` | trace Python allocations | adds measurement overhead |
+| `sys.modules` | inspect import cache | mutation can break imports |
 
-## 13. Efficiency, limitations, safety, and best practices
+## 9. Mental model
 
-- keep hot loops simple;
-- avoid unnecessary object creation;
-- measure before changing internals-related code;
-- do not rely on internals that are not part of the public contract.
+```text
+source -> parser/compiler -> code object -> interpreter -> referenced objects
+```
 
-## 14. Advanced concepts
+Treat the language reference as the contract. Use CPython internals to explain
+measurements, not as an excuse to depend on unstable behavior.
 
-- bytecode inspection;
-- interpreter dispatch;
-- object and reference management;
-- runtime costs of abstraction.
+## 10. Adaptive execution is deliberately unstable
 
-## 15. Interview or assessment knowledge
+Current CPython can specialize frequently executed instructions at runtime. The
+specialized form may change with code behavior and Python releases; it is an
+optimization, not a language guarantee.
 
-- What is CPython?
-- What is bytecode?
-- Why do references matter?
-- Why can imports affect startup time?
+Do not assert exact `dis` output or design code around a particular specialized
+opcode. Profile application behavior instead.
 
-## 16. Practice exercises
+## 11. Low-impact monitoring and isolated interpreters
 
-1. Explain what CPython is.
-2. Explain what bytecode is.
-3. Show reference behavior with a list.
-4. Explain why object creation has cost.
-5. Explain why imports can affect startup time.
+`sys.monitoring` lets tools subscribe to selected interpreter events with lower
+overhead than traditional all-event tracing. Tool identifiers and event masks
+must be owned and released carefully; callbacks still add cost and must not
+contain application business logic.
 
-## 17. Summary cheat sheet
-
-| Concept | Remember |
-| --- | --- |
-| CPython | standard interpreter |
-| Bytecode | runtime instructions |
-| Reference | points to an object |
-| Imports | execute top-level code |
-
-## 18. Mastery checklist and next steps
-
-- [ ] I can explain CPython at a high level.
-- [ ] I understand object references.
-- [ ] I know why runtime overhead matters.
-
-Next topics:
-
-- `02-profiling-and-performance-optimization.md`
-- `03-cython-native-extensions.md`
-- `04-pybind11-cpp-extensions.md`
+Subinterpreters isolate module and runtime state inside one process. On Python
+3.14+, `concurrent.futures.InterpreterPoolExecutor` provides a high-level worker
+interface. Objects do not become safely shared merely because workers occupy one
+process; communication still needs an explicit serialization or supported
+cross-interpreter channel.

@@ -2,7 +2,7 @@
 
 ## 1. What "Advanced Async" Means
 
-At interview level, async knowledge is not just syntax.  
+At interview level, async knowledge is not just syntax.
 You must explain:
 - cancellation
 - failure propagation
@@ -296,18 +296,6 @@ Useful techniques:
 
 ---
 
-## 14. Practice Assignment
-
-Build async crawling pipeline:
-- producer: enqueue URLs
-- workers: fetch/process (mock with sleep)
-- queue with `maxsize`
-- semaphore limit 5 outbound requests
-- timeout each fetch
-- cancellation-safe shutdown on keyboard interrupt
-
----
-
 ## 15. Missing Critical Concept: Cancellation-Safe Coroutines
 
 Cancellation is cooperative and happens at await points.
@@ -364,3 +352,40 @@ Avoid:
 
 Interview line:
 - graceful async shutdown is part of correctness and data integrity.
+
+## 19. Exception groups and cancellation state
+
+`TaskGroup` can raise an `ExceptionGroup` when sibling tasks fail. Use `except*`
+only when the caller can handle a specific contained exception.
+
+```python
+import asyncio
+
+
+async def fail(message: str) -> None:
+    raise ValueError(message)
+
+
+async def main() -> None:
+    try:
+        async with asyncio.TaskGroup() as group:
+            group.create_task(fail("invalid-a"))
+            group.create_task(fail("invalid-b"))
+    except* ValueError as group:
+        print(sorted(str(error) for error in group.exceptions))
+
+
+asyncio.run(main())
+```
+
+Output:
+
+```text
+['invalid-a', 'invalid-b']
+```
+
+Cancellation is cooperative state, not an ordinary recoverable error. Cleanup in
+`finally`, then re-raise `CancelledError`. Suppressing it can break `TaskGroup`
+and timeout behavior. `Task.uncancel()` is for rare code that intentionally
+removes cancellation state after fully handling the request; application code
+normally should not call it.

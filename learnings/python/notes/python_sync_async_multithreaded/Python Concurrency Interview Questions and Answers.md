@@ -3,15 +3,15 @@
 ## 1. Fundamentals
 
 ### Q1. What is the difference between concurrency and parallelism?
-Concurrency is about handling many tasks in overlapping time.  
+Concurrency is about handling many tasks in overlapping time.
 Parallelism is about executing tasks at the same instant on multiple cores.
 
 ### Q2. Is async parallel?
 Not by default. Async is usually concurrent on one thread with cooperative scheduling.
 
 ### Q3. Is multithreading parallel in Python?
-On default CPython builds, GIL limits Python-bytecode parallel execution.  
-On free-threaded CPython builds (3.13+, improved/supported in 3.14), threads can run Python code in parallel.  
+On default CPython builds, GIL limits Python-bytecode parallel execution.
+On free-threaded CPython builds (3.13+, improved/supported in 3.14), threads can run Python code in parallel.
 For I/O waiting, threading improves throughput in both cases.
 
 ### Q4. What is a blocking call?
@@ -25,11 +25,11 @@ It pauses current coroutine and returns control to event loop until awaited obje
 ## 2. Asyncio Core Questions
 
 ### Q6. Difference between coroutine and task?
-Coroutine is an awaitable function result.  
+Coroutine is an awaitable function result.
 Task is a scheduled wrapper around coroutine managed by event loop.
 
 ### Q7. `asyncio.create_task` vs direct `await`?
-`await` runs and waits immediately.  
+`await` runs and waits immediately.
 `create_task` schedules work concurrently and returns task handle.
 
 ### Q8. What is event loop?
@@ -67,7 +67,7 @@ Global Interpreter Lock in CPython that allows one thread at a time to execute P
 No. Python 3.14 improved and officially supported free-threaded CPython, but the normal/default build still uses the GIL.
 
 ### Q17. When are threads useful in Python?
-Always useful for I/O-bound tasks and integration with blocking libraries.  
+Always useful for I/O-bound tasks and integration with blocking libraries.
 On free-threaded builds, they can also be useful for CPU-bound workloads.
 
 ### Q18. What is race condition?
@@ -86,7 +86,7 @@ Two or more threads waiting forever on each other's held resources.
 Consistent lock order, short critical sections, fewer nested locks, queue-based designs.
 
 ### Q23. Thread vs process?
-Thread: shared memory, lower overhead.  
+Thread: shared memory, lower overhead.
 Process: separate memory, higher overhead, true CPU parallelism in CPython (including default GIL builds).
 
 ### Q24. Why use `ThreadPoolExecutor`?
@@ -160,16 +160,6 @@ Profile first, size workers by workload and external limits, reduce blocking cri
 6. `TaskGroup` improves async reliability and readability.
 7. Prefer message passing over shared mutable state.
 8. Correctness before optimization.
-
----
-
-## 7. Whiteboard Practice Prompts
-
-1. Design concurrent file downloader with retry and timeout.
-2. Design async API aggregator with concurrency cap.
-3. Refactor unsafe threaded counter into queue-based pipeline.
-4. Explain how you would monitor and tune a thread pool service.
-5. Explain migration path from sync service to async service.
 
 ---
 

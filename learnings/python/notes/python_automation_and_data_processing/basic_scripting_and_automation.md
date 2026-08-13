@@ -1,30 +1,13 @@
-# Basic Scripting and Automation: Beginner-to-Expert Notes
+# Basic Scripting and Automation
 
-## 1. Learning goals
-
-By the end of this note, you should be able to:
-
-- identify a task that is worth automating;
-- structure a small Python script clearly;
-- use functions to keep scripts readable;
-- explain simple automation boundaries and safety checks.
-
-## 2. Prerequisites
-
-- Functions, loops, and basic modules
-- Files, paths, and simple data handling
-
-## 3. Topic at a glance
+## 1. Core truth
 
 A script is a small program that performs a repeatable task.
 Automation means using code to reduce manual effort and repeated mistakes.
 
-### Minimal first example
-
 ```python
 def normalize_names(names: list[str]) -> list[str]:
     return [name.strip().title() for name in names]
-
 
 print(normalize_names(["  ana", "raj  ", "mia"]))
 ```
@@ -34,41 +17,16 @@ Output:
 ```text
 ['Ana', 'Raj', 'Mia']
 ```
-
-Why this output?
 
 The function trims spaces and converts each name into title case.
 
-Roadmap: first we build the mental model, then we learn the scripting shape, then we compare script choices, and finally we practice safe automation thinking.
+## 2. Script foundations
 
-## 4. Core vocabulary
-
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| Script | Small program that does one repeatable job | cleanup script |
-| Automation | Using code to reduce manual work | rename files |
-| Entry point | Where the script starts | `main()` |
-| Argument | Input passed to a script | `--input data.csv` |
-| Idempotent | Safe to run more than once | same result if rerun |
-
-## 5. Mental model
-
-```mermaid
-flowchart TD
-    A[Input] --> B[Validate]
-    B --> C[Transform]
-    C --> D[Write or print result]
-    D --> E[Repeat safely]
-```
-
-## 6. Foundations
-
-### 6.1 Keep logic in functions
+### Keep logic in functions
 
 ```python
 def normalize_names(names: list[str]) -> list[str]:
     return [name.strip().title() for name in names]
-
 
 print(normalize_names(["  ana", "raj  ", "mia"]))
 ```
@@ -79,12 +37,11 @@ Output:
 ['Ana', 'Raj', 'Mia']
 ```
 
-### 6.2 Add a clear entry point
+### Add a clear entry point
 
 ```python
 def main() -> None:
     print("ready")
-
 
 main()
 ```
@@ -95,12 +52,11 @@ Output:
 ready
 ```
 
-### 6.3 Make automation deterministic
+### Make automation deterministic
 
 ```python
 def count_items(items: list[str]) -> int:
     return len(items)
-
 
 print(count_items(["a", "b", "c"]))
 ```
@@ -111,12 +67,7 @@ Output:
 3
 ```
 
-## 7. How it works
-
-Good scripts read input, validate it, transform it, and then produce a clear result.
-The best small automation scripts are easy to rerun and easy to test.
-
-## 8. Core operations or methods
+## 3. Script building blocks
 
 - break work into functions;
 - use `main()` for orchestration;
@@ -124,14 +75,13 @@ The best small automation scripts are easy to rerun and easy to test.
 - print or return a clear result;
 - keep side effects controlled.
 
-## 9. Guided examples
+## 4. Practical automation
 
 ### Example 1: Normalize values
 
 ```python
 def normalize_names(names: list[str]) -> list[str]:
     return [name.strip().title() for name in names]
-
 
 print(normalize_names(["  ana", "raj  "]))
 ```
@@ -147,7 +97,6 @@ Output:
 ```python
 def count_names(names: list[str]) -> int:
     return len(names)
-
 
 print(count_names(["Ana", "Raj", "Mia"]))
 ```
@@ -165,7 +114,6 @@ def main() -> None:
     names = ["ana", "raj"]
     print([name.title() for name in names])
 
-
 main()
 ```
 
@@ -175,15 +123,13 @@ Output:
 ['Ana', 'Raj']
 ```
 
-## 10. Common patterns and real-world applications
-
 - cleanup scripts;
 - report generation;
 - file renaming;
 - simple imports and exports;
 - scheduled maintenance tasks.
 
-## 11. Common mistakes, misconceptions, and failure cases
+## 5. Automation mistakes
 
 ### Mistake 1: Mixing too much logic with top-level code
 
@@ -197,7 +143,7 @@ Preview the effect before deleting or renaming data.
 
 Prefer idempotent operations when possible.
 
-## 12. Comparison and decision guide
+## 6. Automation decision guide
 
 | Need | Best choice | Why |
 | --- | --- | --- |
@@ -205,82 +151,21 @@ Prefer idempotent operations when possible.
 | Complex multi-step system | application | needs more structure |
 | One-off manual step | manual action | no repetition yet |
 
-## 13. Efficiency, limitations, safety, and best practices
+## 7. Safety and maintainability
 
 - keep scripts small and explicit;
 - validate inputs before acting;
 - avoid destructive operations without confirmation;
 - log or print results clearly when useful.
 
-## 14. Advanced concepts
+## 8. Advanced automation
 
 - command-line arguments;
 - dry-run mode;
 - batch processing;
 - scheduling.
 
-## 15. Interview or assessment knowledge
-
-- What makes a script automation-friendly?
-- Why should logic live in functions?
-- What does idempotent mean?
-- Why is a dry run useful?
-
-## 16. Practice exercises
-
-1. Write a function that normalizes a list of names.
-2. Add a `main()` function that prints a result.
-3. Explain why dry-run mode is useful.
-4. Explain what idempotent means.
-5. Describe one real task you could automate.
-
-### Solutions
-
-#### Solution 1
-
-```python
-def normalize_names(names: list[str]) -> list[str]:
-    return [name.strip().title() for name in names]
-
-
-print(normalize_names(["  ana", "raj"]))
-```
-
-Output:
-
-```text
-['Ana', 'Raj']
-```
-
-#### Solution 2
-
-```python
-def main() -> None:
-    print("done")
-
-
-main()
-```
-
-Output:
-
-```text
-done
-```
-
-#### Solution 3
-
-Dry-run mode lets you preview the result before making changes.
-
-#### Solution 4
-
-Idempotent means running the script again gives the same safe result.
-
-#### Solution 5
-
-You could automate file renaming or report generation.
-
-## 17. Summary cheat sheet
+## 9. Mental model
 
 | Concept | Remember |
 | --- | --- |
@@ -290,16 +175,62 @@ You could automate file renaming or report generation.
 | Dry run | preview before changing |
 | Idempotent | safe to rerun |
 
-## 18. Mastery checklist and next steps
+## 10. Reliable command-line boundaries
 
-- [ ] I can structure a script with functions and `main()`.
-- [ ] I can explain dry-run and idempotence.
-- [ ] I can identify a safe automation task.
-- [ ] I can keep side effects controlled.
+Parse command-line values once and validate them before doing work. `argparse`
+rejects missing values and unsupported choices instead of silently guessing.
 
-Next topics:
+```python
+import argparse
 
-- `10_iterators.md`
-- `14_os_module.md`
-- `15_pathlib.md`
-- `16_datetime.md`
+
+def parse_args(arguments: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mode", choices=("dry-run", "apply"), required=True)
+    return parser.parse_args(arguments)
+
+
+print(parse_args(["--mode", "dry-run"]).mode)
+```
+
+Output:
+
+```text
+dry-run
+```
+
+Return explicit exit codes from `main()`: `0` for success and a documented
+nonzero code for an expected operational failure. Let unexpected programming
+errors propagate with their traceback.
+
+## 11. Safe process execution
+
+Pass arguments as a sequence and keep `shell=False`, the default. This avoids
+shell parsing and command injection.
+
+```python
+import sys
+
+command = [sys.executable, "-c", "print(6 * 7)"]
+print(command[1:])
+```
+
+Output:
+
+```text
+['-c', 'print(6 * 7)']
+```
+
+Pass this sequence to `subprocess.run()` with `check=True`, a timeout, and the
+minimum environment needed. Never place secrets in command arguments because
+process listings may expose them.
+
+## 12. Atomic and repeatable changes
+
+- Make repeated runs converge on the same state.
+- Write a complete temporary file in the destination directory, flush it when
+  durability matters, then replace the destination atomically with `os.replace()`.
+- Keep dry-run and apply modes on the same planning path.
+- Record which item failed and stop when continuing could corrupt later work.
+- Use a lock or transactional store when multiple script instances may modify
+  the same resource.

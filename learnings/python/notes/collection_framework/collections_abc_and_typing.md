@@ -1,34 +1,14 @@
-# `collections.abc` and Typing: Beginner-to-Expert Notes
-
-## 1. Learning goals
-
-By the end of this note, you should be able to:
-
-- type collection-oriented functions with the right ABC from `collections.abc`;
-- tell the difference between `Iterable`, `Sequence`, `Mapping`, and `MutableMapping`;
-- write runtime checks with ABCs when needed;
-- design APIs around behavior instead of concrete classes.
-
-## 2. Prerequisites
-
-- Basic Python syntax
-- Lists, dictionaries, tuples, and loops
-- A little familiarity with type hints
-
-## 3. Topic at a glance
+# `collections.abc` and Typing
+## 1. Core truth
 
 `collections.abc` gives you abstract base classes that describe what a value can do.
 They help you say "I need something mapping-like" instead of "I need exactly a `dict`."
 
-### Minimal first example
-
 ```python
 from collections.abc import Iterable, Mapping
 
-
 def summarize(config: Mapping[str, int], values: Iterable[int]) -> int:
     return config.get("base", 0) + sum(values)
-
 
 print(summarize({"base": 10}, [1, 2, 3]))
 ```
@@ -39,52 +19,17 @@ Output:
 16
 ```
 
-Why this output?
-
 The function reads a value from the mapping and adds it to the sum of the iterable.
 
-Roadmap: first we build the mental model, then we learn the main ABCs, then we compare them, and finally we practice choosing the right contract.
+## 2. Collection contracts
 
-## 4. Core vocabulary
-
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| `Iterable` | Something you can loop over | `list`, `tuple`, `set` |
-| `Iterator` | Something that produces values one at a time | `iter([1, 2, 3])` |
-| `Sequence` | Ordered, indexable, read-only collection behavior | `list`, `tuple`, `str` |
-| `MutableSequence` | A sequence you can change in place | `list` |
-| `Mapping` | Read-only dictionary-like behavior | `dict`, `ChainMap` |
-| `MutableMapping` | Dictionary-like behavior with writes | `dict`, `defaultdict` |
-| `Protocol` | A typing contract based on behavior, not inheritance | custom structural types |
-
-## 5. Mental model
-
-```mermaid
-flowchart TD
-    A[What do you need from the value?] --> B[Only loop over it]
-    A --> C[Read by index]
-    A --> D[Read key/value pairs]
-    A --> E[Write to keys or items]
-    B --> F[Iterable]
-    C --> G[Sequence]
-    D --> H[Mapping]
-    E --> I[MutableMapping]
-```
-
-Pick the narrowest contract that still covers the behavior you need.
-That keeps the API clearer and makes misuse easier to catch.
-
-## 6. Foundations
-
-### 6.1 `Iterable` means "can be looped over"
+### `Iterable` means "can be looped over"
 
 ```python
 from collections.abc import Iterable
 
-
 def total(values: Iterable[int]) -> int:
     return sum(values)
-
 
 print(total([1, 2, 3]))
 ```
@@ -97,15 +42,13 @@ Output:
 
 Practical takeaway: use `Iterable` when you only need to loop through values once.
 
-### 6.2 `Sequence` means "ordered and indexable"
+### `Sequence` means "ordered and indexable"
 
 ```python
 from collections.abc import Sequence
 
-
 def first_and_last(items: Sequence[str]) -> tuple[str, str]:
     return items[0], items[-1]
-
 
 print(first_and_last(("a", "b", "c")))
 print(first_and_last(["x", "y"]))
@@ -120,15 +63,13 @@ Output:
 
 Practical takeaway: use `Sequence` when you need indexing, length, or slicing.
 
-### 6.3 `Mapping` means "dictionary-like read access"
+### `Mapping` means "dictionary-like read access"
 
 ```python
 from collections.abc import Mapping
 
-
 def summarize(config: Mapping[str, int]) -> int:
     return config.get("base", 0) + config.get("bonus", 0)
-
 
 print(summarize({"base": 10, "bonus": 4}))
 ```
@@ -141,30 +82,17 @@ Output:
 
 Practical takeaway: use `Mapping` when you only need to read keys and values.
 
-## 7. How it works
-
-ABCs describe behavior, not concrete storage.
-That means your function can accept more than one concrete type as long as the object behaves correctly.
-
-For example:
-
-- `Mapping` accepts `dict`, `defaultdict`, `ChainMap`, and other mapping-like objects.
-- `Sequence` accepts `list`, `tuple`, and `str`.
-- `Iterable` accepts almost anything that can be looped over.
-
-## 8. Core operations or methods
+## 3. Runtime and typing contracts
 
 ### Runtime validation with `isinstance()`
 
 ```python
 from collections.abc import Mapping
 
-
 def load_settings(obj: object) -> dict[str, int]:
     if not isinstance(obj, Mapping):
         raise TypeError("Expected mapping-like input")
     return dict(obj)
-
 
 print(load_settings({"a": 1, "b": 2}))
 ```
@@ -180,7 +108,6 @@ Output:
 ```python
 from collections.abc import Mapping
 
-
 def invert_unique(data: Mapping[str, int]) -> dict[int, str]:
     result: dict[int, str] = {}
     for key, value in data.items():
@@ -188,7 +115,6 @@ def invert_unique(data: Mapping[str, int]) -> dict[int, str]:
             raise ValueError("values must be unique")
         result[value] = key
     return result
-
 
 print(invert_unique({"a": 1, "b": 2}))
 ```
@@ -203,17 +129,15 @@ Output:
 
 Use `MutableMapping` only when the function needs to change the mapping.
 
-## 9. Guided examples
+## 4. Practical use
 
 ### Example 1: Read from any mapping-like object
 
 ```python
 from collections.abc import Mapping
 
-
 def get_timeout(config: Mapping[str, int]) -> int:
     return config.get("timeout", 30)
-
 
 print(get_timeout({"timeout": 60}))
 ```
@@ -229,10 +153,8 @@ Output:
 ```python
 from collections.abc import Iterable
 
-
 def total(values: Iterable[int]) -> int:
     return sum(values)
-
 
 print(total((2, 3, 5)))
 ```
@@ -248,10 +170,8 @@ Output:
 ```python
 from collections.abc import Sequence
 
-
 def middle(items: Sequence[str]) -> str:
     return items[len(items) // 2]
-
 
 print(middle(["a", "b", "c"]))
 ```
@@ -262,15 +182,13 @@ Output:
 b
 ```
 
-## 10. Common patterns and real-world applications
-
 - Type read-only config as `Mapping`.
 - Type a list of values that may be a tuple or list as `Sequence`.
 - Type one-pass inputs such as generator pipelines as `Iterable`.
 - Use `MutableMapping` for APIs that edit dictionaries in place.
 - Use `Protocol` when you want structural compatibility without inheritance.
 
-## 11. Common mistakes, misconceptions, and failure cases
+## 5. Contract mistakes
 
 ### Mistake 1: Requiring `dict` when `Mapping` is enough
 
@@ -289,7 +207,7 @@ If the function writes to the object, type it as `MutableMapping`, not `Mapping`
 Type hints help tools and readers, but they do not enforce behavior by themselves.
 Use `isinstance()` if you need a runtime check.
 
-## 12. Comparison and decision guide
+## 6. Contract decision guide
 
 | Need | Best choice | Why | Avoid when |
 | --- | --- | --- | --- |
@@ -304,7 +222,7 @@ Selection rule:
 - Choose the narrowest type that matches the behavior.
 - Do not use a concrete type unless the concrete type itself matters.
 
-## 13. Efficiency, limitations, safety, and best practices
+## 7. Performance and maintainability
 
 - Narrower contracts make APIs easier to understand.
 - `Iterable` is the broadest choice, but it gives the least information.
@@ -318,7 +236,7 @@ Best practices:
 - Convert to a concrete type only when you truly need one.
 - Do not overstate the guarantees your function actually needs.
 
-## 14. Advanced concepts
+## 8. Protocols and ABCs
 
 ### `Protocol` versus `ABC`
 
@@ -327,121 +245,7 @@ Best practices:
 
 This is especially useful for collection-like APIs that should accept more than one concrete class.
 
-## 15. Interview or assessment knowledge
-
-- Why use `Mapping` instead of `dict`? It makes the function more flexible and more honest about what it needs.
-- Why use `Sequence` instead of `list`? It allows tuples and other ordered read-only containers.
-- Why use `Iterable` instead of `Sequence`? It says you only need to traverse the values.
-- When should you use `MutableMapping`? When the function changes keys or values.
-
-## 16. Practice exercises
-
-1. Write a function that accepts a `Mapping[str, int]` and returns the value for `"port"` or `0`.
-2. Write a function that accepts a `Sequence[str]` and returns the first item.
-3. Write a function that accepts an `Iterable[int]` and returns the sum.
-4. Add a runtime check that raises `TypeError` when the input is not mapping-like.
-5. Rewrite a function typed with `dict` so it uses `Mapping` instead.
-
-### Solutions
-
-#### Solution 1
-
-```python
-from collections.abc import Mapping
-
-
-def get_port(config: Mapping[str, int]) -> int:
-    return config.get("port", 0)
-
-
-print(get_port({"port": 8080}))
-```
-
-Output:
-
-```text
-8080
-```
-
-#### Solution 2
-
-```python
-from collections.abc import Sequence
-
-
-def first_item(items: Sequence[str]) -> str:
-    return items[0]
-
-
-print(first_item(["alpha", "beta"]))
-```
-
-Output:
-
-```text
-alpha
-```
-
-#### Solution 3
-
-```python
-from collections.abc import Iterable
-
-
-def total(values: Iterable[int]) -> int:
-    return sum(values)
-
-
-print(total([1, 2, 3, 4]))
-```
-
-Output:
-
-```text
-10
-```
-
-#### Solution 4
-
-```python
-from collections.abc import Mapping
-
-
-def load_settings(obj: object) -> dict[str, int]:
-    if not isinstance(obj, Mapping):
-        raise TypeError("Expected mapping-like input")
-    return dict(obj)
-
-
-print(load_settings({"x": 1}))
-```
-
-Output:
-
-```text
-{'x': 1}
-```
-
-#### Solution 5
-
-```python
-from collections.abc import Mapping
-
-
-def read_timeout(config: Mapping[str, int]) -> int:
-    return config.get("timeout", 30)
-
-
-print(read_timeout({"timeout": 45}))
-```
-
-Output:
-
-```text
-45
-```
-
-## 17. Summary cheat sheet
+## 9. Mental model
 
 | Contract | What it means | Best use |
 | --- | --- | --- |
@@ -451,17 +255,51 @@ Output:
 | `MutableMapping` | Dictionary-like write access | In-place updates |
 | `Protocol` | Behavior-based typing | Flexible structural contracts |
 
-## 18. Mastery checklist and next steps
+## 10. Iterator contracts and runtime protocols
 
-- [ ] I can explain the difference between `Iterable`, `Sequence`, and `Mapping`.
-- [ ] I can choose `MutableMapping` only when writes are needed.
-- [ ] I can explain why `Mapping` is usually better than `dict` in a function signature.
-- [ ] I know when runtime `isinstance()` checks are useful.
-- [ ] I can describe the difference between `Protocol` and `ABC`.
+Use `Iterator[T]` only when the caller may consume one-pass state with `next()`.
+Use `Iterable[T]` when a normal loop is sufficient.
 
-Next topics:
+```python
+from collections.abc import Iterable, Iterator
 
-- `collections` module types
-- `heapq` and `bisect`
-- specialized sequence types
-- `itertools`
+values = [1, 2, 3]
+iterator = iter(values)
+print(isinstance(values, Iterable))
+print(isinstance(values, Iterator))
+print(isinstance(iterator, Iterator))
+```
+
+Output:
+
+```text
+True
+False
+True
+```
+
+`@runtime_checkable` permits shallow `isinstance()` checks for a `Protocol`.
+It checks attribute presence, not type signatures or semantic correctness.
+
+```python
+from typing import Protocol, runtime_checkable
+
+
+@runtime_checkable
+class Closer(Protocol):
+    def close(self) -> None: ...
+
+
+class Resource:
+    def close(self) -> None:
+        pass
+
+
+print(isinstance(Resource(), Closer))
+```
+
+Output:
+
+```text
+True
+```

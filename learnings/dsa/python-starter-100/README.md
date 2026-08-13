@@ -1,6 +1,6 @@
-# Python DSA Starter 70
+# Python DSA Starter 100
 
-This course contains 70 very easy Python problems for someone starting data
+This course contains 100 very easy Python problems for someone starting data
 structures, algorithms, and competitive programming for the first time.
 
 Every problem has its own note with:
@@ -107,6 +107,42 @@ only. Its solutions do not use sets, dictionaries, or tuples.
 68. [Rotate a String Left](mixed-questions/68-rotate-a-string-left.md)
 69. [Calculate a Power](mixed-questions/69-calculate-power.md)
 70. [Find the Longest Common Prefix](mixed-questions/70-longest-common-prefix.md)
+
+## Math questions: 71-85
+
+71. [Convert Decimal to Binary](math-questions/71-decimal-to-binary.md)
+72. [Convert Binary to Decimal](math-questions/72-binary-to-decimal.md)
+73. [Convert Decimal to Hexadecimal](math-questions/73-decimal-to-hexadecimal.md)
+74. [Convert Hexadecimal to Decimal](math-questions/74-hexadecimal-to-decimal.md)
+75. [Convert Celsius to Fahrenheit](math-questions/75-celsius-to-fahrenheit.md)
+76. [Convert Seconds to Hours, Minutes, and Seconds](math-questions/76-seconds-to-hours-minutes-seconds.md)
+77. [Sum Numbers from 1 to n](math-questions/77-sum-one-to-n.md)
+78. [Count a Number's Divisors](math-questions/78-count-divisors.md)
+79. [Check a Perfect Square](math-questions/79-check-perfect-square.md)
+80. [Sum Proper Divisors](math-questions/80-sum-proper-divisors.md)
+81. [Check a Perfect Number](math-questions/81-check-perfect-number.md)
+82. [Find a Number's Digital Root](math-questions/82-digital-root.md)
+83. [Convert Binary to Octal](math-questions/83-binary-to-octal.md)
+84. [Convert Decimal to Any Base from 2 to 16](math-questions/84-decimal-to-base.md)
+85. [Calculate Manhattan Distance](math-questions/85-manhattan-distance.md)
+
+## String questions: 86-100
+
+86. [Count Consonants](string-questions/86-count-consonants.md)
+87. [Remove Whitespace](string-questions/87-remove-whitespace.md)
+88. [Count Words](string-questions/88-count-words.md)
+89. [Find the First Non-Repeating Character](string-questions/89-first-non-repeating-character.md)
+90. [Check Anagrams](string-questions/90-check-anagrams.md)
+91. [Remove Duplicate Characters](string-questions/91-remove-duplicate-characters.md)
+92. [Find the First Character Index](string-questions/92-find-first-character-index.md)
+93. [Check for a Substring](string-questions/93-check-substring.md)
+94. [Find the Longest Word](string-questions/94-find-longest-word.md)
+95. [Reverse Each Word](string-questions/95-reverse-each-word.md)
+96. [Capitalize Each Word](string-questions/96-capitalize-each-word.md)
+97. [Check String Rotation](string-questions/97-check-string-rotation.md)
+98. [Find Common Characters](string-questions/98-find-common-characters.md)
+99. [Find the Longest Run of One Character](string-questions/99-longest-character-run.md)
+100. [Reverse Vowels in a String](string-questions/100-reverse-vowels.md)
 
 ## Beginner reminders
 

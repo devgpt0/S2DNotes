@@ -1,189 +1,156 @@
-# Cython Native Extensions: Beginner-to-Expert Notes
+# Cython Native Extensions
 
-## 1. Learning goals
+## 1. Use Cython only for a measured hot path
 
-By the end of this note, you should be able to:
+Cython translates Python-like source into C and builds a native extension.
+Static Cython types can remove Python object and dispatch overhead, but an
+untyped `.pyx` file is not automatically faster.
 
-- explain what Cython is at a high level;
-- understand why it can speed up hot code;
-- know when Cython is worth the added build complexity;
-- compare it with pure Python and other extension approaches.
+Keep validation and orchestration in Python unless profiling identifies them as
+hot. Compile the smallest stable computation boundary.
 
-## 2. Prerequisites
+## 2. Minimal project
 
-- Performance profiling basics
-- CPython runtime awareness
+```text
+fastsum/
+|-- pyproject.toml
+|-- setup.py
+`-- fastsum.pyx
+```
 
-## 3. Topic at a glance
+`pyproject.toml`:
 
-Cython lets you write code that can be compiled into a native extension.
-It is useful when profiling shows a real bottleneck that Python alone cannot solve efficiently.
+```toml
+[build-system]
+requires = ["setuptools", "Cython"]
+build-backend = "setuptools.build_meta"
+```
 
-### Minimal first example
+`setup.py`:
 
 ```python
-print("cython")
+from setuptools import setup
+
+from Cython.Build import cythonize
+
+setup(
+    name="fastsum",
+    ext_modules=cythonize("fastsum.pyx", language_level="3"),
+)
+```
+
+`fastsum.pyx`:
+
+```cython
+def sum_integers(list values):
+    cdef Py_ssize_t index
+    cdef long total = 0
+
+    for index in range(len(values)):
+        total += values[index]
+    return total
+```
+
+Build in the project directory:
+
+```bash
+python -m pip install .
+```
+
+The compiler and installer output and the extension filename are
+platform-dependent. A successful build installs an importable `fastsum` module.
+
+After installation:
+
+```python
+from fastsum import sum_integers
+
+print(sum_integers([1, 2, 3, 4]))
 ```
 
 Output:
 
 ```text
-cython
+10
 ```
 
-Why this output?
+This import example is contextual; it requires the preceding build.
 
-The example just marks the topic; the real point is that Cython can turn a Python-like source file into compiled extension code.
+## 3. Type the hot variables
 
-Roadmap: first we build the mental model, then we learn why Cython helps, then we compare tradeoffs, and finally we practice choosing it wisely.
+`cdef` declares Cython-only implementation variables. `def` keeps a normal
+Python-callable boundary. Use `cpdef` only when the function needs both Python
+and efficient Cython dispatch.
 
-## 4. Core vocabulary
+Typed memoryviews accept compatible buffer objects without requiring a Python
+object operation for every element.
 
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| Cython | Python-like language that can compile to native code | `.pyx` |
-| Native extension | compiled module loaded by Python | shared library |
-| Type declaration | extra type info for speed | `cdef int x` |
-| Hot loop | repeated inner loop worth optimizing | numeric processing |
+```cython
+def sum_doubles(const double[:] values):
+    cdef Py_ssize_t index
+    cdef double total = 0.0
 
-## 5. Mental model
-
-```mermaid
-flowchart TD
-    A[Profiled hotspot] --> B[Cython candidate]
-    B --> C[Add types]
-    C --> D[Compile]
-    D --> E[Measure again]
+    for index in range(values.shape[0]):
+        total += values[index]
+    return total
 ```
 
-## 6. Foundations
+The `const` view prevents writes through this view; it does not make the source
+buffer globally immutable.
 
-### 6.1 Cython is for proven hotspots
+## 4. Validate at the boundary
 
-### 6.2 Type declarations can reduce overhead
+Python callers can still supply invalid types, shapes, or values. Define the
+public contract and fail immediately with a specific exception.
 
-### 6.3 Build and test complexity increases
+```cython
+def positive_sum(const long[:] values):
+    cdef Py_ssize_t index
+    cdef long total = 0
 
-## 7. How it works
-
-Cython translates code into C, which is then compiled into a Python extension module.
-That can reduce interpreter overhead for tight loops and heavy numeric work.
-
-## 8. Core operations or methods
-
-- identify a hotspot;
-- add type declarations carefully;
-- compile the extension;
-- benchmark the result.
-
-## 9. Guided examples
-
-### Example 1: Use after profiling
-
-```text
-measure first, then decide if Cython is needed
+    for index in range(values.shape[0]):
+        if values[index] < 0:
+            raise ValueError("values must be non-negative")
+        total += values[index]
+    return total
 ```
 
-### Example 2: Focus on hot loops
+Do not silently cast arbitrary external input merely to satisfy a C type.
 
-```text
-optimize repeated numeric work, not everything
+## 5. Releasing the GIL is a correctness decision
+
+Code in a `nogil` region cannot freely use Python objects or Python APIs.
+Release the GIL only around independent C-level work, then verify thread safety
+for every accessed native resource.
+
+```cython
+cdef long square(long value) noexcept nogil:
+    return value * value
 ```
 
-### Example 3: Re-check performance
+`nogil` does not create a thread, schedule work, or make shared state safe.
 
-```text
-profile -> convert hotspot -> profile again
-```
+## 6. Failure and maintenance rules
 
-## 10. Common patterns and real-world applications
+- Pin compatible build dependencies for reproducible releases.
+- Build wheels for every supported Python version, ABI, and platform.
+- Run tests against the built wheel, not only an in-place extension.
+- Keep a Python reference implementation when it materially improves testing.
+- Benchmark end-to-end behavior; Python-to-native conversion can dominate small work.
+- Treat compiler warnings and sanitizer failures as release blockers.
 
-- numeric loops;
-- data processing hotspots;
-- performance-sensitive libraries;
-- bridging Python convenience with compiled speed.
+## 7. Decision guide
 
-## 11. Common mistakes, misconceptions, and failure cases
-
-### Mistake 1: Using Cython before measuring
-
-### Mistake 2: Expecting every Python feature to speed up automatically
-
-### Mistake 3: Adding native complexity to non-hot code
-
-## 12. Comparison and decision guide
-
-| Need | Best choice | Why |
-| --- | --- | --- |
-| Pure Python simplicity | Python | easiest to maintain |
-| Measured hot loop speedup | Cython | can reduce interpreter overhead |
-| C++ interoperability | pybind11 | better for C++-centric code |
-
-## 13. Efficiency, limitations, safety, and best practices
-
-- only optimize measured hotspots;
-- keep extension boundaries small;
-- maintain tests around the compiled path;
-- document build requirements.
-
-## 14. Advanced concepts
-
-- typed memory access;
-- C-level loops;
-- calling into C libraries.
-
-## 15. Interview or assessment knowledge
-
-- What is Cython?
-- When is it useful?
-- Why does it add complexity?
-- Why profile first?
-
-## 16. Practice exercises
-
-1. Explain when Cython might help.
-2. Explain why profiling comes first.
-3. Explain one cost of using Cython.
-4. Explain what a native extension is.
-5. Explain why hot loops matter.
-
-### Solutions
-
-#### Solution 1
-
-Cython may help when a real hotspot is limited by Python interpreter overhead.
-
-#### Solution 2
-
-Profiling comes first so you optimize the actual bottleneck.
-
-#### Solution 3
-
-It adds build complexity and more moving parts.
-
-#### Solution 4
-
-A native extension is compiled code loaded by Python as a module.
-
-#### Solution 5
-
-Hot loops matter because they dominate runtime in performance-sensitive code.
-
-## 17. Summary cheat sheet
-
-| Concept | Remember |
+| Situation | Choice |
 | --- | --- |
-| Cython | compiled Python-like code |
-| Native extension | compiled module |
-| Use case | proven hotspot |
-| Cost | extra build complexity |
+| hot numeric loop in Python-like code | consider Cython |
+| existing C++ library | prefer pybind11 |
+| bottleneck is I/O or algorithm choice | fix that first |
+| tiny infrequent operation | keep Python |
+| team cannot own native builds | use a maintained native library or keep Python |
 
-## 18. Mastery checklist and next steps
+## 8. Mental model
 
-- [ ] I can explain Cython at a high level.
-- [ ] I know when it is worth using.
-- [ ] I understand that profiling must come first.
-
-Next topics:
-
-- `04-pybind11-cpp-extensions.md`
+```text
+profile -> isolate hot loop -> add narrow types -> build -> test -> benchmark
+```

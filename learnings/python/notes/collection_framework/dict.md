@@ -1,5 +1,4 @@
-# Python `dict` - Unified Notes
-
+# Python `dict`
 ## 1) What is a dictionary?
 A dictionary is a key-value mapping type.
 
@@ -15,6 +14,7 @@ print(student)
 ```
 
 Output:
+
 ```text
 <class 'dict'>
 {'name': 'Ad', 'age': 22}
@@ -52,6 +52,7 @@ print(squares)
 ```
 
 Output:
+
 ```text
 {}
 {}
@@ -73,6 +74,7 @@ print(d.get("city", "NA"))
 ```
 
 Output:
+
 ```text
 Ad
 22
@@ -94,6 +96,7 @@ print(d.get("city"))
 ```
 
 Output:
+
 ```text
 KeyError
 None
@@ -111,6 +114,7 @@ print(d)
 ```
 
 Output:
+
 ```text
 {'name': 'AI Engineer', 'age': 22, 'city': 'Pune'}
 ```
@@ -128,6 +132,7 @@ print(d1)
 ```
 
 Output:
+
 ```text
 {'a': 1, 'x': 99, 'b': 2}
 {'a': 1, 'x': 10, 'c': 3}
@@ -152,6 +157,7 @@ print(d)
 ```
 
 Output:
+
 ```text
 1
 {'b': 2, 'c': 3}
@@ -181,6 +187,7 @@ print(dict.fromkeys(["x", "y"], 0))
 ```
 
 Output:
+
 ```text
 ['a', 'b']
 [1, 2]
@@ -207,6 +214,7 @@ for key, value in d.items():
 ```
 
 Output:
+
 ```text
 K a
 K b
@@ -231,6 +239,7 @@ print(rev)
 ```
 
 Output:
+
 ```text
 {0: 0, 1: 1, 2: 4, 3: 9, 4: 16}
 {0: 0, 2: 4, 4: 16, 6: 36, 8: 64}
@@ -250,6 +259,7 @@ print(students[102]["age"])
 ```
 
 Output:
+
 ```text
 Ad
 23
@@ -269,6 +279,7 @@ print(d2)
 ```
 
 Output:
+
 ```text
 {'a': [1, 2, 3]}
 {'a': [1, 2, 3]}
@@ -288,6 +299,7 @@ print(d2)
 ```
 
 Output:
+
 ```text
 {'a': [1, 2]}
 {'a': [1, 2, 3]}
@@ -304,6 +316,7 @@ print(1 in d)
 ```
 
 Output:
+
 ```text
 True
 True
@@ -329,6 +342,7 @@ print(d[frozenset([1, 2])])
 ```
 
 Output:
+
 ```text
 tuple
 frozenset
@@ -337,13 +351,17 @@ frozenset
 Invalid keys (error demo):
 
 ```python
+from typing import Any
+
+bad_key: Any = [1, 2]
 try:
-    bad = {[1, 2]: "list"}
+    bad = {bad_key: "list"}
 except TypeError as e:
     print(e)
 ```
 
 Output:
+
 ```text
 unhashable type: 'list'
 ```
@@ -372,6 +390,7 @@ print(keys_view)
 ```
 
 Output:
+
 ```text
 dict_keys(['a'])
 dict_keys(['a', 'b'])
@@ -387,6 +406,7 @@ print(d1.keys() & d2.keys())
 ```
 
 Output:
+
 ```text
 {'b'}
 ```
@@ -400,6 +420,7 @@ for key in reversed(d):
 ```
 
 Output:
+
 ```text
 c
 b
@@ -425,6 +446,7 @@ print(dict(groups))
 ```
 
 Output:
+
 ```text
 {'a': 2}
 {'c': ['cat', 'car']}
@@ -442,6 +464,7 @@ print(c.most_common(1))
 ```
 
 Output:
+
 ```text
 Counter({2: 3, 1: 2, 3: 1})
 [(2, 3)]
@@ -461,6 +484,7 @@ print(config["lang"])
 ```
 
 Output:
+
 ```text
 light
 en
@@ -480,6 +504,7 @@ print(proxy["a"])
 ```
 
 Output:
+
 ```text
 1
 10
@@ -500,6 +525,7 @@ print(freq)
 ```
 
 Output:
+
 ```text
 {1: 3, 2: 2, 3: 1}
 ```
@@ -518,6 +544,7 @@ print(groups)
 ```
 
 Output:
+
 ```text
 {'c': ['cat', 'car'], 'd': ['dog']}
 ```
@@ -541,6 +568,7 @@ print(ops["-"](10, 3))
 ```
 
 Output:
+
 ```text
 13
 7
@@ -564,6 +592,7 @@ print(memo)
 ```
 
 Output:
+
 ```text
 13
 {2: 1, 3: 2, 4: 3, 5: 5, 6: 8, 7: 13}
@@ -582,6 +611,7 @@ print(graph)
 ```
 
 Output:
+
 ```text
 {1: [2, 3], 2: [4]}
 ```
@@ -597,6 +627,7 @@ print(d)
 ```
 
 Output:
+
 ```text
 {'a': [1], 'b': [1]}
 ```
@@ -614,6 +645,7 @@ except RuntimeError as e:
 ```
 
 Output:
+
 ```text
 dictionary changed size during iteration
 ```
@@ -629,6 +661,7 @@ print(d)
 ```
 
 Output:
+
 ```text
 {}
 ```
@@ -642,6 +675,7 @@ print(inv)
 ```
 
 Output:
+
 ```text
 {1: 'b'}
 ```
@@ -670,6 +704,7 @@ print(10 in d)
 ```
 
 Output:
+
 ```text
 True
 False
@@ -690,6 +725,7 @@ except KeyError:
 ```
 
 Output:
+
 ```text
 KeyError
 ```
@@ -707,6 +743,7 @@ print(d.get("y", 0))
 ```
 
 Output:
+
 ```text
 None
 0
@@ -726,6 +763,7 @@ print(d1)
 ```
 
 Output:
+
 ```text
 {'a': [1, 2]}
 ```
@@ -746,6 +784,7 @@ print(d1)
 ```
 
 Output:
+
 ```text
 {'a': [1]}
 ```
@@ -763,6 +802,7 @@ print(d)
 ```
 
 Output:
+
 ```text
 {'a': [99], 'b': [99]}
 ```
@@ -780,6 +820,7 @@ print(left | right)
 ```
 
 Output:
+
 ```text
 {'x': 2}
 ```
@@ -797,6 +838,7 @@ print(inv)
 ```
 
 Output:
+
 ```text
 {1: 'b'}
 ```
@@ -816,6 +858,7 @@ print(freq)
 ```
 
 Output:
+
 ```text
 {2: 2, 3: 1}
 ```
@@ -836,6 +879,7 @@ except RuntimeError as e:
 ```
 
 Output:
+
 ```text
 dictionary changed size during iteration
 ```
@@ -855,6 +899,7 @@ print(v)
 ```
 
 Output:
+
 ```text
 dict_keys(['a'])
 dict_keys(['a', 'b'])
@@ -875,6 +920,7 @@ print(actions["greet"]())
 ```
 
 Output:
+
 ```text
 hello
 ```
@@ -894,6 +940,12 @@ final = base | override
 print(final)  # {'timeout': 60, 'retry': 2}
 ```
 
+Output:
+
+```text
+{'timeout': 60, 'retry': 2}
+```
+
 Rule:
 - right-hand side wins on duplicate keys.
 
@@ -906,6 +958,12 @@ d["b"] = 2
 print(keys)  # dict_keys(['a', 'b'])
 ```
 
+Output:
+
+```text
+dict_keys(['a', 'b'])
+```
+
 ### Read-only view with `MappingProxyType`
 
 ```python
@@ -915,6 +973,12 @@ config = {"env": "prod"}
 readonly = MappingProxyType(config)
 print(readonly["env"])
 # readonly["env"] = "dev"  # TypeError
+```
+
+Output:
+
+```text
+prod
 ```
 
 ## 22) Hashing, Equality, and Key Design (Deep Interview Topic)
@@ -950,6 +1014,12 @@ for k, v in d.items():
 print(inv)  # {1: ['a', 'b'], 2: ['c']}
 ```
 
+Output:
+
+```text
+{1: ['a', 'b'], 2: ['c']}
+```
+
 ## 24) Dictionary Mutation During Iteration: Safe Patterns
 
 Unsafe:
@@ -964,6 +1034,12 @@ for key, value in list(d.items()):
     if value == 0:
         del d[key]
 print(d)
+```
+
+Output:
+
+```text
+{'a': 1, 'c': 2}
 ```
 
 ## 25) Production Checklist for Dictionary Usage
@@ -987,6 +1063,14 @@ print(a.keys() - b.keys())      # {'x'}
 print(a.items() & b.items())    # common key-value pairs
 ```
 
+Output:
+
+```text
+{'y'}
+{'x'}
+set()
+```
+
 Useful for reconciliation and change detection.
 
 ## 27) `__missing__` Hook and Custom Mapping Behavior
@@ -1002,6 +1086,12 @@ class ZeroDict(dict):
 counts = ZeroDict()
 counts["x"] += 1
 print(counts["x"])  # 1
+```
+
+Output:
+
+```text
+1
 ```
 
 Use carefully:
@@ -1028,6 +1118,15 @@ print(c1 + c2)  # add counts
 print(c1 - c2)  # subtract, keep positive results
 print(c1 & c2)  # min intersection
 print(c1 | c2)  # max union
+```
+
+Output:
+
+```text
+Counter({'c': 4, 'a': 2, 'b': 2, 'd': 1})
+Counter({'a': 2})
+Counter({'c': 2, 'b': 1})
+Counter({'a': 2, 'c': 2, 'b': 1, 'd': 1})
 ```
 
 Great for inventory, token frequency, and diff-style problems.
@@ -1057,6 +1156,12 @@ handlers = {"create": handle_create}
 action = "create"
 result = handlers.get(action, handle_unknown)()
 print(result)
+```
+
+Output:
+
+```text
+created
 ```
 
 Clean alternative to long if/elif chains.

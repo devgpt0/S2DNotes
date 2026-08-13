@@ -27,40 +27,32 @@ Interview point:
 ## 3. Basic Example
 
 ```python
-import time
-
-
 def fetch_user():
     print("Fetching user...")
-    time.sleep(2)
     print("User fetched")
 
 
 def fetch_orders():
     print("Fetching orders...")
-    time.sleep(2)
     print("Orders fetched")
 
 
 def main():
-    start = time.perf_counter()
     fetch_user()
     fetch_orders()
-    elapsed = time.perf_counter() - start
-    print(f"Total time: {elapsed:.2f}s")
 
 
 if __name__ == "__main__":
     main()
 ```
 
-Expected output:
+Output:
+
 ```text
 Fetching user...
 User fetched
 Fetching orders...
 Orders fetched
-Total time: 4.00s
 ```
 
 ---
@@ -134,7 +126,8 @@ if __name__ == "__main__":
     main()
 ```
 
-Expected output:
+Output:
+
 ```text
 5.0
 Validation error: b cannot be zero
@@ -226,7 +219,7 @@ elapsed = time.perf_counter() - start
 print(f"{elapsed:.4f}s")
 ```
 
-Do not rely on rough guesses in interview answers.  
+Do not rely on rough guesses in interview answers.
 Mention measurement first, optimization second.
 
 ---
@@ -268,12 +261,12 @@ Short answers:
 
 ---
 
-## 15. Practice Assignment
+## 15. Retry ownership
 
-Build a sync weather service module:
-- `get_city_weather(city)`
-- add request timeout and error handling
-- parse and validate API response
-- expose `format_weather_summary(data)`
-- write 3 tests: success, timeout, bad response
+Retry only explicitly transient failures, only for operations that are safe to
+repeat, and within one total deadline. Assign retry ownership to one layer so a
+call chain does not multiply attempts at every boundary.
 
+Validation, authentication, and deterministic business-rule failures are not
+retryable. Non-idempotent writes require an idempotency key or transactional
+deduplication before automatic retry.

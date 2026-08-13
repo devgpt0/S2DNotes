@@ -1,25 +1,9 @@
-# `os` Module: Beginner-to-Expert Notes
+# `os` Module
 
-## 1. Learning goals
-
-By the end of this note, you should be able to:
-
-- use `os` for basic system and filesystem tasks;
-- understand when `os` is useful versus `pathlib`;
-- read environment variables and work with simple paths;
-- recognize the low-level role of `os`.
-
-## 2. Prerequisites
-
-- Basic Python functions and strings
-- Files and directories
-
-## 3. Topic at a glance
+## 1. Core truth
 
 The `os` module provides operating-system related utilities.
 It is a lower-level tool than `pathlib` and is often used for compatibility or system access.
-
-### Minimal first example
 
 ```python
 import os
@@ -33,39 +17,16 @@ Output:
 report.csv
 ```
 
-Why this output?
-
 `basename()` returns the last path component.
 
-Roadmap: first we build the mental model, then we learn the core functions, then we compare `os` with `pathlib`, and finally we practice basic scripting patterns.
+## 2. Operating-system foundations
 
-## 4. Core vocabulary
-
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| `os` | operating system utilities | `os.listdir()` |
-| Environment variable | key/value setting from the environment | `os.getenv()` |
-| Path component | one part of a path | file name or folder name |
-| `os.path` | path-related helpers | `basename`, `join` |
-
-## 5. Mental model
-
-```mermaid
-flowchart TD
-    A[System task] --> B[os module]
-    B --> C[Path helpers]
-    B --> D[Environment helpers]
-    B --> E[Directory and process helpers]
-```
-
-## 6. Foundations
-
-### 6.1 Path helpers
+### Path helpers
 
 ```python
 import os
 
-print(os.path.join("data", "report.csv"))
+print(os.path.join("data", "report.csv").replace(os.sep, "/"))
 print(os.path.basename("data/report.csv"))
 ```
 
@@ -76,7 +37,7 @@ data/report.csv
 report.csv
 ```
 
-### 6.2 Environment variables
+### Environment variables
 
 ```python
 import os
@@ -91,7 +52,7 @@ Output:
 off
 ```
 
-### 6.3 Directory listing
+### Directory listing
 
 ```python
 import os
@@ -109,26 +70,21 @@ Output:
 ['a.txt', 'b.txt']
 ```
 
-## 7. How it works
-
-`os` exposes lower-level system operations.
-For path handling, `os.path` provides string-based helpers.
-
-## 8. Core operations or methods
+## 3. OS APIs
 
 - `os.getenv()`
 - `os.path.join()`
 - `os.path.basename()`
 - `os.listdir()`
 
-## 9. Guided examples
+## 4. Practical OS operations
 
 ### Example 1: Join a path
 
 ```python
 import os
 
-print(os.path.join("logs", "app.log"))
+print(os.path.join("logs", "app.log").replace(os.sep, "/"))
 ```
 
 Output:
@@ -169,14 +125,12 @@ Output:
 ['one.txt', 'two.txt']
 ```
 
-## 10. Common patterns and real-world applications
-
 - read configuration from environment variables;
 - inspect directory contents;
 - create compatibility code for older codebases;
 - work with process and filesystem utilities.
 
-## 11. Common mistakes, misconceptions, and failure cases
+## 5. OS mistakes
 
 ### Mistake 1: Using string concatenation for paths
 
@@ -190,95 +144,26 @@ Always provide a default or handle absence explicitly.
 
 For new code, `pathlib` is often easier to read.
 
-## 12. Comparison and decision guide
+## 6. API decision guide
 
 | Need | Best choice | Why |
 | --- | --- | --- |
 | Lower-level system utilities | `os` | broad compatibility |
 | Readable path manipulation | `pathlib` | clearer object-oriented API |
 
-## 13. Efficiency, limitations, safety, and best practices
+## 7. Security and portability
 
 - prefer `pathlib` for most new path code;
 - use `os` when you need system-level helpers or compatibility;
 - keep environment lookups explicit and predictable.
 
-## 14. Advanced concepts
+## 8. Advanced OS behavior
 
 - `os.walk`;
 - process environment;
 - platform differences.
 
-## 15. Interview or assessment knowledge
-
-- When would you use `os` instead of `pathlib`?
-- Why should you avoid path string concatenation?
-- What does `os.getenv()` do?
-
-## 16. Practice exercises
-
-1. Join `logs` and `app.log`.
-2. Read an environment variable with a default.
-3. List files in a temporary directory.
-4. Explain why `pathlib` is often preferred.
-5. Explain what `os.path.basename()` returns.
-
-### Solutions
-
-#### Solution 1
-
-```python
-import os
-
-print(os.path.join("logs", "app.log"))
-```
-
-Output:
-
-```text
-logs/app.log
-```
-
-#### Solution 2
-
-```python
-import os
-
-print(os.getenv("APP_MODE", "development"))
-```
-
-Output:
-
-```text
-development
-```
-
-#### Solution 3
-
-```python
-import os
-import tempfile
-
-with tempfile.TemporaryDirectory() as tmp:
-    open(os.path.join(tmp, "a.txt"), "w", encoding="utf-8").close()
-    print(sorted(os.listdir(tmp)))
-```
-
-Output:
-
-```text
-['a.txt']
-```
-
-#### Solution 4
-
-`pathlib` is often preferred because it is more readable and easier to compose safely.
-
-#### Solution 5
-
-It returns the last component of a path.
-
-## 17. Summary cheat sheet
+## 9. Mental model
 
 | Function | Use |
 | --- | --- |
@@ -287,15 +172,47 @@ It returns the last component of a path.
 | `os.path.basename` | get file name |
 | `os.listdir` | list directory contents |
 
-## 18. Mastery checklist and next steps
+## 10. Environment variables are untyped input
 
-- [ ] I can use `os` for basic system tasks.
-- [ ] I know what `os.path` does.
-- [ ] I can read environment variables safely.
-- [ ] I understand when `pathlib` is the better default.
+Environment values are strings. Validate presence and syntax explicitly instead
+of silently coercing unexpected values.
 
-Next topics:
+```python
+import os
 
-- `15_pathlib.md`
-- `16_datetime.md`
-- `17_basic_scripting_and_automation.md`
+os.environ["WORKER_COUNT"] = "4"
+raw_count = os.environ["WORKER_COUNT"]
+
+if not raw_count.isdecimal() or int(raw_count) < 1:
+    raise ValueError("WORKER_COUNT must be a positive integer")
+
+print(int(raw_count))
+```
+
+Output:
+
+```text
+4
+```
+
+Do not log the environment: it commonly contains tokens and credentials.
+
+## 11. Directory iteration and race safety
+
+`os.scandir()` exposes file-type metadata with each entry and often avoids extra
+system calls compared with `listdir()` plus `stat()`.
+
+Filesystem checks are snapshots. Another process can replace a path after
+`exists()` or `isfile()` succeeds. For security-sensitive operations, use APIs
+that operate relative to an already-open directory descriptor where supported,
+avoid following symlinks, and handle the operation's actual exception.
+
+## 12. Processes and file descriptors
+
+- Use `subprocess.run()` with an argument list, `check=True`, a timeout, and
+  `shell=False` for external programs.
+- Close file descriptors deterministically with context managers.
+- Pass only required descriptors and environment values to child processes.
+- Use `os.replace()` for atomic destination replacement on the same filesystem.
+- Treat `os.walk()` errors explicitly; permission failures must not silently
+  produce incomplete processing.

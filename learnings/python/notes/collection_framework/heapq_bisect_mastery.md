@@ -1,26 +1,8 @@
-# `heapq` and `bisect`: Beginner-to-Expert Notes
-
-## 1. Learning goals
-
-By the end of this note, you should be able to:
-
-- use `heapq` for priority-based work and top-k problems;
-- use `bisect` to search and insert into sorted lists;
-- explain the difference between a heap, a sorted list, and a binary search boundary;
-- avoid the most common performance and correctness mistakes.
-
-## 2. Prerequisites
-
-- Lists, tuples, loops, and functions
-- Basic sorting knowledge
-- A rough idea of big-O notation
-
-## 3. Topic at a glance
+# `heapq` and `bisect`
+## 1. Core truth
 
 `heapq` gives you a priority queue built on a list.
 `bisect` gives you fast boundary search on a sorted list.
-
-### Minimal first example
 
 ```python
 import heapq
@@ -40,40 +22,11 @@ Output:
 3
 ```
 
-Why this output?
-
 `heappop()` removes the smallest value first, and the next smallest value becomes the new root of the heap.
 
-Roadmap: first we build the mental model, then we learn heap and bisect operations, then we compare them, and finally we practice choosing the right tool.
+## 2. Heap and sorted-list foundations
 
-## 4. Core vocabulary
-
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| Heap | A structure that keeps the smallest item at the front | `heapq.heappush()` |
-| Min-heap | A heap where the smallest value has highest priority | Python's default heap style |
-| Priority queue | A queue that removes the most important item first | `heapq` |
-| Binary search | A fast search method on sorted data | `bisect_left()` |
-| Insertion point | The index where a value can be inserted while keeping order | `insort()` |
-| Top-k | The largest or smallest k items | `nlargest(3, scores)` |
-
-## 5. Mental model
-
-```mermaid
-flowchart TD
-    A[Need repeated smallest or highest-priority item?] --> B[Use heapq]
-    A --> C[Need a position inside sorted data?]
-    C --> D[Use bisect]
-    A --> E[Need one full sorted result once?]
-    E --> F[Use sorted()]
-```
-
-Use `heapq` when you keep taking the next best item.
-Use `bisect` when the data is already sorted and you need search boundaries or ordered insertion points.
-
-## 6. Foundations
-
-### 6.1 `heapq` keeps the smallest value at the front
+### `heapq` keeps the smallest value at the front
 
 ```python
 import heapq
@@ -93,13 +46,11 @@ Output:
 3
 ```
 
-Why this output?
-
 The heap always keeps the smallest value at index `0`.
 
 Practical takeaway: `heapq` is the right tool when you repeatedly need the smallest item.
 
-### 6.2 `bisect` finds boundaries in sorted data
+### `bisect` finds boundaries in sorted data
 
 ```python
 from bisect import bisect_left, bisect_right
@@ -116,13 +67,11 @@ Output:
 3
 ```
 
-Why this output?
-
 `bisect_left()` finds the first position for `20`, and `bisect_right()` finds the position just after the last `20`.
 
 Practical takeaway: use `bisect` when you need a stable insertion boundary or range count.
 
-### 6.3 `insort` inserts while keeping sort order
+### `insort` inserts while keeping sort order
 
 ```python
 from bisect import insort
@@ -138,25 +87,11 @@ Output:
 [10, 20, 20, 25, 30]
 ```
 
-Why this output?
-
 `insort()` finds the correct position and inserts the value there.
 
 Practical takeaway: use `insort` only when the list is small enough that shifting items is still acceptable.
 
-## 7. How it works
-
-### Heap behavior
-
-`heapq` stores a heap inside a plain Python list.
-The list is not fully sorted; it only guarantees that the smallest item is at the front.
-
-### Bisect behavior
-
-`bisect` uses binary search to find an index in a sorted list.
-The search is fast, but insertion into a Python list is still linear because the items after the insertion point must move.
-
-## 8. Core operations or methods
+## 3. Heap and bisection operations
 
 ### `heapq.heappush()` and `heapq.heappop()`
 
@@ -236,7 +171,7 @@ Output:
 
 - Inserts while preserving order.
 
-## 9. Guided examples
+## 4. Practical selection patterns
 
 ### Example 1: Top-k leaderboard
 
@@ -291,13 +226,11 @@ Output:
 4
 ```
 
-## 10. Common patterns and real-world applications
-
 - Use `heapq` for job schedulers, event queues, and top-k scoring.
 - Use `bisect` for threshold lookups, range counts, and maintaining small sorted lists.
 - Use `sorted()` when you need the full order once and not repeated priority extraction.
 
-## 11. Common mistakes, misconceptions, and failure cases
+## 5. Correctness mistakes
 
 ### Mistake 1: Thinking a heap is a fully sorted list
 
@@ -315,7 +248,7 @@ The search is fast, but the insertion still shifts items, so the total work is O
 
 If two tasks can have the same priority, add a counter so the queue stays deterministic.
 
-## 12. Comparison and decision guide
+## 6. Selection decision guide
 
 | Need | Best choice | Why | Avoid when |
 | --- | --- | --- | --- |
@@ -330,7 +263,7 @@ Selection rule:
 - Use `bisect` for sorted-list search and small ordered inserts.
 - Use `sorted()` for one-time batch ordering.
 
-## 13. Efficiency, limitations, safety, and best practices
+## 7. Complexity and safety
 
 | Operation | Typical cost | Note |
 | --- | --- | --- |
@@ -345,7 +278,7 @@ Best practices:
 - Keep the list sorted before using `bisect`.
 - Use tuples carefully in heaps so comparison order is predictable.
 
-## 14. Advanced concepts
+## 8. Advanced selection behavior
 
 ### Max-heap in Python 3.12
 
@@ -372,109 +305,7 @@ Output:
 
 `bisect` is a clean way to count how many items fall between two boundaries in a sorted list.
 
-## 15. Interview or assessment knowledge
-
-- Why use `heapq` for top-k? It avoids sorting the whole dataset when you only need a few results.
-- Why use `bisect` for thresholds? It finds the boundary quickly in sorted data.
-- Why not always use a heap? If you need full sorted order once, `sorted()` is simpler.
-
-## 16. Practice exercises
-
-1. Use `heapq` to print the smallest value from `[7, 2, 9, 1]`.
-2. Use `heapq.nlargest()` to find the top 2 scores from `[5, 8, 1, 9]`.
-3. Use `bisect_left()` and `bisect_right()` on `[10, 20, 20, 30]` for the value `20`.
-4. Use `insort()` to insert `6` into `[1, 4, 8]`.
-5. Write a priority queue that keeps `"urgent"` before `"normal"` tasks.
-
-### Solutions
-
-#### Solution 1
-
-```python
-import heapq
-
-values = [7, 2, 9, 1]
-heapq.heapify(values)
-print(heapq.heappop(values))
-```
-
-Output:
-
-```text
-1
-```
-
-#### Solution 2
-
-```python
-import heapq
-
-print(heapq.nlargest(2, [5, 8, 1, 9]))
-```
-
-Output:
-
-```text
-[9, 8]
-```
-
-#### Solution 3
-
-```python
-from bisect import bisect_left, bisect_right
-
-data = [10, 20, 20, 30]
-print(bisect_left(data, 20))
-print(bisect_right(data, 20))
-```
-
-Output:
-
-```text
-1
-3
-```
-
-#### Solution 4
-
-```python
-from bisect import insort
-
-values = [1, 4, 8]
-insort(values, 6)
-print(values)
-```
-
-Output:
-
-```text
-[1, 4, 6, 8]
-```
-
-#### Solution 5
-
-```python
-import heapq
-from itertools import count
-
-order = count()
-pq = []
-
-def push(priority: int, task: str) -> None:
-    heapq.heappush(pq, (priority, next(order), task))
-
-push(0, "urgent")
-push(1, "normal")
-print(heapq.heappop(pq)[2])
-```
-
-Output:
-
-```text
-urgent
-```
-
-## 17. Summary cheat sheet
+## 9. Mental model
 
 | Need | Use | Remember |
 | --- | --- | --- |
@@ -482,19 +313,50 @@ urgent
 | Top-k results | `heapq.nlargest()` / `nsmallest()` | Better than sorting everything |
 | Search sorted boundaries | `bisect_left()` / `bisect_right()` | Requires sorted input |
 | Insert into sorted list | `insort()` | Still costs linear time |
-| Max-heap behavior | Negative values | Python 3.12 uses a min-heap by default |
+| Max-heap behavior | max-heap APIs on Python 3.14+ | Largest item stays at the front |
 
-## 18. Mastery checklist and next steps
+## 10. Native max-heaps on Python 3.14+
 
-- [ ] I can explain the difference between a heap and a sorted list.
-- [ ] I can use `heapq` for priority queues and top-k queries.
-- [ ] I can use `bisect` for binary search boundaries.
-- [ ] I know why `insort()` is not a free O(log n) insertion.
-- [ ] I can choose between `heapq`, `bisect`, and `sorted()` quickly.
+Python 3.14 adds explicit max-heap operations, avoiding negation tricks and their
+edge cases.
 
-Next topics:
+```python
+import heapq
 
-- `collections` module types
-- `collections.abc` and typing
-- specialized sequence types
-- `itertools`
+values = [3, 1, 4, 2]
+heapq.heapify_max(values)
+print(heapq.heappop_max(values))
+print(values[0])
+```
+
+Output on Python 3.14+:
+
+```text
+4
+3
+```
+
+Use `heappush_max`, `heappop_max`, `heappushpop_max`, and `heapreplace_max` only
+when the supported runtime is Python 3.14 or newer.
+
+## 11. Keyed bisection
+
+`bisect` accepts `key=` for records. The key function is applied to elements in
+the list but not to the search value, so pass the search key itself.
+
+```python
+from bisect import bisect_left
+
+records = [{"score": 10}, {"score": 20}, {"score": 30}]
+index = bisect_left(records, 25, key=lambda record: record["score"])
+print(index)
+```
+
+Output:
+
+```text
+2
+```
+
+Repeated key computation can dominate searches. Cache keys in a parallel list
+when profiling proves it matters and keep both lists updated together.

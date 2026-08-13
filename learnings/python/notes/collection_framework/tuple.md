@@ -1,5 +1,4 @@
-# Tuple in Python (3.11+) - Complete Worksheet Notes
-
+# Python `tuple`
 ## 1) What is a tuple?
 A tuple is an ordered, immutable sequence type in Python.
 
@@ -11,6 +10,12 @@ A tuple is an ordered, immutable sequence type in Python.
 ```python
 t = (10, "python", 3.14)
 print(t[0])   # 10
+```
+
+Output:
+
+```text
+10
 ```
 
 ## 2) Creating tuples
@@ -62,6 +67,14 @@ print(mid)  # [2, 3, 4]
 print(b)    # 5
 ```
 
+Output:
+
+```text
+1
+[2, 3, 4]
+5
+```
+
 ## 4) Accessing tuple elements
 
 ### Indexing
@@ -69,6 +82,13 @@ print(b)    # 5
 t = (10, 20, 30, 40)
 print(t[0])   # 10
 print(t[-1])  # 40
+```
+
+Output:
+
+```text
+10
+40
 ```
 
 ### Slicing
@@ -79,6 +99,14 @@ print(t[::-1])  # (7, 5, 3, 2, 1)
 print(t[::2])   # (1, 3, 7)
 ```
 
+Output:
+
+```text
+(2, 3, 5)
+(7, 5, 3, 2, 1)
+(1, 3, 7)
+```
+
 ## 5) Tuple operations
 
 ### Concatenation
@@ -87,15 +115,33 @@ t = (1, 2) + (3, 4)
 print(t)  # (1, 2, 3, 4)
 ```
 
+Output:
+
+```text
+(1, 2, 3, 4)
+```
+
 ### Repetition
 ```python
 t = (1, 2) * 3
 print(t)  # (1, 2, 1, 2, 1, 2)
 ```
 
+Output:
+
+```text
+(1, 2, 1, 2, 1, 2)
+```
+
 ### Membership
 ```python
 print(2 in (1, 2, 3))  # True
+```
+
+Output:
+
+```text
+True
 ```
 
 ## 6) Immutability: what is and is not protected
@@ -108,6 +154,12 @@ t[0][0] = 99
 print(t)  # ([99, 2], [3, 4])
 ```
 
+Output:
+
+```text
+([99, 2], [3, 4])
+```
+
 ## 7) Tuple methods
 Tuples have only two methods:
 
@@ -117,6 +169,13 @@ print(t.count(2))  # 3
 print(t.index(3))  # 3
 ```
 
+Output:
+
+```text
+3
+3
+```
+
 ## 8) Useful built-ins with tuples
 ```python
 t = (4, 1, 9, 2)
@@ -124,6 +183,15 @@ print(len(t))  # 4
 print(min(t))  # 1
 print(max(t))  # 9
 print(sum(t))  # 16
+```
+
+Output:
+
+```text
+4
+1
+9
+16
 ```
 
 ## 9) Tuple vs list
@@ -166,6 +234,14 @@ def demo(a, *args, **kwargs):
 demo(1, 2, 3, x=4, y=5)
 ```
 
+Output:
+
+```text
+1
+(2, 3)
+{'x': 4, 'y': 5}
+```
+
 ### Unpacking in function calls
 ```python
 def add3(a, b, c):
@@ -175,6 +251,12 @@ t = (1, 2, 3)
 print(add3(*t))   # 6
 ```
 
+Output:
+
+```text
+6
+```
+
 ## 12) Swapping and multiple assignment
 ```python
 a, b = 5, 10
@@ -182,11 +264,25 @@ a, b = b, a
 print(a, b)  # 10 5
 ```
 
+Output:
+
+```text
+10 5
+```
+
 ## 13) Loop unpacking
 ```python
 pairs = [(1, 2), (3, 4), (5, 6)]
 for x, y in pairs:
     print(x, y)
+```
+
+Output:
+
+```text
+1 2
+3 4
+5 6
 ```
 
 ## 14) Structural pattern matching (3.10+)
@@ -204,6 +300,12 @@ match point:
         print("General point:", x, y)
 ```
 
+Output:
+
+```text
+On Y-axis: 7
+```
+
 ## 15) Copy behavior: assignment, shallow copy, deep copy
 Important for nested mutable elements.
 
@@ -219,6 +321,14 @@ t1[1].append(99)
 print(t2)  # (1, [2, 3, 99], 4)
 print(t3)  # (1, [2, 3, 99], 4)
 print(t4)  # (1, [2, 3], 4)
+```
+
+Output:
+
+```text
+(1, [2, 3, 99], 4)
+(1, [2, 3, 99], 4)
+(1, [2, 3], 4)
 ```
 
 Notes:
@@ -281,6 +391,12 @@ p = Point(10, 20)
 print(p.x, p.y)
 ```
 
+Output:
+
+```text
+10 20
+```
+
 Benefits:
 - keeps tuple immutability and lightweight behavior.
 - improves readability in records with fixed meaning.
@@ -294,6 +410,12 @@ visits = {}
 key = ("user-1", "2026-06-28")
 visits[key] = visits.get(key, 0) + 1
 print(visits[key])
+```
+
+Output:
+
+```text
+1
 ```
 
 Use cases:
@@ -340,6 +462,12 @@ invoice_id, status, amount, *_, date = record
 print(invoice_id, amount, date)
 ```
 
+Output:
+
+```text
+INV-1 1200 2026-06-28
+```
+
 Why useful:
 - robust extraction from fixed-shape records.
 - clean handling of "middle fields I do not need now."
@@ -356,6 +484,12 @@ match event:
         print("client-side error:", msg)
     case _:
         print("other event")
+```
+
+Output:
+
+```text
+server-side error: gateway timeout
 ```
 
 ## 27) Tuple Memory and Performance Positioning

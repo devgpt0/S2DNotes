@@ -274,17 +274,6 @@ Interview point:
 
 ---
 
-## 15. Practice Assignment
-
-Build threaded file ingestion service:
-- use `ThreadPoolExecutor(max_workers=8)`
-- submit parse tasks per file
-- add per-task timeout handling
-- collect failures and retry once
-- expose summary counts: processed/failed/retried
-
----
-
 ## 16. Coffman Deadlock Conditions (Critical Missing Concept)
 
 A deadlock can happen only when all four Coffman conditions hold:
@@ -366,3 +355,39 @@ Use a repeatable checklist:
 3. inspect lock ordering violations.
 4. identify long critical sections and external I/O under lock.
 
+## 22. Bound submitted work on Python 3.14+
+
+`Executor.map(..., buffersize=n)` limits how many submitted results can remain
+unconsumed. Without a buffer limit, eagerly submitting a very large iterable can
+consume excessive memory.
+
+```python
+from concurrent.futures import ThreadPoolExecutor
+
+
+def double(value: int) -> int:
+    return value * 2
+
+
+with ThreadPoolExecutor(max_workers=2) as executor:
+    results = list(executor.map(double, range(4), buffersize=2))
+
+print(results)
+```
+
+Output on Python 3.14+:
+
+```text
+[0, 2, 4, 6]
+```
+
+## 23. Isolated interpreters on Python 3.14+
+
+`InterpreterPoolExecutor` runs each worker in an isolated interpreter with its
+own GIL, enabling multi-core execution without process workers. Isolation means
+modules, mutable objects, and runtime state are not shared; callables, arguments,
+and results cross a serialization boundary.
+
+Choose it only after measuring a CPU-bound workload and verifying extension
+compatibility. Processes remain the stronger isolation boundary, while ordinary
+threads remain simpler for blocking I/O and shared in-process resources.

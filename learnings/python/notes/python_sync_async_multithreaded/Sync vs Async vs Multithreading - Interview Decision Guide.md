@@ -161,17 +161,6 @@ to a thread pool. If CPU-heavy transformation grows, I will move that stage to m
 
 ---
 
-## 12. Practice Assignment
-
-Take one feature (for example "download and process 500 URLs"):
-1. write sync design
-2. write async design
-3. write thread-pool design
-4. compare complexity, runtime, and failure handling
-5. present final recommendation with reasons
-
----
-
 ## 13. Missing Critical Choice: Multiprocessing vs Threads
 
 When CPU work dominates, compare:

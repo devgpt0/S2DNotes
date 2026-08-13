@@ -1,25 +1,9 @@
-# JSON: Beginner-to-Expert Notes
+# JSON
 
-## 1. Learning goals
-
-By the end of this note, you should be able to:
-
-- read JSON text into Python objects;
-- write Python objects back to JSON text;
-- use `json.loads`, `json.dumps`, `json.load`, and `json.dump`;
-- recognize common JSON limitations and errors.
-
-## 2. Prerequisites
-
-- Dictionaries, lists, strings
-- Basic file handling concepts
-
-## 3. Topic at a glance
+## 1. Core truth
 
 JSON is a text format for structured data.
 It is common because many languages and tools can read it.
-
-### Minimal first example
 
 ```python
 import json
@@ -35,35 +19,11 @@ Output:
 Ana
 ```
 
-Why this output?
-
 `loads()` converts JSON text into a Python dictionary.
 
-Roadmap: first we build the mental model, then we learn reading and writing, then we compare JSON with Python types, and finally we practice safe usage.
+## 2. JSON foundations
 
-## 4. Core vocabulary
-
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| JSON | Text format for data | `{"x": 1}` |
-| `loads` | Parse text into Python | `json.loads(text)` |
-| `dumps` | Convert Python into text | `json.dumps(obj)` |
-| `load` | Read JSON from a file | `json.load(file)` |
-| `dump` | Write JSON to a file | `json.dump(obj, file)` |
-
-## 5. Mental model
-
-```mermaid
-flowchart TD
-    A[JSON text] --> B[json.loads or json.load]
-    B --> C[Python dict/list values]
-    C --> D[json.dumps or json.dump]
-    D --> E[JSON text]
-```
-
-## 6. Foundations
-
-### 6.1 `loads()` parses a string
+### `loads()` parses a string
 
 ```python
 import json
@@ -79,7 +39,7 @@ Output:
 30
 ```
 
-### 6.2 `dumps()` serializes a Python object
+### `dumps()` serializes a Python object
 
 ```python
 import json
@@ -94,7 +54,7 @@ Output:
 {"age": 30, "name": "Ana"}
 ```
 
-### 6.3 Pretty printing helps debugging
+### Pretty printing helps debugging
 
 ```python
 import json
@@ -112,12 +72,7 @@ Output:
 }
 ```
 
-## 7. How it works
-
-JSON supports a limited set of data types.
-Python types outside that set need conversion before serialization.
-
-## 8. Core operations or methods
+## 3. Parser and serializer APIs
 
 - `json.loads(text)`
 - `json.dumps(obj)`
@@ -137,7 +92,7 @@ Output:
 {"x": 1}
 ```
 
-## 9. Guided examples
+## 4. Practical JSON processing
 
 ### Example 1: Parse a JSON string
 
@@ -189,14 +144,12 @@ Output:
 }
 ```
 
-## 10. Common patterns and real-world applications
-
 - API request and response payloads;
 - configuration files;
 - logging structured events;
 - exchanging nested data between systems.
 
-## 11. Common mistakes, misconceptions, and failure cases
+## 5. JSON mistakes
 
 ### Mistake 1: Assuming every Python object is JSON serializable
 
@@ -210,7 +163,7 @@ External JSON should be checked before use.
 
 JSON uses lowercase `true` and `false`; Python uses `True` and `False`.
 
-## 12. Comparison and decision guide
+## 6. Format decision guide
 
 | Need | Best choice | Why |
 | --- | --- | --- |
@@ -218,91 +171,20 @@ JSON uses lowercase `true` and `false`; Python uses `True` and `False`.
 | Human-edited config | JSON or YAML | readable, but validate carefully |
 | Tabular rows | CSV | simpler for tables |
 
-## 13. Efficiency, limitations, safety, and best practices
+## 7. Validation and safety
 
 - validate data after parsing;
 - use stable key ordering when helpful for diffs;
 - avoid serializing unsupported types without an explicit rule;
 - keep JSON at system boundaries.
 
-## 14. Advanced concepts
+## 8. Advanced JSON behavior
 
 - custom encoders;
 - decoding into typed domain objects;
 - file streaming for larger payloads.
 
-## 15. Interview or assessment knowledge
-
-- What is JSON?
-- What do `loads` and `dumps` do?
-- Why is JSON useful for interoperability?
-- What are common JSON limitations?
-
-## 16. Practice exercises
-
-1. Parse a JSON string and read a key.
-2. Serialize a Python dictionary to JSON text.
-3. Pretty print nested JSON.
-4. Explain one JSON limitation.
-5. Explain why validation matters after parsing.
-
-### Solutions
-
-#### Solution 1
-
-```python
-import json
-
-print(json.loads('{"name": "Ana"}')["name"])
-```
-
-Output:
-
-```text
-Ana
-```
-
-#### Solution 2
-
-```python
-import json
-
-print(json.dumps({"x": 1}))
-```
-
-Output:
-
-```text
-{"x": 1}
-```
-
-#### Solution 3
-
-```python
-import json
-
-print(json.dumps({"user": {"name": "Ana"}}, indent=2, sort_keys=True))
-```
-
-Output:
-
-```text
-{
-  "user": {
-    "name": "Ana"
-  }
-}
-```
-
-#### Solution 4
-
-JSON does not directly represent every Python type.
-
-#### Solution 5
-
-Validation matters because parsed data comes from outside your code and may not match your expectations.
-
-## 17. Summary cheat sheet
+## 9. Mental model
 
 | Function | Use |
 | --- | --- |
@@ -311,16 +193,84 @@ Validation matters because parsed data comes from outside your code and may not 
 | `load` | read from file |
 | `dump` | write to file |
 
-## 18. Mastery checklist and next steps
+## 10. Strict numeric behavior
 
-- [ ] I can parse JSON text.
-- [ ] I can serialize Python objects to JSON.
-- [ ] I understand pretty printing.
-- [ ] I know JSON is a boundary format, not a full Python type system.
+The standard encoder accepts non-finite floats by default even though they are
+outside interoperable JSON. Reject them with `allow_nan=False`.
 
-Next topics:
+```python
+import json
 
-- `13_csv.md`
-- `14_os_module.md`
-- `15_pathlib.md`
-- `17_basic_scripting_and_automation.md`
+try:
+    json.dumps({"value": float("nan")}, allow_nan=False)
+except ValueError as error:
+    print(type(error).__name__)
+```
+
+Output:
+
+```text
+ValueError
+```
+
+Use `parse_float=Decimal` when decimal text must not first become a binary
+floating-point value.
+
+```python
+import json
+from decimal import Decimal
+
+payload = json.loads('{"price": 0.1}', parse_float=Decimal)
+print(type(payload["price"]).__name__)
+print(payload["price"])
+```
+
+Output:
+
+```text
+Decimal
+0.1
+```
+
+## 11. Duplicate keys and schema validation
+
+JSON objects may contain duplicate names. The default decoder keeps the last
+value. Reject duplicates when they make the request ambiguous.
+
+```python
+import json
+
+
+def reject_duplicates(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError(f"duplicate key: {key}")
+        result[key] = value
+    return result
+
+
+try:
+    json.loads('{"role": "user", "role": "admin"}', object_pairs_hook=reject_duplicates)
+except ValueError as error:
+    print(error)
+```
+
+Output:
+
+```text
+duplicate key: role
+```
+
+Parsing proves only that the JSON grammar is valid. Validate required keys,
+types, ranges, lengths, and unknown-field policy separately without coercion.
+
+## 12. Resource and interoperability limits
+
+- Bound payload bytes and nesting depth before or during parsing.
+- Stream newline-delimited JSON or use a streaming parser for large datasets;
+  `json.load()` builds the entire value in memory.
+- Use `ensure_ascii=False` for readable Unicode when the transport is UTF-8.
+- Use stable separators and key ordering only when a protocol requires them;
+  `sort_keys=True` alone is not a complete canonical-JSON specification.
+- Never treat JSON as trusted merely because it cannot execute code directly.

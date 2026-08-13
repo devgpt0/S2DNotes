@@ -88,7 +88,7 @@ Most interview confusion comes from mixing these models.
 
 ## 7. Final Tip
 
-Do not memorize APIs only.  
+Do not memorize APIs only.
 Understand:
 - when work blocks
 - where context switch happens

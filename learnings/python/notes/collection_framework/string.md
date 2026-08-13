@@ -1,25 +1,8 @@
-# `str` in Python: Beginner-to-Expert Notes
-
-## 1. Learning goals
-
-By the end of this note, you should be able to:
-
-- treat strings as immutable text sequences;
-- use common string methods for cleaning and formatting;
-- slice and search strings safely;
-- recognize when text handling needs explicit validation.
-
-## 2. Prerequisites
-
-- Basic Python variables and lists
-- Slicing and method calls
-
-## 3. Topic at a glance
+# `str` in Python
+## 1. Core truth
 
 A string is ordered text in Python.
 It behaves like a sequence of characters, but it is immutable.
-
-### Minimal first example
 
 ```python
 text = "python"
@@ -32,35 +15,11 @@ Output:
 PYTHON
 ```
 
-Why this output?
-
 `upper()` returns a new string with uppercase letters.
 
-Roadmap: first we build the mental model, then we learn core methods, then we compare string operations with other sequence types, and finally we practice safe text handling.
+## 2. String foundations
 
-## 4. Core vocabulary
-
-| Term | Plain-language meaning | Example |
-| --- | --- | --- |
-| String | immutable text sequence | `"hello"` |
-| Slice | part of a string | `text[1:4]` |
-| Immutable | cannot be changed in place | strings |
-| Method | operation on a string | `strip()`, `split()` |
-| Encoding | text-to-bytes rule | UTF-8 |
-
-## 5. Mental model
-
-```mermaid
-flowchart TD
-    A[String text] --> B[Inspect]
-    A --> C[Slice]
-    A --> D[Transform with methods]
-    D --> E[New string]
-```
-
-## 6. Foundations
-
-### 6.1 Strings are immutable
+### Strings are immutable
 
 ```python
 text = "cat"
@@ -75,7 +34,7 @@ bat
 cat
 ```
 
-### 6.2 Slicing extracts parts
+### Slicing extracts parts
 
 ```python
 text = "python"
@@ -90,7 +49,7 @@ pyt
 hon
 ```
 
-### 6.3 `split()` and `join()`
+### `split()` and `join()`
 
 ```python
 text = "ana,raj,mia"
@@ -106,12 +65,7 @@ Output:
 ana | raj | mia
 ```
 
-## 7. How it works
-
-String methods do not change the original string.
-They return a new string or a new list depending on the operation.
-
-## 8. Core operations or methods
+## 3. String operations
 
 - `upper()`
 - `lower()`
@@ -121,7 +75,7 @@ They return a new string or a new list depending on the operation.
 - `replace()`
 - slicing
 
-## 9. Guided examples
+## 4. Practical text patterns
 
 ### Example 1: Clean text
 
@@ -162,14 +116,12 @@ Output:
 hello world
 ```
 
-## 10. Common patterns and real-world applications
-
 - cleaning user input;
 - parsing simple text formats;
 - formatting messages;
 - creating readable output.
 
-## 11. Common mistakes, misconceptions, and failure cases
+## 5. Text-handling mistakes
 
 ### Mistake 1: Expecting string methods to modify in place
 
@@ -183,7 +135,7 @@ Text is `str`; binary data is `bytes`.
 
 Whitespace often needs explicit removal before validation.
 
-## 12. Comparison and decision guide
+## 6. Text-type decision guide
 
 | Need | Best choice | Why |
 | --- | --- | --- |
@@ -191,88 +143,19 @@ Whitespace often needs explicit removal before validation.
 | Character list editing | list of chars | easier for complex edits |
 | Binary data | `bytes` | not text |
 
-## 13. Efficiency, limitations, safety, and best practices
+## 7. Performance and validation
 
 - strings are immutable, so repeated concatenation can cost more than building once;
 - use explicit encoding when moving between text and bytes;
 - validate external text before trusting it.
 
-## 14. Advanced concepts
+## 8. Advanced text behavior
 
 - string formatting;
 - Unicode awareness;
 - normalization in text-heavy systems.
 
-## 15. Interview or assessment knowledge
-
-- Why are strings immutable?
-- What does `split()` return?
-- What does `join()` do?
-- Why is `strip()` commonly used?
-
-## 16. Practice exercises
-
-1. Uppercase a string.
-2. Strip whitespace from text.
-3. Split a comma-separated string.
-4. Join a list of words.
-5. Explain the difference between `str` and `bytes`.
-
-### Solutions
-
-#### Solution 1
-
-```python
-print("python".upper())
-```
-
-Output:
-
-```text
-PYTHON
-```
-
-#### Solution 2
-
-```python
-print("  hello  ".strip())
-```
-
-Output:
-
-```text
-hello
-```
-
-#### Solution 3
-
-```python
-print("a,b,c".split(","))
-```
-
-Output:
-
-```text
-['a', 'b', 'c']
-```
-
-#### Solution 4
-
-```python
-print(" ".join(["hello", "world"]))
-```
-
-Output:
-
-```text
-hello world
-```
-
-#### Solution 5
-
-`str` is text, while `bytes` is binary data.
-
-## 17. Summary cheat sheet
+## 9. Mental model
 
 | Method | Use |
 | --- | --- |
@@ -282,16 +165,61 @@ hello world
 | `join()` | combine pieces |
 | `replace()` | swap text |
 
-## 18. Mastery checklist and next steps
+## 10. Unicode-safe text handling
 
-- [ ] I can explain that strings are immutable.
-- [ ] I can use common string methods.
-- [ ] I can slice text safely.
-- [ ] I know when to validate text input.
+`lower()` is for display-oriented casing; `casefold()` is stronger and is the
+better basis for caseless comparison.
 
-Next topics:
+```python
+left = "Straße"
+right = "STRASSE"
+print(left.casefold() == right.casefold())
+```
 
-- `list.md`
-- `tuple.md`
-- `set.md`
-- `dict.md`
+Output:
+
+```text
+True
+```
+
+Visually identical text can use different code-point sequences. Normalize only
+when the business contract requires canonical equivalence.
+
+```python
+import unicodedata
+
+composed = "é"
+decomposed = "e\u0301"
+print(composed == decomposed)
+print(unicodedata.normalize("NFC", composed) == unicodedata.normalize("NFC", decomposed))
+```
+
+Output:
+
+```text
+False
+True
+```
+
+Python indexes Unicode code points, not user-perceived grapheme clusters. Emoji
+and combining sequences may occupy several indices; use a Unicode segmentation
+library when cursor movement or visible-character limits matter.
+
+## 11. Parsing and encoding boundaries
+
+Use `partition()` when one delimiter split is required; it always returns three
+parts and avoids an exception when the delimiter is missing.
+
+```python
+key, separator, value = "mode=fast".partition("=")
+print(key, separator, value)
+```
+
+Output:
+
+```text
+mode = fast
+```
+
+Convert text to bytes with an explicit encoding and error policy. Default to
+strict errors; replacement can silently corrupt identifiers or signatures.

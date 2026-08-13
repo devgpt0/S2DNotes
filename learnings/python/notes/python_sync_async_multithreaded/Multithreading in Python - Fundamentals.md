@@ -52,12 +52,20 @@ import sys
 import sysconfig
 
 is_free_thread_build = sysconfig.get_config_var("Py_GIL_DISABLED") == 1
-gil_enabled_now = sys._is_gil_enabled() if hasattr(sys, "_is_gil_enabled") else True
+is_gil_enabled = getattr(sys, "_is_gil_enabled", None)
+gil_enabled_now = is_gil_enabled() if callable(is_gil_enabled) else True
 
 print(f"Free-threaded build: {is_free_thread_build}")
 print(f"GIL currently enabled: {gil_enabled_now}")
 ```
 
+
+Output:
+
+```text
+Free-threaded build: False
+GIL currently enabled: True
+```
 ---
 
 ## 4. First Thread Example
@@ -255,16 +263,6 @@ t2.join()
 - Threads are strong for I/O-bound workloads.
 - Use `Lock` and `Queue` for correctness.
 - Correctness first, then performance tuning.
-
----
-
-## 13. Practice Assignment
-
-Implement threaded log processor:
-- producer reads mock log lines
-- 3 consumer threads parse lines
-- shared result dict protected by lock
-- then refactor to queue-based message passing with less shared state
 
 ---
 

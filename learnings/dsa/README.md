@@ -16,6 +16,8 @@ performance, testing, debugging, and contest decisions.
 3. [Power 30](power30/README.md) for problem-driven practice.
 4. [Competitive-programming hacks](hacks/README.md) for contest execution,
    testing, debugging, and language pitfalls.
+5. [ICPC300](ICPC300.md) for ICPC World Finals-level competitive-programming practice.
+6. [Focus300](Focus300.md) for senior SWE and AI-engineering interview practice.
 
 ```text
 syntax -> complexity -> patterns -> data structures -> graphs and DP

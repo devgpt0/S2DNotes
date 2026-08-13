@@ -1,6 +1,6 @@
 # PYTHON - VARIABLES AND NAME BINDING
 
-A Python variable is a name bound to an object. It is not a box that contains a value.
+A Python variable is just a label(reference) to an object in the memory
 
 ## 1. Assignment Binds a Name
 
