@@ -13,11 +13,13 @@ performance, testing, debugging, and contest decisions.
    still new.
 2. [Algorithms and data structures](algorithms/README.md) for reusable ideas,
    proofs, and reference implementations in C++, Python, and Java.
-3. [Power 30](power30/README.md) for problem-driven practice.
-4. [Competitive-programming hacks](hacks/README.md) for contest execution,
+3. [Math for Codeforces 0-2500](math_dsa/README.md) for the mathematics
+   progression, recognition cues, and Python references used in contests.
+4. [Power 30](power30/README.md) for problem-driven practice.
+5. [Competitive-programming hacks](hacks/README.md) for contest execution,
    testing, debugging, and language pitfalls.
-5. [ICPC300](ICPC300.md) for ICPC World Finals-level competitive-programming practice.
-6. [Focus300](Focus300.md) for senior SWE and AI-engineering interview practice.
+6. [ICPC300](ICPC300.md) for ICPC World Finals-level competitive-programming practice.
+7. [Focus300](Focus300.md) for senior SWE and AI-engineering interview practice.
 
 ```text
 syntax -> complexity -> patterns -> data structures -> graphs and DP

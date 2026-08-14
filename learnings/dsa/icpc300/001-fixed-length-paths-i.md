@@ -125,7 +125,9 @@ def count_pairs_tree_dp(graph: list[list[int]], distance_needed: int) -> int:
             child_counts = dfs(child, node)
 
             for from_node in range(distance_needed):
-                answer += counts[from_node] * child_counts[distance_needed - 1 - from_node]
+                answer += (
+                    counts[from_node] * child_counts[distance_needed - 1 - from_node]
+                )
 
             for from_child in range(distance_needed):
                 counts[from_child + 1] += child_counts[from_child]
@@ -191,7 +193,9 @@ def count_pairs_centroid(graph: list[list[int]], distance_needed: int) -> int:
                     return find_centroid(neighbor, node, total_size)
         return node
 
-    def collect_distances(node: int, parent: int, distance: int, values: list[int]) -> None:
+    def collect_distances(
+        node: int, parent: int, distance: int, values: list[int]
+    ) -> None:
         if distance > distance_needed:
             return
         values.append(distance)

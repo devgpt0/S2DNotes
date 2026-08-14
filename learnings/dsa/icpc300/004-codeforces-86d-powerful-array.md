@@ -1,53 +1,180 @@
 # ICPC300 004: Codeforces 86D - Powerful Array
 
 **Source:** [Codeforces 86D - Powerful Array](https://codeforces.com/problemset/problem/86/D)  
-**Core pattern:** Mo's algorithm
+**Pattern:** Mo's algorithm  
+**Goal:** For each inclusive range, compute
+`sum(value * frequency(value)^2)`.
 
-## First principles
+The implementations use zero-based query indices.
 
-Move a query window instead of rebuilding it. Adding or removing one value changes the answer by a constant-time frequency formula.
+## 1. First principles
 
-## Cases to check
+Recomputing every frequency for every query wastes overlapping work. Mo's
+algorithm reorders static range queries so one boundary moves at a time.
 
-- Empty/minimum input, boundary indices, duplicate values, and the largest allowed input.
-- Write a tiny brute-force oracle before trusting an optimization.
+If value `x` currently appears `c` times, adding one occurrence changes only
+its contribution:
 
-## 1. Brute force
-
-Start from the definition. It is correct but deliberately too slow at contest limits.
-
-```python
-def brute(values, left, right):
-    return sum(value * values[left:right + 1].count(value) ** 2 for value in set(values[left:right + 1]))
+```text
+x(c + 1)^2 - xc^2 = x(2c + 1)
 ```
 
-## 2. Better approach
+Removing one occurrence changes it by `x(1 - 2c)`. Both updates are `O(1)`.
 
-Remove one repeated computation, but check whether its memory or worst-case time still fits.
+## 2. Cases that decide correctness
+
+| Case | Required behavior |
+| --- | --- |
+| One element `x` | Power is `x`. |
+| All values equal | For length `k`, power is `x * k^2`. |
+| Boundary moves left | Add/remove the same way as a right-boundary move. |
+| Queries arrive unsorted | Store each answer at its original index. |
+| Large answer | Use integer arithmetic wide enough for the source limit. |
+
+## 3. Brute force: follow the formula directly
+
+For each distinct value in a query, scan the range again to count it. This is
+slow but makes a transparent small-input oracle.
 
 ```python
-def better(values, left, right):
-    counts = {}
-    for value in values[left:right + 1]: counts[value] = counts.get(value, 0) + 1
-    return sum(value * count * count for value, count in counts.items())
+def powerful_array_brute(
+    values: list[int], queries: list[tuple[int, int]]
+) -> list[int]:
+    answers: list[int] = []
+
+    for left, right in queries:
+        processed: set[int] = set()
+        power = 0
+        for index in range(left, right + 1):
+            value = values[index]
+            if value in processed:
+                continue
+
+            frequency = 0
+            for candidate_index in range(left, right + 1):
+                if values[candidate_index] == value:
+                    frequency += 1
+
+            power += value * frequency * frequency
+            processed.add(value)
+        answers.append(power)
+
+    return answers
 ```
 
-## 3. Expert solution
+**Complexity:** `O(qn^2)` worst-case time and `O(n)` temporary space.
 
-Use the stated pattern because it preserves the exact invariant while avoiding repeated work.
+## 4. Better: count each query in one pass
+
+Build one frequency table per query, then evaluate the formula once per
+distinct value.
 
 ```python
-def add(value, counts, answer):
-    answer -= value * counts[value] * counts[value]
-    counts[value] += 1
-    return answer + value * counts[value] * counts[value]
+from collections import Counter
 
-def remove(value, counts, answer):
-    answer -= value * counts[value] * counts[value]
-    counts[value] -= 1
-    return answer + value * counts[value] * counts[value]
+
+def powerful_array_counting(
+    values: list[int], queries: list[tuple[int, int]]
+) -> list[int]:
+    answers: list[int] = []
+
+    for left, right in queries:
+        frequencies = Counter(values[left : right + 1])
+        answers.append(
+            sum(
+                value * frequency * frequency
+                for value, frequency in frequencies.items()
+            )
+        )
+
+    return answers
 ```
 
-## Remember
+**Complexity:** `O(total queried length)` time and `O(n)` temporary space;
+worst case `O(nq)` time.
 
-State the invariant aloud, test adversarial boundaries against brute force, then implement the expert version.
+## 5. Expert solution: Mo's algorithm
+
+Split left endpoints into blocks and sort by block. Reverse the right-endpoint
+order in alternating blocks to avoid repeatedly sweeping back across the
+array.
+
+```python
+from math import isqrt
+
+
+def powerful_array_mo(values: list[int], queries: list[tuple[int, int]]) -> list[int]:
+    if not values:
+        if queries:
+            raise ValueError("queries require at least one value")
+        return []
+
+    block_size = max(1, isqrt(len(values)))
+
+    def query_key(query_index: int) -> tuple[int, int]:
+        left, right = queries[query_index]
+        block = left // block_size
+        ordered_right = right if block % 2 == 0 else -right
+        return block, ordered_right
+
+    order = sorted(range(len(queries)), key=query_key)
+    answers = [0] * len(queries)
+    frequencies: dict[int, int] = {}
+    current_power = 0
+    current_left = 0
+    current_right = -1
+
+    def add(index: int) -> None:
+        nonlocal current_power
+        value = values[index]
+        frequency = frequencies.get(value, 0)
+        current_power += value * (2 * frequency + 1)
+        frequencies[value] = frequency + 1
+
+    def remove(index: int) -> None:
+        nonlocal current_power
+        value = values[index]
+        frequency = frequencies[value]
+        current_power += value * (1 - 2 * frequency)
+        if frequency == 1:
+            del frequencies[value]
+        else:
+            frequencies[value] = frequency - 1
+
+    for query_index in order:
+        left, right = queries[query_index]
+        while current_left > left:
+            current_left -= 1
+            add(current_left)
+        while current_right < right:
+            current_right += 1
+            add(current_right)
+        while current_left < left:
+            remove(current_left)
+            current_left += 1
+        while current_right > right:
+            remove(current_right)
+            current_right -= 1
+        answers[query_index] = current_power
+
+    return answers
+```
+
+### Why the expert code is correct
+
+- The maintained frequency table describes exactly the current inclusive
+  window.
+- `add` and `remove` replace one value's old contribution with its new one,
+  leaving every other contribution unchanged.
+- Boundary moves transform the current window into each requested range, so
+  the stored power is that query's exact formula value.
+
+**Complexity:** `O((n + q) sqrt(n) + q log q)` time and `O(n + q)` space.
+
+## 6. What to remember
+
+```text
+static offline ranges + cheap add/remove -> consider Mo's algorithm
+add x at old count c    -> answer += x(2c + 1)
+remove x at old count c -> answer += x(1 - 2c)
+```
