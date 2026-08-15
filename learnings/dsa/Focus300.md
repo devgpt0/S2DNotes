@@ -204,7 +204,7 @@ Targets include Microsoft, Google, Meta, Netflix, Stripe, OpenAI, Anthropic, and
 194. [74 - Search a 2D Matrix](https://leetcode.com/problems/search-a-2d-matrix/)
 195. [75 - Sort Colors](https://leetcode.com/problems/sort-colors/)
 196. [77 - Combinations](https://leetcode.com/problems/combinations/)
-197. [78 - Subsets](https://leetcode.com/problems/subsets/)
+197. [78 - Subsets](focus300/197-0078-subsets.md)
 198. [79 - Word Search](https://leetcode.com/problems/word-search/)
 199. [80 - Remove Duplicates from Sorted Array II](https://leetcode.com/problems/remove-duplicates-from-sorted-array-ii/)
 200. [81 - Search in Rotated Sorted Array II](https://leetcode.com/problems/search-in-rotated-sorted-array-ii/)
