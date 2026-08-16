@@ -20,6 +20,47 @@ values are no greater than the opposite right boundary values.
 If `first[i-1] > second[j]`, move `i` left. Otherwise, if
 `second[j-1] > first[i]`, move `i` right.
 
+
+## Classroom board: move a partition until both sides balance
+
+```text
+    first = [1, 3]
+    second = [2, 4]
+
+    cut first after 1, cut second after 2.
+    left side has 1 and 2, right side has 3 and 4.
+```
+
+
+
+## Step-by-step transformation
+
+1. Compare the middle position with the target rule or boundary condition.
+2. Discard the half that cannot still contain a valid answer.
+3. Repeat until the remaining interval is exactly the split or value the problem asks for.
+4. Convert the final boundary positions into the required output.
+
+Binary-search style notes transform the input by shrinking the search space until only one valid boundary or value remains.
+
+
+## Diagram: discard half the search space
+
+```text
+
+            sorted input
+                |
+                v
+            check middle
+                |
+                v
+            keep the half that can still work
+                |
+                v
+            final boundary / value
+```
+
+Binary search keeps shrinking the input until only the valid boundary or value is left.
+
 ## Cases that decide correctness
 
 - Either input may be empty, but not both.

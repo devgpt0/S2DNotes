@@ -21,6 +21,48 @@ After BFS first reaches the end layer, finish that layer's predecessor
 discoveries, then backtrack through the predecessor DAG to enumerate all and
 only shortest sequences.
 
+
+## Classroom board: grow one frontier at a time
+
+```text
+    hit -> hot -> dot -> dog -> cog
+
+    BFS sees the shortest transformation count first.
+```
+
+
+
+## Step-by-step transformation
+
+1. Choose a start state such as a cell, node, or partial path.
+2. Mark the state as visited or temporarily commit the choice.
+3. Expand to valid neighbors or next choices while the invariant still holds.
+4. Undo the temporary choice when the branch finishes, then return the collected answer.
+
+These problems transform the input into output by exploring one branch at a time and backtracking whenever a branch can no longer produce a valid solution.
+
+
+## Diagram: search and undo
+
+```text
+
+            start state
+                |
+                v
+            choose one path
+                |
+                v
+            explore neighbors
+                |
+                v
+            undo and try next path
+                |
+                v
+            answer
+```
+
+These notes use search, visit markers, and backtracking to turn one starting state into the final valid path or count.
+
 ## Cases that decide correctness
 
 - The end word must occur in the dictionary.

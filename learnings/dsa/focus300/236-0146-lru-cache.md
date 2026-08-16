@@ -12,6 +12,47 @@ Implement an LRU cache with `get` and `put` operations that both run in constant
 
 The cache needs fast key lookup and fast recency updates. A hash map gives direct access by key, while a doubly linked list gives constant-time movement of the most and least recent entries.
 
+
+## Classroom board: track recency with get and put
+
+```text
+    put(1,1), put(2,2), get(1), put(3,3)
+
+    most recent ... least recent
+    after get(1): 1 is moved to the front
+    after put(3,3): evict key 2
+```
+
+
+
+## Step-by-step transformation
+
+1. Traverse the structure and keep the pointer, node, or subtree state that matters.
+2. Rewire links or combine child results without losing the part of the structure you still need.
+3. Carry the surviving state forward to the next node or subtree.
+4. Return the rebuilt structure, node value, or accumulated traversal result.
+
+These notes work by preserving the structure while changing just the links or the returned subtree results that lead to the final answer.
+
+
+## Diagram: walk and reconnect pointers
+
+```text
+
+            original nodes
+                |
+                v
+            read or split the structure
+                |
+                v
+            reconnect links or combine child results
+                |
+                v
+            rebuilt list / tree / value
+```
+
+The algorithm walks the structure, keeps only the needed pointers or subtree results, and returns the rebuilt output.
+
 ## Cases that decide correctness
 
 - Updating an existing key should refresh its recency.

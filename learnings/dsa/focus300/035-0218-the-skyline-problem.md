@@ -16,6 +16,44 @@ Skyline height can change only at a building endpoint. At an endpoint `x`, add
 every building starting there, discard active buildings whose right endpoint
 is at most `x`, and read the tallest remaining height.
 
+
+## Classroom board: store the repeated state once
+
+```text
+brute force recomputes the same subproblem many times.
+dp keeps the smallest useful state and extends it one step at a time.
+```
+
+
+
+## Step-by-step transformation
+
+1. Turn the input into subproblems, prefixes, or states that can be reused.
+2. Fill the base cases first so later states have something correct to build on.
+3. Update each new state from earlier states while keeping the recurrence valid.
+4. Read the answer from the final table entry or the best state collected at the end.
+
+Dynamic-programming style notes transform the input by compressing many repeated choices into a small set of reusable states.
+
+
+## Diagram: state table to answer
+
+```text
+
+            input
+                |
+                v
+            base states
+                |
+                v
+            reuse smaller states
+                |
+                v
+            final dp answer
+```
+
+These notes compress repeated choices into reusable states, then read the answer from the last state that matters.
+
 ## Cases that decide correctness
 
 - All events at one `x` must be processed before emitting a point.

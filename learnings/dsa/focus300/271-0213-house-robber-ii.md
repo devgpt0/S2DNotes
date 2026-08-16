@@ -12,6 +12,45 @@ Return the maximum amount that can be robbed from a circular street without robb
 
 The circle breaks the ordinary line DP because the first and last houses are adjacent. Solve two linear subproblems instead: one excluding the first house and one excluding the last.
 
+
+## Classroom board: take or skip each house
+
+```text
+    money = [2, 7, 9, 3, 1]
+
+    at each house, compare robbing it with skipping it.
+```
+
+
+
+## Step-by-step transformation
+
+1. Turn the input into subproblems, prefixes, or states that can be reused.
+2. Fill the base cases first so later states have something correct to build on.
+3. Update each new state from earlier states while keeping the recurrence valid.
+4. Read the answer from the final table entry or the best state collected at the end.
+
+Dynamic-programming style notes transform the input by compressing many repeated choices into a small set of reusable states.
+
+
+## Diagram: state table to answer
+
+```text
+
+            input
+                |
+                v
+            base states
+                |
+                v
+            reuse smaller states
+                |
+                v
+            final dp answer
+```
+
+These notes compress repeated choices into reusable states, then read the answer from the last state that matters.
+
 ## Cases that decide correctness
 
 - A one-house street returns that house's value.

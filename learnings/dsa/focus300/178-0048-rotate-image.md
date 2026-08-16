@@ -16,6 +16,45 @@ Coordinate `(row, column)` moves to `(column, n - 1 - row)`. Four applications
 return to the starting coordinate, so process each layer as independent four-way
 cycles and store one displaced value temporarily.
 
+
+## Classroom board: see the repeated work once
+
+```text
+brute force tries every choice.
+the optimized solution keeps only the state that must survive to the
+next step.
+```
+
+
+
+## Step-by-step transformation
+
+1. Read the input and identify the smallest state that still determines the answer.
+2. Process one element, node, or row at a time while preserving that state.
+3. Discard work that can no longer change the result.
+4. Convert the surviving state into the output the problem requests.
+
+The examples and code below show this transformation on the specific problem instance.
+
+
+## Diagram: input to output
+
+```text
+
+        input
+            |
+            v
+        core invariant
+            |
+            v
+        process one step at a time
+            |
+            v
+        output
+```
+
+The note shows the main idea, the repeated work, and the small state that turns the input into the output.
+
 ## Cases that decide correctness
 
 - A `1 x 1` matrix is unchanged.

@@ -18,6 +18,47 @@ character, use it. Let `dp[j]` count ways to form the first `j` target
 characters from the processed source prefix. A match updates
 `dp[j] += dp[j-1]`.
 
+
+## Classroom board: keep the smallest tail for each length
+
+```text
+    nums = [10, 9, 2, 5, 3, 7]
+
+    tails length 1 -> 2
+    tails length 2 -> 3
+    tails length 3 -> 7
+```
+
+
+
+## Step-by-step transformation
+
+1. Turn the input into subproblems, prefixes, or states that can be reused.
+2. Fill the base cases first so later states have something correct to build on.
+3. Update each new state from earlier states while keeping the recurrence valid.
+4. Read the answer from the final table entry or the best state collected at the end.
+
+Dynamic-programming style notes transform the input by compressing many repeated choices into a small set of reusable states.
+
+
+## Diagram: state table to answer
+
+```text
+
+            input
+                |
+                v
+            base states
+                |
+                v
+            reuse smaller states
+                |
+                v
+            final dp answer
+```
+
+These notes compress repeated choices into reusable states, then read the answer from the last state that matters.
+
 ## Cases that decide correctness
 
 - Different index selections count separately even when their text is equal.

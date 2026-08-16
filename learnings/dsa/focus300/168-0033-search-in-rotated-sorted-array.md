@@ -17,6 +17,46 @@ normally ordered. Determine which half by comparing its endpoints, then test
 whether the target lies inside that half's value range. Keep that half when it
 can contain the target; otherwise discard it.
 
+
+## Classroom board: decide which half is sorted
+
+```text
+    rotated = [4, 5, 6, 7, 0, 1, 2]
+
+    one half is always sorted, so the target must live in the half that
+    still contains its value range.
+```
+
+
+
+## Step-by-step transformation
+
+1. Compare the middle position with the target rule or boundary condition.
+2. Discard the half that cannot still contain a valid answer.
+3. Repeat until the remaining interval is exactly the split or value the problem asks for.
+4. Convert the final boundary positions into the required output.
+
+Binary-search style notes transform the input by shrinking the search space until only one valid boundary or value remains.
+
+
+## Diagram: discard half the search space
+
+```text
+
+            sorted input
+                |
+                v
+            check middle
+                |
+                v
+            keep the half that can still work
+                |
+                v
+            final boundary / value
+```
+
+Binary search keeps shrinking the input until only the valid boundary or value is left.
+
 ## Cases that decide correctness
 
 - An unrotated array follows ordinary binary search.

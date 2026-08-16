@@ -12,6 +12,46 @@ Return the minimum number of perfect squares that sum to `n`.
 
 Every target can be formed by appending one perfect square to a smaller target. The optimal count is therefore a shortest-path style recurrence over reachable remainders.
 
+
+## Classroom board: best answer for each total up to n
+
+```text
+    n = 12
+    12 = 4 + 4 + 4
+    12 = 9 + 1 + 1 + 1
+    choose the fewest terms.
+```
+
+
+
+## Step-by-step transformation
+
+1. Turn the input into subproblems, prefixes, or states that can be reused.
+2. Fill the base cases first so later states have something correct to build on.
+3. Update each new state from earlier states while keeping the recurrence valid.
+4. Read the answer from the final table entry or the best state collected at the end.
+
+Dynamic-programming style notes transform the input by compressing many repeated choices into a small set of reusable states.
+
+
+## Diagram: state table to answer
+
+```text
+
+            input
+                |
+                v
+            base states
+                |
+                v
+            reuse smaller states
+                |
+                v
+            final dp answer
+```
+
+These notes compress repeated choices into reusable states, then read the answer from the last state that matters.
+
 ## Cases that decide correctness
 
 - A perfect square needs one term.

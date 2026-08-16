@@ -12,6 +12,47 @@ Return the area of the largest square consisting only of `1`s.
 
 A square ending at a cell exists only if the cell itself is `1` and its top, left, and top-left neighbors can support a smaller square. The minimum of those three side lengths determines the current cell.
 
+
+## Classroom board: reuse the three neighboring squares
+
+```text
+    1 1 1
+    1 1 1
+
+    a cell can extend a square only if its top, left, and top-left cells
+    already support it.
+```
+
+
+
+## Step-by-step transformation
+
+1. Turn the input into subproblems, prefixes, or states that can be reused.
+2. Fill the base cases first so later states have something correct to build on.
+3. Update each new state from earlier states while keeping the recurrence valid.
+4. Read the answer from the final table entry or the best state collected at the end.
+
+Dynamic-programming style notes transform the input by compressing many repeated choices into a small set of reusable states.
+
+
+## Diagram: state table to answer
+
+```text
+
+            input
+                |
+                v
+            base states
+                |
+                v
+            reuse smaller states
+                |
+                v
+            final dp answer
+```
+
+These notes compress repeated choices into reusable states, then read the answer from the last state that matters.
+
 ## Cases that decide correctness
 
 - A board of all zeroes returns zero area.

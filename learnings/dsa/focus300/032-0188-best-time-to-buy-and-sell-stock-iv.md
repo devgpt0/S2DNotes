@@ -16,6 +16,45 @@ At each price, a valid strategy is either holding no share with some completed
 sales, or holding one share bought after that many completed sales. Buying
 subtracts the price; selling adds it and completes one transaction.
 
+
+## Classroom board: track cash and holding states
+
+```text
+    prices = [1, 2, 3, 0, 2]
+
+    state after each day says whether we are holding a stock or not.
+```
+
+
+
+## Step-by-step transformation
+
+1. Turn the input into subproblems, prefixes, or states that can be reused.
+2. Fill the base cases first so later states have something correct to build on.
+3. Update each new state from earlier states while keeping the recurrence valid.
+4. Read the answer from the final table entry or the best state collected at the end.
+
+Dynamic-programming style notes transform the input by compressing many repeated choices into a small set of reusable states.
+
+
+## Diagram: state table to answer
+
+```text
+
+            input
+                |
+                v
+            base states
+                |
+                v
+            reuse smaller states
+                |
+                v
+            final dp answer
+```
+
+These notes compress repeated choices into reusable states, then read the answer from the last state that matters.
+
 ## Cases that decide correctness
 
 - Zero transactions or fewer than two prices gives zero.

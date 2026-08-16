@@ -12,6 +12,45 @@ Implement a stack that can return the current minimum element in constant time.
 
 The stack needs to remember the minimum value seen so far for every prefix. Storing a parallel minimum snapshot makes `getMin` constant-time instead of rescanning.
 
+
+## Classroom board: track the minimum alongside the values
+
+```text
+    push 3, push 1, push 2
+
+    the stack remembers the current minimum at every depth.
+```
+
+
+
+## Step-by-step transformation
+
+1. Load the current candidates into a stack, queue, heap, or window.
+2. Push or pop the structure while the current element keeps the invariant true.
+3. Drop stale candidates and keep only the ones that can still affect the answer.
+4. Read the final top, window score, or popped order as the output.
+
+These problems transform the input by keeping just the active frontier of candidates instead of rescanning the whole array every time.
+
+
+## Diagram: active frontier only
+
+```text
+
+            scan left to right
+                |
+                v
+            keep active candidates
+                |
+                v
+            pop stale work
+                |
+                v
+            current best answer
+```
+
+These notes keep only the active frontier of useful candidates instead of rescanning the whole input.
+
 ## Cases that decide correctness
 
 - Pushing a smaller value updates the minimum.

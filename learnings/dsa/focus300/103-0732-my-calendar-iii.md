@@ -17,6 +17,45 @@ Sweeping those changes gives the maximum, but repeating a full sweep after each
 online update is expensive. A dynamic segment tree range-adds only the covered
 branches of the huge coordinate domain and keeps the global maximum at its root.
 
+
+## Classroom board: see the repeated work once
+
+```text
+brute force tries every choice.
+the optimized solution keeps only the state that must survive to the
+next step.
+```
+
+
+
+## Step-by-step transformation
+
+1. Read the input and identify the smallest state that still determines the answer.
+2. Process one element, node, or row at a time while preserving that state.
+3. Discard work that can no longer change the result.
+4. Convert the surviving state into the output the problem requests.
+
+The examples and code below show this transformation on the specific problem instance.
+
+
+## Diagram: input to output
+
+```text
+
+        input
+            |
+            v
+        core invariant
+            |
+            v
+        process one step at a time
+            |
+            v
+        output
+```
+
+The note shows the main idea, the repeated work, and the small state that turns the input into the output.
+
 ## Cases that decide correctness
 
 - Events are half-open, so `[10, 20)` and `[20, 30)` do not overlap.

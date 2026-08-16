@@ -18,6 +18,44 @@ Rerooting across edge `parent -> child` makes all `subtree[child]` nodes one
 step closer and the other `n-subtree[child]` nodes one step farther. Therefore
 `answer[child] = answer[parent] + n - 2*subtree[child]`.
 
+
+## Classroom board: walk the tree once
+
+```text
+choose the root condition, then push the relevant subtree state down as
+you recurse or iterate.
+```
+
+
+
+## Step-by-step transformation
+
+1. Traverse the structure and keep the pointer, node, or subtree state that matters.
+2. Rewire links or combine child results without losing the part of the structure you still need.
+3. Carry the surviving state forward to the next node or subtree.
+4. Return the rebuilt structure, node value, or accumulated traversal result.
+
+These notes work by preserving the structure while changing just the links or the returned subtree results that lead to the final answer.
+
+
+## Diagram: walk and reconnect pointers
+
+```text
+
+            original nodes
+                |
+                v
+            read or split the structure
+                |
+                v
+            reconnect links or combine child results
+                |
+                v
+            rebuilt list / tree / value
+```
+
+The algorithm walks the structure, keeps only the needed pointers or subtree results, and returns the rebuilt output.
+
 ## Cases that decide correctness
 
 - A one-node tree returns `[0]`.

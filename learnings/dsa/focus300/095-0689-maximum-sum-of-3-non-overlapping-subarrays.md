@@ -21,6 +21,44 @@ Tie direction is part of the algorithm. The left scan keeps the earlier index;
 the right scan, moving right-to-left, replaces on equality to keep the earlier
 index.
 
+
+## Classroom board: turn a range into two prefixes
+
+```text
+a subarray sum becomes prefix[right] - prefix[left], so one prefix table
+replaces many repeated range scans.
+```
+
+
+
+## Step-by-step transformation
+
+1. Load the current candidates into a stack, queue, heap, or window.
+2. Push or pop the structure while the current element keeps the invariant true.
+3. Drop stale candidates and keep only the ones that can still affect the answer.
+4. Read the final top, window score, or popped order as the output.
+
+These problems transform the input by keeping just the active frontier of candidates instead of rescanning the whole array every time.
+
+
+## Diagram: active frontier only
+
+```text
+
+            scan left to right
+                |
+                v
+            keep active candidates
+                |
+                v
+            pop stale work
+                |
+                v
+            current best answer
+```
+
+These notes keep only the active frontier of useful candidates instead of rescanning the whole input.
+
 ## Cases that decide correctness
 
 - Exactly `3*k` numbers forces starts `[0, k, 2*k]`.

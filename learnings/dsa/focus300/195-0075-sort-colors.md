@@ -17,6 +17,44 @@ ones, `[current, high]` is unknown, and `(high, end]` contains twos. A zero swap
 left and advances both pointers; a one advances; a two swaps right and keeps
 `current` fixed because the incoming value is still unknown.
 
+
+## Classroom board: discard half the search space
+
+```text
+binary search keeps the side that can still contain the answer and throws
+away the side that cannot.
+```
+
+
+
+## Step-by-step transformation
+
+1. Compare the middle position with the target rule or boundary condition.
+2. Discard the half that cannot still contain a valid answer.
+3. Repeat until the remaining interval is exactly the split or value the problem asks for.
+4. Convert the final boundary positions into the required output.
+
+Binary-search style notes transform the input by shrinking the search space until only one valid boundary or value remains.
+
+
+## Diagram: discard half the search space
+
+```text
+
+            sorted input
+                |
+                v
+            check middle
+                |
+                v
+            keep the half that can still work
+                |
+                v
+            final boundary / value
+```
+
+Binary search keeps shrinking the input until only the valid boundary or value is left.
+
 ## Cases that decide correctness
 
 - An array containing one color is already sorted.

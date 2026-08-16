@@ -19,6 +19,45 @@ absent from both numerator and denominator. After the two user joins, group by
 date and count every status other than `completed` as cancelled under the
 source status domain.
 
+
+## Classroom board: see the repeated work once
+
+```text
+brute force tries every choice.
+the optimized solution keeps only the state that must survive to the
+next step.
+```
+
+
+
+## Step-by-step transformation
+
+1. Read the table rows and keep only the rows that can still contribute to the answer.
+2. Use joins, grouping, ranking, or filtering to turn the raw rows into one intermediate result set.
+3. Apply tie rules or ordering rules before selecting the final row or value.
+4. Project the requested column(s), which is the final output of the query.
+
+In SQL problems, the database performs the transformation by moving rows through `WHERE`, `JOIN`, `GROUP BY`, window functions, and `ORDER BY` until only the requested result remains.
+
+
+## Diagram: SQL rows to final answer
+
+```text
+
+            raw table rows
+                |
+                v
+            filter / join / group / rank
+                |
+                v
+            ordered result rows
+                |
+                v
+            requested output column
+```
+
+The query turns table rows into one final answer by filtering, combining, and ranking the data in SQL.
+
 ## Cases that decide correctness
 
 - Both the client and driver ban flags matter.

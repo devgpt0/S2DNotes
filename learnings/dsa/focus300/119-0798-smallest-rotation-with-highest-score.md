@@ -19,6 +19,46 @@ loses a point when its index moves below its value, and gains a point when its
 index wraps. Recording those two rotation events for every element yields all
 scores with a difference array.
 
+
+## Classroom board: rank a tiny table
+
+```text
+rows = a few records
+
+brute force scans the rows repeatedly.
+useful structure: group, sort, or rank once, then read the answer.
+```
+
+
+
+## Step-by-step transformation
+
+1. Read the table rows and keep only the rows that can still contribute to the answer.
+2. Use joins, grouping, ranking, or filtering to turn the raw rows into one intermediate result set.
+3. Apply tie rules or ordering rules before selecting the final row or value.
+4. Project the requested column(s), which is the final output of the query.
+
+In SQL problems, the database performs the transformation by moving rows through `WHERE`, `JOIN`, `GROUP BY`, window functions, and `ORDER BY` until only the requested result remains.
+
+
+## Diagram: SQL rows to final answer
+
+```text
+
+            raw table rows
+                |
+                v
+            filter / join / group / rank
+                |
+                v
+            ordered result rows
+                |
+                v
+            requested output column
+```
+
+The query turns table rows into one final answer by filtering, combining, and ranking the data in SQL.
+
 ## Cases that decide correctness
 
 - Value zero scores at every position; its loss and gain events cancel.

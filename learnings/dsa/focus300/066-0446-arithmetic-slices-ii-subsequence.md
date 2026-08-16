@@ -19,6 +19,47 @@ valid length-at-least-three answer and another state ending at `i`.
 
 Pairs are stored for future extension but are not yet included in the answer.
 
+
+## Classroom board: keep the smallest tail for each length
+
+```text
+    nums = [10, 9, 2, 5, 3, 7]
+
+    tails length 1 -> 2
+    tails length 2 -> 3
+    tails length 3 -> 7
+```
+
+
+
+## Step-by-step transformation
+
+1. Turn the input into subproblems, prefixes, or states that can be reused.
+2. Fill the base cases first so later states have something correct to build on.
+3. Update each new state from earlier states while keeping the recurrence valid.
+4. Read the answer from the final table entry or the best state collected at the end.
+
+Dynamic-programming style notes transform the input by compressing many repeated choices into a small set of reusable states.
+
+
+## Diagram: state table to answer
+
+```text
+
+            input
+                |
+                v
+            base states
+                |
+                v
+            reuse smaller states
+                |
+                v
+            final dp answer
+```
+
+These notes compress repeated choices into reusable states, then read the answer from the last state that matters.
+
 ## Cases that decide correctness
 
 - Subsequences use indices, so equal values at different indices are distinct.

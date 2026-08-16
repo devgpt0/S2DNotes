@@ -12,6 +12,47 @@ Decide whether the string forms an additive sequence where each number equals th
 
 The first two numbers determine the entire rest of the sequence. That means the search space is only the choice of the first split points plus a deterministic validation walk.
 
+
+## Classroom board: turn a range into two prefixes
+
+```text
+a subarray sum becomes prefix[right] - prefix[left], so one prefix table
+replaces many repeated range scans.
+```
+
+
+
+## Step-by-step transformation
+
+1. Choose a start state such as a cell, node, or partial path.
+2. Mark the state as visited or temporarily commit the choice.
+3. Expand to valid neighbors or next choices while the invariant still holds.
+4. Undo the temporary choice when the branch finishes, then return the collected answer.
+
+These problems transform the input into output by exploring one branch at a time and backtracking whenever a branch can no longer produce a valid solution.
+
+
+## Diagram: search and undo
+
+```text
+
+            start state
+                |
+                v
+            choose one path
+                |
+                v
+            explore neighbors
+                |
+                v
+            undo and try next path
+                |
+                v
+            answer
+```
+
+These notes use search, visit markers, and backtracking to turn one starting state into the final valid path or count.
+
 ## Cases that decide correctness
 
 - Leading zeroes are invalid unless the number is exactly zero.

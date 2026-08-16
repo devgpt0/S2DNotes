@@ -12,6 +12,47 @@ Generate every structurally unique BST that stores the values `1` through `n`.
 
 Choosing a root partitions the values into smaller left and right subproblems. Every unique tree is formed by combining one left shape, one right shape, and the chosen root value.
 
+
+## Classroom board: choose the root and split the remaining keys
+
+```text
+    keys = [1, 2, 3]
+
+    root = 2
+    left subtree uses [1]
+    right subtree uses [3]
+```
+
+
+
+## Step-by-step transformation
+
+1. Traverse the structure and keep the pointer, node, or subtree state that matters.
+2. Rewire links or combine child results without losing the part of the structure you still need.
+3. Carry the surviving state forward to the next node or subtree.
+4. Return the rebuilt structure, node value, or accumulated traversal result.
+
+These notes work by preserving the structure while changing just the links or the returned subtree results that lead to the final answer.
+
+
+## Diagram: walk and reconnect pointers
+
+```text
+
+            original nodes
+                |
+                v
+            read or split the structure
+                |
+                v
+            reconnect links or combine child results
+                |
+                v
+            rebuilt list / tree / value
+```
+
+The algorithm walks the structure, keeps only the needed pointers or subtree results, and returns the rebuilt output.
+
 ## Cases that decide correctness
 
 - An empty range must contribute a single empty tree to the combination logic.

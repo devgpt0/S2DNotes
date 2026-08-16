@@ -12,6 +12,45 @@ Reorder the list so the first node is followed by the last, then the second, the
 
 The list can be decomposed into two halves, the second half reversed, and then woven together. The whole problem is pointer choreography, not value manipulation.
 
+
+## Classroom board: split, reverse, and weave
+
+```text
+    1 -> 2 -> 3 -> 4
+
+    split into 1 -> 2 and 3 -> 4, reverse the second half, then weave.
+```
+
+
+
+## Step-by-step transformation
+
+1. Traverse the structure and keep the pointer, node, or subtree state that matters.
+2. Rewire links or combine child results without losing the part of the structure you still need.
+3. Carry the surviving state forward to the next node or subtree.
+4. Return the rebuilt structure, node value, or accumulated traversal result.
+
+These notes work by preserving the structure while changing just the links or the returned subtree results that lead to the final answer.
+
+
+## Diagram: walk and reconnect pointers
+
+```text
+
+            original nodes
+                |
+                v
+            read or split the structure
+                |
+                v
+            reconnect links or combine child results
+                |
+                v
+            rebuilt list / tree / value
+```
+
+The algorithm walks the structure, keeps only the needed pointers or subtree results, and returns the rebuilt output.
+
 ## Cases that decide correctness
 
 - A short list of length zero, one, or two is already in the correct shape.

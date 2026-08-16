@@ -15,6 +15,45 @@ Each layer consists of a top row, right column, bottom row, and left column.
 Filling those sides in order and shrinking their boundaries preserves the same
 problem on the inner square.
 
+
+## Classroom board: see the repeated work once
+
+```text
+brute force tries every choice.
+the optimized solution keeps only the state that must survive to the
+next step.
+```
+
+
+
+## Step-by-step transformation
+
+1. Read the input and identify the smallest state that still determines the answer.
+2. Process one element, node, or row at a time while preserving that state.
+3. Discard work that can no longer change the result.
+4. Convert the surviving state into the output the problem requests.
+
+The examples and code below show this transformation on the specific problem instance.
+
+
+## Diagram: input to output
+
+```text
+
+        input
+            |
+            v
+        core invariant
+            |
+            v
+        process one step at a time
+            |
+            v
+        output
+```
+
+The note shows the main idea, the repeated work, and the small state that turns the input into the output.
+
 ## Cases that decide correctness
 
 - `n = 1` returns `[[1]]`.

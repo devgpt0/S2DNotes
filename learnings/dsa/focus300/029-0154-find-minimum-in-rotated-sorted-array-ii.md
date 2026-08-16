@@ -21,6 +21,45 @@ Compare the middle value with the right boundary:
 Duplicates destroy the strict ordering information that guarantees logarithmic
 time, so worst-case linear behavior is unavoidable.
 
+
+## Classroom board: compare mid with the right edge
+
+```text
+    rotated = [4, 5, 6, 1, 2, 3]
+
+    mid in the left sorted block tells us the minimum must be to the right.
+```
+
+
+
+## Step-by-step transformation
+
+1. Compare the middle position with the target rule or boundary condition.
+2. Discard the half that cannot still contain a valid answer.
+3. Repeat until the remaining interval is exactly the split or value the problem asks for.
+4. Convert the final boundary positions into the required output.
+
+Binary-search style notes transform the input by shrinking the search space until only one valid boundary or value remains.
+
+
+## Diagram: discard half the search space
+
+```text
+
+            sorted input
+                |
+                v
+            check middle
+                |
+                v
+            keep the half that can still work
+                |
+                v
+            final boundary / value
+```
+
+Binary search keeps shrinking the input until only the valid boundary or value is left.
+
 ## Cases that decide correctness
 
 - The array may be unrotated.

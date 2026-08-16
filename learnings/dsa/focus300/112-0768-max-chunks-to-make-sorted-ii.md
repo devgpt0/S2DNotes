@@ -18,6 +18,44 @@ greater than every value on its right. Otherwise at least one cross-boundary
 inversion remains after sorting the chunks. This condition is summarized by
 `max(array[:i+1]) <= min(array[i+1:])`.
 
+
+## Classroom board: turn a range into two prefixes
+
+```text
+a subarray sum becomes prefix[right] - prefix[left], so one prefix table
+replaces many repeated range scans.
+```
+
+
+
+## Step-by-step transformation
+
+1. Compress the input into counts, prefixes, bit masks, or another compact state.
+2. Update that state once per element instead of recomputing earlier work.
+3. Combine the stored pieces to recover the value the problem asks for.
+4. Return the final count, sum, or constructed answer.
+
+These notes transform input into output by reducing the data to a compact invariant first, then rebuilding the answer from that invariant.
+
+
+## Diagram: compress the input first
+
+```text
+
+            raw values
+                |
+                v
+            counts / prefix / bit state
+                |
+                v
+            combine stored facts
+                |
+                v
+            final answer
+```
+
+The algorithm first compresses the input into a small invariant, then rebuilds the answer from that compact state.
+
 ## Cases that decide correctness
 
 - A nonempty array always permits one whole-array chunk.

@@ -12,6 +12,45 @@ Return every subset of the input values, including the empty subset, without rep
 
 Each value either joins the current subset or skips it, so the answer is the power set. Duplicates require a stable ordering rule so identical values do not generate the same subset twice.
 
+
+## Classroom board: see the repeated work once
+
+```text
+brute force tries every choice.
+the optimized solution keeps only the state that must survive to the
+next step.
+```
+
+
+
+## Step-by-step transformation
+
+1. Read the input and identify the smallest state that still determines the answer.
+2. Process one element, node, or row at a time while preserving that state.
+3. Discard work that can no longer change the result.
+4. Convert the surviving state into the output the problem requests.
+
+The examples and code below show this transformation on the specific problem instance.
+
+
+## Diagram: input to output
+
+```text
+
+        input
+            |
+            v
+        core invariant
+            |
+            v
+        process one step at a time
+            |
+            v
+        output
+```
+
+The note shows the main idea, the repeated work, and the small state that turns the input into the output.
+
 ## Cases that decide correctness
 
 - An empty input returns only the empty subset.

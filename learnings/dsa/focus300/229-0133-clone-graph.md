@@ -12,6 +12,50 @@ Deep-copy a graph so the clone has the same adjacency structure but entirely new
 
 A graph copy needs one fresh node per original node and one edge per original edge. The only subtlety is avoiding infinite recursion on cycles by remembering which originals have already been cloned.
 
+
+## Classroom board: copy nodes before revisiting them
+
+```text
+    1 -- 2
+    |    |
+    3 --/
+
+    remember old node -> new node so each vertex is cloned once.
+```
+
+
+
+## Step-by-step transformation
+
+1. Choose a start state such as a cell, node, or partial path.
+2. Mark the state as visited or temporarily commit the choice.
+3. Expand to valid neighbors or next choices while the invariant still holds.
+4. Undo the temporary choice when the branch finishes, then return the collected answer.
+
+These problems transform the input into output by exploring one branch at a time and backtracking whenever a branch can no longer produce a valid solution.
+
+
+## Diagram: search and undo
+
+```text
+
+            start state
+                |
+                v
+            choose one path
+                |
+                v
+            explore neighbors
+                |
+                v
+            undo and try next path
+                |
+                v
+            answer
+```
+
+These notes use search, visit markers, and backtracking to turn one starting state into the final valid path or count.
+
 ## Cases that decide correctness
 
 - Cycles must not cause repeated cloning.

@@ -9,7 +9,7 @@ performance, testing, debugging, and contest decisions.
 
 ## Recommended order
 
-1. [Python Starter 70](python-starter-70/README.md) if programming itself is
+1. [Python Starter 70](python-starter-100/README.md) if programming itself is
    still new.
 2. [Algorithms and data structures](algorithms/README.md) for reusable ideas,
    proofs, and reference implementations in C++, Python, and Java.

@@ -18,6 +18,47 @@ route and riding crosses from that route to any of its stops. BFS layers count
 boarded routes, which is exactly the objective. Once a route is boarded at its
 minimum layer, scanning it again cannot improve any result.
 
+
+## Classroom board: visit each region or node once
+
+```text
+mark what is already seen, expand to neighbors, and stop when the region
+is fully explored.
+```
+
+
+
+## Step-by-step transformation
+
+1. Choose a start state such as a cell, node, or partial path.
+2. Mark the state as visited or temporarily commit the choice.
+3. Expand to valid neighbors or next choices while the invariant still holds.
+4. Undo the temporary choice when the branch finishes, then return the collected answer.
+
+These problems transform the input into output by exploring one branch at a time and backtracking whenever a branch can no longer produce a valid solution.
+
+
+## Diagram: search and undo
+
+```text
+
+            start state
+                |
+                v
+            choose one path
+                |
+                v
+            explore neighbors
+                |
+                v
+            undo and try next path
+                |
+                v
+            answer
+```
+
+These notes use search, visit markers, and backtracking to turn one starting state into the final valid path or count.
+
 ## Cases that decide correctness
 
 - `source == target` requires zero buses even if no route contains the stop.

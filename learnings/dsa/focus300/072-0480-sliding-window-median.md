@@ -18,6 +18,43 @@ Python heaps cannot delete an arbitrary outgoing number efficiently, so record
 it in a delayed-deletion counter and physically pop it only when it reaches a
 heap root.
 
+
+## Classroom board: keep only the useful unfinished work
+
+```text
+a stack stores the part of the state that can still matter after the next step.
+```
+
+
+
+## Step-by-step transformation
+
+1. Load the current candidates into a stack, queue, heap, or window.
+2. Push or pop the structure while the current element keeps the invariant true.
+3. Drop stale candidates and keep only the ones that can still affect the answer.
+4. Read the final top, window score, or popped order as the output.
+
+These problems transform the input by keeping just the active frontier of candidates instead of rescanning the whole array every time.
+
+
+## Diagram: active frontier only
+
+```text
+
+            scan left to right
+                |
+                v
+            keep active candidates
+                |
+                v
+            pop stale work
+                |
+                v
+            current best answer
+```
+
+These notes keep only the active frontier of useful candidates instead of rescanning the whole input.
+
 ## Cases that decide correctness
 
 - `window_size = 1` returns every input as a float.

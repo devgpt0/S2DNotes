@@ -18,6 +18,44 @@ count `0..6`. After the response, only its bucket can contain the secret. A
 minimax guess chooses the partition whose largest bucket is smallest, directly
 limiting the worst possible remaining search space.
 
+
+## Classroom board: discard half the search space
+
+```text
+binary search keeps the side that can still contain the answer and throws
+away the side that cannot.
+```
+
+
+
+## Step-by-step transformation
+
+1. Compare the middle position with the target rule or boundary condition.
+2. Discard the half that cannot still contain a valid answer.
+3. Repeat until the remaining interval is exactly the split or value the problem asks for.
+4. Convert the final boundary positions into the required output.
+
+Binary-search style notes transform the input by shrinking the search space until only one valid boundary or value remains.
+
+
+## Diagram: discard half the search space
+
+```text
+
+            sorted input
+                |
+                v
+            check middle
+                |
+                v
+            keep the half that can still work
+                |
+                v
+            final boundary / value
+```
+
+Binary search keeps shrinking the input until only the valid boundary or value is left.
+
 ## Cases that decide correctness
 
 - Matches compare equal positions, not shared letters.

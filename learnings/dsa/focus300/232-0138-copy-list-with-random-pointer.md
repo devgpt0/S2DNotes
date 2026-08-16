@@ -12,6 +12,46 @@ Deep-copy a linked list whose nodes include both next pointers and random pointe
 
 A node may be referenced from many places, so every original node needs exactly one cloned counterpart. A hash map or interweaving trick keeps that one-to-one correspondence stable.
 
+
+## Classroom board: clone next and random links separately
+
+```text
+    1 -> 2 -> 3
+    random: 1->3, 2->1, 3->2
+
+    first map old nodes to new nodes, then wire the random pointers.
+```
+
+
+
+## Step-by-step transformation
+
+1. Traverse the structure and keep the pointer, node, or subtree state that matters.
+2. Rewire links or combine child results without losing the part of the structure you still need.
+3. Carry the surviving state forward to the next node or subtree.
+4. Return the rebuilt structure, node value, or accumulated traversal result.
+
+These notes work by preserving the structure while changing just the links or the returned subtree results that lead to the final answer.
+
+
+## Diagram: walk and reconnect pointers
+
+```text
+
+            original nodes
+                |
+                v
+            read or split the structure
+                |
+                v
+            reconnect links or combine child results
+                |
+                v
+            rebuilt list / tree / value
+```
+
+The algorithm walks the structure, keeps only the needed pointers or subtree results, and returns the rebuilt output.
+
 ## Cases that decide correctness
 
 - A random pointer may be null.

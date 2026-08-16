@@ -19,6 +19,46 @@ The value returned to `u`'s parent is different: it may include only one child
 branch, because including both would fork rather than remain a path. Negative
 child gains are clipped to zero.
 
+
+## Classroom board: track the running sum from root to leaf
+
+```text
+          5
+         /                 4   8
+
+    keep one running sum per path and test only leaf endings.
+```
+
+
+
+## Step-by-step transformation
+
+1. Traverse the structure and keep the pointer, node, or subtree state that matters.
+2. Rewire links or combine child results without losing the part of the structure you still need.
+3. Carry the surviving state forward to the next node or subtree.
+4. Return the rebuilt structure, node value, or accumulated traversal result.
+
+These notes work by preserving the structure while changing just the links or the returned subtree results that lead to the final answer.
+
+
+## Diagram: walk and reconnect pointers
+
+```text
+
+            original nodes
+                |
+                v
+            read or split the structure
+                |
+                v
+            reconnect links or combine child results
+                |
+                v
+            rebuilt list / tree / value
+```
+
+The algorithm walks the structure, keeps only the needed pointers or subtree results, and returns the rebuilt output.
+
 ## Cases that decide correctness
 
 - All node values may be negative; the answer is still one node, not zero.
