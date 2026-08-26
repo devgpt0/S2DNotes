@@ -259,8 +259,30 @@ True
 fallback
 second
 ```
+The universal rule
+
+This is what I recommend memorizing:
+
+and
+```
+A and B and C and D
+
+Find the first FALSY value.
+
+If none exists → return the last value.
+```
+
+or
+```
+A or B or C or D
+
+Find the first TRUTHY value.
+
+If none exists → return the last value.  
 
 The blank output is the empty string returned by `"" and "second"`.
+```
+
 
 ## 12. Membership Operators
 
