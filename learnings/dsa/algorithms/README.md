@@ -7,7 +7,7 @@ is visible instead of being buried in input parsing.
 ## Start here if you are new
 
 1. If loops, functions, lists, and indexes are still difficult, finish
-   [Python Starter 70](../python-starter-70/README.md) first.
+   [Python Starter 100](../python-starter-100/README.md) or [Java Starter 100](../java-starter-100/README.md) first.
 2. Read [How to learn from a classroom note](00-classroom-learning-guide.md).
 3. Keep the [simple DSA glossary](00-simple-glossary.md) open.
 4. Follow the stages in order. Do not jump to graphs or DP because a problem
