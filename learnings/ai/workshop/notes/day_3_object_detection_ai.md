@@ -1,23 +1,67 @@
 # Day 3 — Object Detection and AI Applications
 
-Examples use Python 3 and only its standard library. They teach the calculations around detection; they do not run a trained vision model.
+The examples use Python's standard library and tiny sample data. Each topic has two exercises: Exercise 1 works through a question step by step; Exercise 2 demonstrates the concept with Python code and output. These examples teach the ideas and calculations; they do not run trained vision models. Try the change at the end to check your understanding.
 
-## 1. Classification, detection, segmentation, and boxes
+## 1. Classification, detection, and segmentation
 
-- **Classification:** gives a label to a whole image.
-- **Detection:** gives each object a label and a rectangular location.
-- **Segmentation:** labels the pixels belonging to each object.
+- **Classification:** assign a label to the whole image.
+- **Object detection:** find objects and return a label and location for each.
+- **Segmentation:** label the pixels belonging to each object or region.
 
-A **bounding box** is often `(x_min, y_min, x_max, y_max)`. Coordinates may use pixels or normalized values, so check the model’s format.
+### Exercise 1
 
-### Exercise: calculate a box’s size and center
+A photo shows two cats. What should classification, object detection, and segmentation each return?
 
-Steps:
+**Step-by-step solution:**
 
-1. Read the box coordinates.
-2. Subtract minimum from maximum to find width and height.
-3. Average each pair of coordinates to find the center.
-4. Print the values.
+1. Classification describes the whole photo with one label: `cat`.
+2. Detection finds each separate cat, so it returns two `cat` labels and one location box for each cat.
+3. Segmentation labels the image pixels, marking which pixels belong to the cats and which are background.
+
+### Exercise 2: compare the three kinds of output
+
+These values are example predictions, not model inference.
+
+```python
+classification = "cat"
+detections = [{"label": "cat", "box": (0, 0, 2, 2)}]
+segmentation_mask = [[1, 1], [0, 1]]  # 1 = cat, 0 = background
+
+print("classification:", classification)
+print("detection:", detections[0])
+print("segmentation mask:", segmentation_mask)
+```
+
+Output:
+
+```text
+classification: cat
+detection: {'label': 'cat', 'box': (0, 0, 2, 2)}
+segmentation mask: [[1, 1], [0, 1]]
+```
+
+Classification says what is in the image. Detection also says where. Segmentation marks the object pixel by pixel.
+
+**Try:** Add a second detection with a different label and box.
+
+## 2. Bounding boxes
+
+- **Bounding box:** a rectangle marking an object's location in an image.
+- **Coordinate format:** this note uses `(x_min, y_min, x_max, y_max)` for the left, top, right, and bottom edges.
+
+### Exercise 1
+
+For box `(3, 5, 11, 13)`, calculate its width, height, and center.
+
+**Step-by-step solution:**
+
+1. The box goes from `x=3` to `x=11`, so its width is `11 - 3 = 8`.
+2. It goes from `y=5` to `y=13`, so its height is `13 - 5 = 8`.
+3. The center's x-coordinate is halfway between the left and right edges: `(3 + 11) / 2 = 7`.
+4. The center's y-coordinate is halfway between the top and bottom edges: `(5 + 13) / 2 = 9`.
+5. The box center is **`(7, 9)`**, and its size is **8 by 8**.
+
+### Exercise 2: calculate a box's size and center
 
 ```python
 x_min, y_min, x_max, y_max = 10, 20, 50, 80
@@ -25,33 +69,44 @@ width = x_max - x_min
 height = y_max - y_min
 center_x = (x_min + x_max) / 2
 center_y = (y_min + y_max) / 2
+
 print("size:", width, "x", height)
 print("center:", center_x, center_y)
 ```
 
-Expected output:
+Output:
 
 ```text
 size: 40 x 60
 center: 30.0 50.0
 ```
 
-## 2. Intersection over Union (IoU)
+Always check whether a model returns pixel coordinates or normalized coordinates between `0` and `1`.
 
-**IoU** measures how much a predicted box overlaps a ground-truth box:
+**Try:** Change `x_max` to `70`. What changes?
 
-`IoU = intersection area / union area`
+## 3. IoU: compare predicted boxes
 
-It is 0 for no overlap and 1 for identical boxes. Evaluators often require IoU to exceed a chosen threshold for a detection to count as correct.
+**Intersection over Union (IoU):** a score measuring the overlap between a predicted box and the correct box.
 
-### Exercise: write an IoU function
+Its formula is:
 
-Steps:
+- `I`: the area shared by both boxes (intersection).
+- `U = area(A) + area(B) - I`: the total area covered by either box (union). Subtract `I` so shared pixels are counted once.
+- `IoU = I / U`: ranges from `0` (no overlap) to `1` (identical boxes).
 
-1. Find the intersection’s left, top, right, and bottom edges.
-2. If edges do not overlap, intersection area is zero.
-3. Calculate each area and the union (`area A + area B - intersection`).
-4. Divide intersection by union and try two box pairs.
+### Exercise 1
+
+Two 4×4 boxes overlap by 8 square units. Find their union area and IoU.
+
+**Step-by-step solution:**
+
+1. Each box is `4 × 4`, so each area is `16` square units.
+2. Add the two areas, then subtract the shared overlap once: `union = 16 + 16 - 8 = 24` square units.
+3. Divide the overlap by the union: `IoU = 8 / 24 = 1/3 ≈ 0.33`.
+4. The boxes' IoU is **about 0.33**.
+
+### Exercise 2: calculate IoU
 
 ```python
 def area(box):
@@ -59,42 +114,48 @@ def area(box):
     return max(0, x2 - x1) * max(0, y2 - y1)
 
 def iou(a, b):
-    left = max(a[0], b[0])
-    top = max(a[1], b[1])
-    right = min(a[2], b[2])
-    bottom = min(a[3], b[3])
-    intersection = max(0, right - left) * max(0, bottom - top)
-    union = area(a) + area(b) - intersection
-    return intersection / union if union else 0
+    left, top = max(a[0], b[0]), max(a[1], b[1])
+    right, bottom = min(a[2], b[2]), min(a[3], b[3])
+    overlap = max(0, right - left) * max(0, bottom - top)
+    union = area(a) + area(b) - overlap
+    return overlap / union if union else 0
 
 truth = (0, 0, 4, 4)
-overlapping_prediction = (2, 0, 6, 4)
-separate_prediction = (5, 5, 7, 7)
-print("overlap IoU:", round(iou(truth, overlapping_prediction), 2))
-print("separate IoU:", round(iou(truth, separate_prediction), 2))
+prediction = (2, 0, 6, 4)
+print("IoU:", round(iou(truth, prediction), 2))
 ```
 
-Expected output:
+Output:
 
 ```text
-overlap IoU: 0.33
-separate IoU: 0.0
+IoU: 0.33
 ```
 
-## 3. YOLO, confidence, and duplicate boxes
+The boxes overlap by 8 square units; their combined covered area is 24. Evaluators use an IoU threshold to decide whether a detection matches.
 
-**YOLO** (“You Only Look Once”) is a family of detectors designed to predict boxes and classes in one model pass. A detection includes a **confidence score**; high confidence does not guarantee correctness. Detectors can produce duplicate boxes for one object.
+**Try:** Change `prediction` to `(5, 5, 7, 7)`; the IoU becomes `0.0`.
 
-**Non-maximum suppression (NMS)** sorts boxes by score and removes lower-scoring boxes that overlap too much with a stronger box of the same class.
+## 4. Confidence filtering and NMS
 
-### Exercise: confidence filtering and simple NMS
+- **Detection candidate:** a predicted box, class label, and **confidence score**.
+- **Confidence score:** a ranking of how strongly the model supports a candidate; it does not guarantee correctness.
 
-Steps:
+- **YOLO** (You Only Look Once): a family of object detectors that predicts boxes and classes in one model pass.
 
-1. Remove detections below the confidence threshold.
-2. Sort the remaining boxes from highest score to lowest.
-3. Keep the strongest box; remove a later box of the same class when its IoU is above the overlap threshold.
-4. Print the boxes left after NMS.
+- **Non-maximum suppression (NMS):** removes lower-scoring boxes that overlap too much with a stronger box of the same class.
+
+### Exercise 1
+
+The score threshold is `0.5`. Two overlapping cat boxes score `0.92` and `0.80`; a dog box scores `0.35`. The cat-box IoU is `0.68`, and the NMS limit is `0.5`. Which boxes remain?
+
+**Step-by-step solution:**
+
+1. Apply the confidence threshold: the dog score `0.35` is below `0.5`, so remove the dog box.
+2. Sort the remaining cat boxes by score. The `0.92` box is higher, so keep it first.
+3. Compare the other cat box with the kept one. Their IoU is `0.68`, which is greater than the NMS limit `0.5`.
+4. They overlap too much, so suppress the lower-scoring `0.80` box. Only the **`0.92` cat box** remains.
+
+### Exercise 2: remove weak and duplicate detections
 
 ```python
 def area(box):
@@ -103,20 +164,20 @@ def area(box):
 def iou(a, b):
     left, top = max(a[0], b[0]), max(a[1], b[1])
     right, bottom = min(a[2], b[2]), min(a[3], b[3])
-    intersection = max(0, right - left) * max(0, bottom - top)
-    union = area(a) + area(b) - intersection
-    return intersection / union if union else 0
+    overlap = max(0, right - left) * max(0, bottom - top)
+    union = area(a) + area(b) - overlap
+    return overlap / union if union else 0
 
 detections = [
     {"label": "cat", "score": 0.92, "box": (0, 0, 10, 10)},
     {"label": "cat", "score": 0.80, "box": (1, 1, 11, 11)},
     {"label": "dog", "score": 0.35, "box": (20, 20, 30, 30)},
 ]
-score_threshold = 0.5
-iou_threshold = 0.5
+score_limit = 0.5
+iou_limit = 0.5
 candidates = sorted(
-    [d for d in detections if d["score"] >= score_threshold],
-    key=lambda d: d["score"],
+    [item for item in detections if item["score"] >= score_limit],
+    key=lambda item: item["score"],
     reverse=True,
 )
 
@@ -124,104 +185,125 @@ kept = []
 for candidate in candidates:
     duplicate = any(
         candidate["label"] == chosen["label"]
-        and iou(candidate["box"], chosen["box"]) > iou_threshold
+        and iou(candidate["box"], chosen["box"]) > iou_limit
         for chosen in kept
     )
     if not duplicate:
         kept.append(candidate)
 
-print([(d["label"], d["score"], d["box"]) for d in kept])
+print([(item["label"], item["score"]) for item in kept])
 ```
 
-Expected output:
+Output:
 
 ```text
-[('cat', 0.92, (0, 0, 10, 10))]
+[('cat', 0.92)]
 ```
 
-The dog was filtered by score. The second cat box was suppressed because it overlapped the first cat box strongly. Production NMS implementations handle many more details.
+The dog was below the score limit. The second cat box overlapped the first too much, so NMS removed it.
 
-```mermaid
-flowchart LR
-  Frame[Image or video frame] --> Prep[Resize and normalize]
-  Prep --> Model[YOLO inference]
-  Model --> Candidates[Candidate boxes, labels, scores]
-  Candidates --> Filter[Confidence filter and NMS]
-  Filter --> Draw[Draw boxes and labels]
-  Draw --> UI[Display results]
-```
+**Try:** Raise `iou_limit` to `0.8`. Does the second cat box remain?
 
-## 4. Multimodal AI, OCR, and image captions
+## 5. OCR and multimodal AI
 
-**Multimodal AI** works with more than one data type, such as images and text. **OCR** reads text from an image. **Image captioning** creates a short text description. These models may miss details, especially with blur, handwriting, or unusual scenes.
+- **Multimodal AI:** AI that works with more than one kind of data, such as images and text.
+- **Optical character recognition (OCR):** extracting text from an image.
+- **Image captioning:** generating a text description of an image.
 
-### Exercise: inspect OCR output
+### Exercise 1
 
-OCR requires an image model. This exercise shows how to use its returned text and detect a simple missing-field problem.
+OCR returns `SHOP ABC`, `2026-10-20`, and `TOTAL 12.50`. Write the date and total amount.
 
-Steps:
+**Step-by-step solution:**
 
-1. Store text that an OCR tool might return from a receipt.
-2. Check whether the text includes a date and total marker.
-3. Print the fields found and identify what needs human review.
+1. Find the line formatted as a date: `2026-10-20`.
+2. Find the line marked `TOTAL`: it says `TOTAL 12.50`.
+3. The date is **`2026-10-20`** and the total amount is **`12.50`**.
+
+### Exercise 2: inspect text returned by OCR
+
+The string below represents OCR output; an OCR model would be needed to read a real image.
 
 ```python
 ocr_text = "SHOP ABC\n2026-10-20\nTOTAL 12.50"
 lines = ocr_text.splitlines()
 date = next((line for line in lines if line.startswith("202")), None)
 total = next((line for line in lines if "TOTAL" in line), None)
+
 print("date:", date)
 print("total:", total)
-print("needs review:", date is None or total is None)
 ```
 
-Expected output:
+Output:
 
 ```text
 date: 2026-10-20
 total: TOTAL 12.50
-needs review: False
 ```
 
-## 5. Deployment: latency and throughput
+Blur, handwriting, and small text can cause OCR errors. Check extracted values against the original image.
 
-**Inference** means using a trained model to make predictions. **Latency** is time for one result; **throughput** is results per second. Image transfer, preprocessing, model size, and hardware can all affect speed. A smaller input or model may be faster but can reduce accuracy.
+**Try:** Remove the total line and run the code again.
 
-### Exercise: measure average latency and throughput
+## 6. Latency and throughput
 
-Steps:
+- **Latency:** the time required to produce one result.
+- **Throughput:** the number of results produced per unit of time.
 
-1. Store three example inference times in milliseconds.
-2. Calculate their average latency.
-3. Convert average milliseconds to seconds and calculate frames per second.
-4. Print both values.
+Image size, model size, preprocessing, and hardware affect both.
+
+### Exercise 1
+
+Three frames take `40 ms`, `50 ms`, and `60 ms`. Find the average latency and approximate frames per second.
+
+**Step-by-step solution:**
+
+1. Add the three frame times: `40 + 50 + 60 = 150` milliseconds.
+2. Divide by 3 frames: average latency is `150 / 3 = 50 ms` per frame.
+3. One second is `1000 ms`. At `50 ms` per frame, throughput is `1000 / 50 = 20` frames per second.
+
+### Exercise 2: calculate average latency and throughput
+
+Assume frames are processed one at a time.
 
 ```python
 times_ms = [40, 50, 60]
 average_ms = sum(times_ms) / len(times_ms)
 frames_per_second = 1000 / average_ms
+
 print("average latency:", average_ms, "ms")
-print("approx throughput:", round(frames_per_second, 1), "frames/second")
+print("throughput:", round(frames_per_second, 1), "frames/second")
 ```
 
-Expected output:
+Output:
 
 ```text
 average latency: 50.0 ms
-approx throughput: 20.0 frames/second
+throughput: 20.0 frames/second
 ```
 
-## 6. Responsible AI: check performance by condition
+Measure the real application on its target hardware; toy timings do not predict production performance.
 
-Training data may not represent every group or environment (**dataset bias**). Images can include personal information (**privacy**). Review who may be harmed by missed detections or false alarms. Keep later generated descriptions tied to actual evidence.
+**Try:** Add `100` to `times_ms` and compare the average and throughput.
 
-### Exercise: compare errors in daylight and at night
+## 7. Test conditions and risks
 
-Steps:
+- **Dataset bias:** a mismatch between the data used to build or evaluate a model and the conditions where it will be used.
 
-1. Create a small list of actual and predicted car detections with lighting conditions.
-2. Count misses (actual car but no detection) for each condition.
-3. Print the results and decide whether nighttime use needs more evaluation.
+Performance can vary with lighting, camera angle, or environment. Check who may be affected by missed detections or false alarms.
+
+### Exercise 1
+
+A model misses `0 of 2` cars by day and `2 of 2` at night. Calculate each miss rate.
+
+**Step-by-step solution:**
+
+1. Daytime miss rate is `missed cars / actual cars = 0 / 2 = 0`, or **0%**.
+2. Nighttime miss rate is `2 / 2 = 1`.
+3. Convert the fraction to a percentage: `1 × 100% = 100%`.
+4. This small example gives a **0% day miss rate** and a **100% night miss rate**. Two examples per condition are not enough to prove real-world performance.
+
+### Exercise 2: compare misses by lighting
 
 ```python
 examples = [
@@ -230,29 +312,41 @@ examples = [
     ("night", True, False),
     ("night", True, False),
 ]
-misses = {}
-actual_cars = {}
+counts = {}
 for condition, actual_car, detected_car in examples:
-    actual_cars[condition] = actual_cars.get(condition, 0) + int(actual_car)
-    misses[condition] = misses.get(condition, 0) + int(actual_car and not detected_car)
+    total, misses = counts.get(condition, (0, 0))
+    counts[condition] = (
+        total + int(actual_car),
+        misses + int(actual_car and not detected_car),
+    )
 
-for condition in sorted(actual_cars):
-    print(condition, "misses:", misses[condition], "of", actual_cars[condition])
+for condition, (total, misses) in sorted(counts.items()):
+    print(condition, "misses:", misses, "of", total)
 ```
 
-Expected output:
+Output:
 
 ```text
 day misses: 0 of 2
 night misses: 2 of 2
 ```
 
-This tiny dataset is not enough to prove real-world performance. It shows why results should be checked across the conditions where a system will be used.
+This sample is too small to establish real performance. It shows why evaluation should cover the conditions where a system will be used. Images may also contain private information.
 
-## Day 3 practical
+**Try:** Add one nighttime example the model detects correctly.
 
-Load pretrained YOLO weights → prepare image/frame → run inference → filter weak and duplicate boxes → draw class labels and scores → measure speed → inspect mistakes. Test clear and difficult images.
+## Day 3: how a detection system works
+
+```mermaid
+flowchart LR
+  Image[Image or video frame] --> Prep[Resize and normalize]
+  Prep --> Model[Object detector]
+  Model --> Candidates[Boxes, labels, scores]
+  Candidates --> Filter[Score threshold and NMS]
+  Filter --> Results[Draw boxes and labels]
+  Image --> OCR[OCR or image captioning]
+```
 
 ## Day 3 recap
 
-Detection gives object labels and boxes. IoU compares predicted and correct boxes. YOLO produces candidate detections; filtering removes weak and duplicate results. Measure speed and errors in realistic conditions, and consider privacy and impact.
+Classification labels an image; detection returns labels and boxes; segmentation labels pixels. IoU compares boxes. Confidence filtering and NMS remove weak or duplicate detections. OCR reads text from images. Measure speed and errors in realistic conditions, and review privacy and impact.

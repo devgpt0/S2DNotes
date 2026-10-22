@@ -1,201 +1,246 @@
 ﻿# Day 1 — NLP, LLMs, and RAG
 
-Examples use Python 3 and only its standard library. Each exercise is a small learning model: real language models use larger vocabularies, learned parameters, and more careful algorithms.
+The examples use Python's standard library. Tiny examples show the idea; they do not train real language models. Each topic has two exercises: Exercise 1 walks through a problem step by step; Exercise 2 uses Python code and shows the output.
 
-## 1. NLP, preprocessing, and tokenization
+## 1. NLP and tokenization
 
-**Natural language processing (NLP)** helps computers work with human language. **Preprocessing** makes text consistent; **tokenization** splits text into pieces a model can process. Real tokenizers can split words into subwords, while this first exercise uses simple word tokens.
+- **Natural language processing (NLP):** methods that help computers process human language.
+- **Token:** a piece of text a model reads, such as a word, word part, or punctuation mark.
+- **Tokenization:** splitting text into tokens.
 
-### Exercise: clean text, tokenize it, and count words
+### Exercise 1
 
-Steps:
+Treat each word as one token. Split `AI learns from data` and count the tokens.
 
-1. Lowercase the text and remove punctuation.
-2. Split it into word tokens.
-3. Print the cleaned text, tokens, and number of tokens.
-4. Count repeated words.
+**Step-by-step solution:**
+
+1. The instruction says to treat each whole word as one token.
+2. Split at the spaces: `AI` | `learns` | `from` | `data`.
+3. Count the pieces: there are **4 tokens**. Real tokenizers may split a word into smaller pieces.
+
+### Exercise 2: split text into simple word tokens
+
+This uses Python's `split()`, not a production model tokenizer.
 
 ```python
-import string
-from collections import Counter
+text = "Cats chase cats."
+tokens = text.lower().replace(".", "").split()
 
-text = "NLP helps computers understand text. Text can be cleaned!"
-cleaned = text.lower().translate(str.maketrans("", "", string.punctuation))
-tokens = cleaned.split()
-counts = Counter(tokens)
-
-print("Cleaned:", cleaned)
-print("Tokens:", tokens)
-print("Token count:", len(tokens))
-print("Count of 'text':", counts["text"])
+print(tokens)
+print("token count:", len(tokens))
 ```
 
-Expected output:
+Output:
 
 ```text
-Cleaned: nlp helps computers understand text text can be cleaned
-Tokens: ['nlp', 'helps', 'computers', 'understand', 'text', 'text', 'can', 'be', 'cleaned']
-Token count: 9
-Count of 'text': 2
+['cats', 'chase', 'cats']
+token count: 3
 ```
 
-Removing punctuation is appropriate for this simple count, but preprocessing must fit the task. `can't` and `cant`, for example, may not mean the same thing.
+`split()` makes one token per word here. Real tokenizers may split a word like `unhappy` into `un` and `happy`.
+
+**Try:** Change the sentence and count its tokens.
 
 ## 2. Bag of Words and TF-IDF
 
-**Bag of Words (BoW)** represents each document by word counts and ignores word order. **TF-IDF** means **Term Frequency–Inverse Document Frequency**. It gives a word a larger weight when it appears often in one document and in few documents overall. Both are useful baselines, but neither understands synonyms.
+- **Bag of Words (BoW):** represents a document by counting its words; word order is ignored.
+- **TF-IDF:** **Term Frequency–Inverse Document Frequency**, a word-weighting method that favors terms frequent in one document but rare across the collection.
 
-For a word *w* in document *d*, this lesson uses:
+For a term `t` (a word) in document `d`, this note uses:
 
-- **Term frequency (TF):** `count(w in d)`
-- **Document frequency (DF):** number of documents that contain *w*
-- **Inverse document frequency (IDF):** `log((1 + N) / (1 + DF)) + 1`, where `N` is the number of documents. Smoothing keeps the calculation defined even when a word is unseen.
-- **TF-IDF:** `TF × IDF`
+- `TF(t, d) = count of t in d`: **term frequency** in the current document.
+- `DF(t) = number of documents containing t`: **document frequency** across the collection; each document counts once.
+- `N`: the total number of documents in the collection.
+- `IDF(t) = ln((1 + N) / (1 + DF(t))) + 1`: **inverse document frequency**. `ln` is the natural logarithm; the `+1` smoothing keeps the value defined when a term is unseen.
+- `TF-IDF(t, d) = TF(t, d) × IDF(t)`.
 
-Some tools normalize TF or the final vector differently. This simple count-based version is chosen so the arithmetic is easy to follow.
+This is one common smoothed formula. Libraries may use different TF scaling or normalization.
 
-### Exercise: compare BoW counts and TF-IDF weights
+### Exercise 1
 
-Steps:
+Use the three documents in Exercise 2. For `mat` in the first document, calculate TF-IDF using the steps below.
 
-1. Make a vocabulary from all three documents.
-2. Count each vocabulary word in each document (BoW).
-3. Calculate IDF for each word with `log((1 + N) / (1 + document_count)) + 1`.
-4. Multiply each word count by its IDF and print the result for Document 1.
+**Step-by-step solution:**
+
+1. Count `mat` in the first document, `cat sat mat`: it appears once, so `TF = 1`.
+2. Count documents that contain `mat`: only the first document does, so `DF = 1`. There are `N = 3` documents in total.
+3. Substitute into the formula: `IDF = ln((1 + N) / (1 + DF)) + 1 = ln(4 / 2) + 1`.
+4. Simplify: `4 / 2 = 2`, and `ln(2) ≈ 0.69`. Therefore `IDF ≈ 0.69 + 1 = 1.69`.
+5. Multiply by term frequency: `TF-IDF = TF × IDF = 1 × 1.69 = 1.69`.
+
+### Exercise 2: compare common and distinctive words
 
 ```python
 import math
 from collections import Counter
 
-documents = [
-    "cat sat mat",
-    "cat ate fish",
-    "dog sat log",
-]
-tokenized = [doc.split() for doc in documents]
-vocabulary = sorted(set(word for doc in tokenized for word in doc))
+documents = ["cat sat mat", "cat ate fish", "dog sat log"]
+tokenized = [document.split() for document in documents]
+term_frequency = Counter(tokenized[0])  # TF in the first document
+N = len(tokenized)  # number of documents
 
-document_counts = {
-    word: sum(word in doc for doc in tokenized)
-    for word in vocabulary
-}
-idf = {
-    word: math.log((1 + len(documents)) / (1 + document_counts[word])) + 1
-    for word in vocabulary
-}
+def document_frequency(term):
+    return sum(term in document for document in tokenized)
 
-bow = Counter(tokenized[0])
-tfidf = {word: round(bow[word] * idf[word], 2) for word in vocabulary}
-print("Vocabulary:", vocabulary)
-print("Document 1 BoW:", dict(sorted(bow.items())))
-print("Document 1 TF-IDF:", tfidf)
+def inverse_document_frequency(term):
+    DF = document_frequency(term)
+    return math.log((1 + N) / (1 + DF)) + 1
+
+print("BoW counts:", dict(sorted(term_frequency.items())))
+for term in ("sat", "mat"):
+    TF = term_frequency[term]
+    DF = document_frequency(term)
+    IDF = inverse_document_frequency(term)
+    print(f"{term}: TF={TF}, DF={DF}, IDF={IDF:.2f}, TF-IDF={TF * IDF:.2f}")
 ```
 
-Expected output:
+Output:
 
 ```text
-Vocabulary: ['ate', 'cat', 'dog', 'fish', 'log', 'mat', 'sat']
-Document 1 BoW: {'cat': 1, 'mat': 1, 'sat': 1}
-Document 1 TF-IDF: {'ate': 0.0, 'cat': 1.29, 'dog': 0.0, 'fish': 0.0, 'log': 0.0, 'mat': 1.69, 'sat': 1.29}
+BoW counts: {'cat': 1, 'mat': 1, 'sat': 1}
+sat: TF=1, DF=2, IDF=1.29, TF-IDF=1.29
+mat: TF=1, DF=1, IDF=1.69, TF-IDF=1.69
 ```
 
-`mat` is more distinctive here because it occurs in fewer documents. BoW and TF-IDF still treat word order as irrelevant.
+For `mat`, `N = 3`, `DF = 1`, and `TF = 1`:
 
-## 3. Embeddings and semantic similarity
+- `IDF = ln((1 + 3) / (1 + 1)) + 1 ≈ 1.69`.
+- `TF-IDF = 1 × 1.69 = 1.69`.
 
-An **embedding** is a vector of numbers representing text. A trained embedding model aims to put texts with related meanings near each other. **Cosine similarity** compares vector direction; larger values mean more similar directions. The vectors below are hand-made so we can practice the calculation. They are not real language embeddings.
+`mat` gets more weight than `sat` because it appears in fewer documents. Neither BoW nor TF-IDF understands synonyms or word order.
 
-### Exercise: compute cosine similarity
+```mermaid
+flowchart LR
+  Document[One document] --> TF[Count term: TF]
+  Collection[All documents] --> DF[Count documents with term: DF]
+  DF --> IDF[Calculate IDF using N and DF]
+  TF --> Multiply[TF × IDF]
+  IDF --> Multiply
+  Multiply --> Score[TF-IDF weight]
+```
 
-Steps:
+**Try:** Add a document containing `mat` and compare the IDF values again.
 
-1. Calculate the dot product of two vectors.
-2. Calculate each vector’s length.
-3. Divide the dot product by both lengths.
-4. Compare identical and different directions.
+## 3. Embeddings and similarity
+
+- **Embedding:** a vector of numbers representing text. A trained model places related meanings near each other.
+- **Cosine similarity:** a comparison of two vector directions; a value near `1` means the directions are similar.
+
+The example uses made-up vectors to teach the comparison, not embedding training.
+
+For vectors `a` and `b`, `cosine(a, b) = (a · b) / (||a|| × ||b||)`. The **dot product** `a · b` multiplies matching coordinates and adds them. `||a||` is the length of vector `a`, calculated as the square root of the sum of its squared coordinates.
+
+### Exercise 1
+
+For `a = [1, 0]` and `b = [0.8, 0.6]`, calculate cosine similarity. Both vector lengths are `1`.
+
+**Step-by-step solution:**
+
+1. Multiply matching coordinates and add: `a · b = (1 × 0.8) + (0 × 0.6) = 0.8`.
+2. The length of `a` is `sqrt(1² + 0²) = 1`.
+3. The length of `b` is `sqrt(0.8² + 0.6²) = sqrt(0.64 + 0.36) = sqrt(1) = 1`.
+4. Divide the dot product by the two lengths: `cosine(a, b) = 0.8 / (1 × 1) = 0.8`.
+
+### Exercise 2: compare two vectors
 
 ```python
 import math
 
 def cosine(a, b):
     dot = sum(x * y for x, y in zip(a, b))
-    length_a = math.sqrt(sum(x * x for x in a))
-    length_b = math.sqrt(sum(y * y for y in b))
-    return round(dot / (length_a * length_b), 2)
+    size_a = math.sqrt(sum(x * x for x in a))
+    size_b = math.sqrt(sum(y * y for y in b))
+    return dot / (size_a * size_b)
 
-# Imagine these vectors were returned by an embedding model.
-password_reset = [1, 0.8, 0]
-forgot_login = [0.9, 0.7, 0.1]
-weather_question = [0, 0, 1]
+password = [1.0, 0.8, 0.0]
+login = [0.9, 0.7, 0.1]
+weather = [0.0, 0.0, 1.0]
 
-print("password vs login:", cosine(password_reset, forgot_login))
-print("password vs weather:", cosine(password_reset, weather_question))
+print("password/login:", round(cosine(password, login), 2))
+print("password/weather:", round(cosine(password, weather), 2))
 ```
 
-Expected output:
+Output:
 
 ```text
-password vs login: 1.0
-password vs weather: 0.0
+password/login: 1.0
+password/weather: 0.0
 ```
 
-Formula: `cosine(a, b) = (a · b) / (||a|| × ||b||)`, where `a · b` is the dot product and `||a||` is a vector length. The result is usually between −1 and 1. A high similarity helps retrieval, but it does not prove that the passage answers the question.
+The first pair points in a similar direction. Similarity helps retrieve related text, but does not prove that the text answers a question.
 
-## 4. Attention and Transformers
+**Try:** Compare `password` with `[1, 0, 0]`.
 
-A **Transformer** processes tokens using **attention**. Attention gives each token a weighted combination of information from tokens around it. The weights depend on the input and are learned by the model. A weighted combination is `context = Σ(weightᵢ × valueᵢ)`. The weights usually add up to 1. This simplified exercise manually sets weights to show the weighted-combination step; it is not a complete Transformer.
+## 4. Transformers and attention
 
-### Exercise: combine token information with attention weights
+- **Transformer:** a neural network architecture used by many language models.
+- **Attention:** a calculation that decides how much information a token should use from other tokens.
 
-Suppose the sentence is “Birds fly because they have wings.” The token `they` should use information from `Birds` and `wings`.
+It combines token information as `context = Σ(weightᵢ × valueᵢ)`:
 
-Steps:
+- `weightᵢ`: how much attention token `i` receives.
+- `valueᵢ`: the information vector for token `i`.
+- `context`: the weighted information combined for the current token.
 
-1. Give each token a small made-up numeric representation.
-2. Set larger attention weights for the relevant words.
-3. Multiply each representation by its weight and add them.
-4. Print the contextual representation for `they`.
+A real Transformer calculates weights from learned parameters. This exercise sets them by hand.
+
+### Exercise 1
+
+Attention gives value `4` a weight of `0.75` and value `0` a weight of `0.25`. Calculate the combined context.
+
+**Step-by-step solution:**
+
+1. Multiply each value by its attention weight: `0.75 × 4 = 3` and `0.25 × 0 = 0`.
+2. Add the weighted values: `3 + 0 = 3`.
+3. The combined context is **3**.
+
+### Exercise 2: make a weighted context
+
+The example creates context for `sat`, giving more weight to `cat`.
 
 ```python
-tokens = ["Birds", "fly", "because", "they", "have", "wings"]
-values = {
-    "Birds": [1.0, 0.0],
-    "fly": [0.0, 1.0],
-    "because": [0.0, 0.0],
-    "they": [0.0, 0.0],
-    "have": [0.0, 0.0],
-    "wings": [0.8, 0.2],
-}
-weights_for_they = [0.45, 0.05, 0.05, 0.10, 0.05, 0.30]
+tokens = ["cat", "sat", "mat"]
+values = [[1.0, 0.0], [0.0, 1.0], [0.8, 0.2]]
+weights_for_sat = [0.6, 0.1, 0.3]
+
 context = [
-    sum(weights_for_they[i] * values[token][axis] for i, token in enumerate(tokens))
+    sum(weights_for_sat[i] * values[i][axis] for i in range(len(tokens)))
     for axis in range(2)
 ]
-print("Weights sum to:", round(sum(weights_for_they), 2))
-print("Context for 'they':", [round(value, 2) for value in context])
+print("weight total:", sum(weights_for_sat))
+print("context for sat:", [round(value, 2) for value in context])
 ```
 
-Expected output:
+Output:
 
 ```text
-Weights sum to: 1.0
-Context for 'they': [0.69, 0.11]
+weight total: 1.0
+context for sat: [0.84, 0.16]
 ```
 
-The example demonstrates weighted context only. A real Transformer calculates attention weights from learned query, key, and value vectors across many layers.
+The context contains mostly the information assigned to `cat`. This illustrates weighted combination, not a complete Transformer.
 
-## 5. LLMs, BERT, and GPT-style models
+**Try:** Give `mat` a weight of `0.6` and reduce the `cat` weight to `0.3`.
 
-An **LLM** is a large language model. A generative model such as a GPT-style model predicts a next token, appends it, then predicts again. In probability notation, it chooses a likely next token using `P(next token | previous tokens)`. **BERT** is commonly used to represent or classify text. Both are pretrained models, meaning they learned patterns from data before use. They can still be wrong or out of date.
+## 5. LLMs, GPT, and BERT
 
-### Exercise: generate a short sequence with a toy next-token model
+- **Large language model (LLM):** a model trained on large text collections to learn language patterns.
+- **GPT:** **Generative Pre-trained Transformer**; GPT-style models generate text by predicting the next token.
+- **BERT:** **Bidirectional Encoder Representations from Transformers**; commonly used to represent or classify text.
 
-Steps:
+The code below is a fixed toy predictor, not an LLM.
 
-1. Create a tiny dictionary of next-token choices.
-2. Start with a prompt.
-3. Add the predicted token twice.
-4. Print each generation step.
+### Exercise 1
+
+A next-token table says `AI → learns` and `AI learns → patterns`. Write the result after two predictions. Then fill `[MASK]` in `The [MASK] shines` using the clue `sun`.
+
+**Step-by-step solution:**
+
+1. Start with `AI`. The table maps `AI` to `learns`, so the text becomes `AI learns`.
+2. The table maps `AI learns` to `patterns`, so the final text is `AI learns patterns`.
+3. In `The [MASK] shines`, replace `[MASK]` with the given clue `sun`: `The sun shines`.
+
+### Exercise 2: generate tokens one at a time
 
 ```python
 next_token = {
@@ -207,131 +252,151 @@ tokens = ["AI"]
 
 for _ in range(3):
     context = " ".join(tokens)
-    predicted = next_token[context]
-    tokens.append(predicted)
-    print("Predicted:", predicted, "| Text:", " ".join(tokens))
+    tokens.append(next_token[context])
+    print(" ".join(tokens))
 ```
 
-Expected output:
+Output:
 
 ```text
-Predicted: can | Text: AI can
-Predicted: help | Text: AI can help
-Predicted: students | Text: AI can help students
+AI can
+AI can help
+AI can help students
 ```
 
-This illustrates next-token generation. A real LLM chooses from a large vocabulary using learned probabilities and the full context.
+Real LLMs choose from a large vocabulary using learned probabilities. Fluent output can still be false, so verify important claims.
 
-## 6. RAG: chunk, retrieve, and prepare context
+**Try:** Add a fourth entry to `next_token` and generate one more token.
 
-**Retrieval-augmented generation (RAG)** searches source documents before asking an LLM to answer. A basic pipeline extracts text, splits it into **chunks**, retrieves relevant chunks, places them in the prompt (**context injection**), then generates an answer. Embeddings often improve retrieval beyond exact keyword matching.
+#### BERT masked-token example
 
-```mermaid
-flowchart LR
-  PDF --> Extract[Extract text] --> Chunk[Split into chunks] --> Index[Create searchable index]
-  Question --> Retrieve[Retrieve relevant chunks]
-  Index --> Retrieve
-  Retrieve --> Context[Question plus source passages]
-  Context --> LLM[Generate answer]
-```
-
-### Exercise: build a tiny keyword RAG pipeline
-
-Steps:
-
-1. Split a short document into chunks of three words with one word of overlap.
-2. Compare question words with each chunk (this is a simple stand-in for semantic retrieval).
-3. Select the chunk with the most matching words.
-4. Print the two best chunks. These are the passages you would send to the LLM.
+BERT is commonly trained to predict a hidden token using words on both sides. This lookup is a toy illustration, not a BERT model.
 
 ```python
-document = "RAG retrieves useful passages. An LLM reads those passages and answers questions."
-words = document.lower().replace(".", "").split()
-chunk_size = 3
-overlap = 1
-chunks = []
-start = 0
-while start < len(words):
-    chunks.append(words[start:start + chunk_size])
-    start += chunk_size - overlap
-
-question = "What does the LLM read?"
-question_words = set(question.lower().replace("?", "").split()) - {"what", "does", "the"}
-ranked = sorted(
-    chunks,
-    key=lambda chunk: len(question_words.intersection(chunk)),
-    reverse=True,
-)
-best_chunks = ranked[:2]
-
-print("Chunks:", chunks)
-print("Question words:", sorted(question_words))
-print("Retrieved context:", [" ".join(chunk) for chunk in best_chunks])
+masked_text = "The cat [MASK] on the mat"
+toy_prediction = {
+    "The cat [MASK] on the mat": "sat",
+}
+print("input:", masked_text)
+print("filled token:", toy_prediction[masked_text])
 ```
 
-Expected output:
+Output:
 
 ```text
-Chunks: [['rag', 'retrieves', 'useful'], ['useful', 'passages', 'an'], ['an', 'llm', 'reads'], ['reads', 'those', 'passages'], ['passages', 'and', 'answers'], ['answers', 'questions']]
-Question words: ['llm', 'read']
-Retrieved context: ['an llm reads', 'reads those passages']
+input: The cat [MASK] on the mat
+filled token: sat
 ```
 
-The keyword method misses `read` versus `reads`; however, it matches `llm` and retrieves useful neighboring context. This is only the retrieval step. A real RAG system sends these passages and the question to an LLM to produce a clean answer, then cites the source.
+**Remember:** GPT-style generation predicts what comes next; BERT-style masked prediction uses context on both sides of a missing token.
 
-## 7. Prompts, context windows, and hallucinations
+## 6. RAG: retrieve before answering
 
-A prompt should say what to do, provide context, and set an output format. A **context window** limits how much input and output fits in one request. A **hallucination** is an unsupported or false generated claim. Ask the model to say when evidence is missing and check answers against the source.
+- **Retrieval-augmented generation (RAG):** retrieves source passages and gives them to an LLM as context for an answer.
+- **Chunk:** a short section of a document that can be indexed and retrieved.
 
-### Exercise: check whether a source supports an answer
+The example uses keyword overlap, not semantic search.
 
-Steps:
+### Exercise 1
 
-1. Store the source and a proposed answer.
-2. Set a small context-window budget and include only that many words from the source.
-3. Build a prompt with instructions, context, and a requested output format.
-4. Check whether important answer terms appear in the source; change the answer to an unsupported claim and run it again.
+Question words are `{llm, source}`. Passage A is `LLM reads source text`; passage B is `source contains facts`. Count matching words and choose a passage.
+
+**Step-by-step solution:**
+
+1. The question words are `llm` and `source`.
+2. Passage A, `LLM reads source text`, contains both words: **2 matches**.
+3. Passage B, `source contains facts`, contains only `source`: **1 match**.
+4. Passage A has more matches, so retrieve **Passage A**.
+
+### Exercise 2: retrieve the best matching passage
+
+```python
+chunks = [
+    "RAG searches useful passages",
+    "An LLM reads retrieved passages",
+    "The model answers questions",
+]
+question_words = {"llm", "reads"}
+
+ranked = sorted(
+    chunks,
+    key=lambda chunk: len(question_words.intersection(chunk.lower().split())),
+    reverse=True,
+)
+print("best passage:", ranked[0])
+```
+
+Output:
+
+```text
+best passage: An LLM reads retrieved passages
+```
+
+RAG can ground an answer in retrieved sources, but bad retrieval or generation can still cause errors. Check citations against the source.
+
+**Try:** Change `question_words` to `{ "model", "answers" }` and see which passage ranks first.
+
+## 7. Prompts, context, and unsupported claims
+
+- **Prompt:** the instructions and information sent to a model.
+- **Context window:** the amount of text a model can process in one request.
+- **Hallucination:** generated content that is unsupported or false.
+
+### Exercise 1
+
+A context window holds 6 words. The source is `The meeting starts at 10 AM in room four`. What detail is cut off?
+
+**Step-by-step solution:**
+
+1. Count the words from the start: `The(1) meeting(2) starts(3) at(4) 10(5) AM(6)`.
+2. The six-word limit ends after `AM`, so the available context is `The meeting starts at 10 AM`.
+3. `in room four` comes after the limit and is missing. The model cannot use this context to claim which room the meeting is in.
+
+### Exercise 2: check an answer against a source
+
+This toy limit counts words; real models count tokens. The word check is only a warning: matching words does not prove an answer is true.
 
 ```python
 source = "The workshop begins at 9 AM in Room 4."
-answer = "The workshop begins at 9 AM."
-context_window_words = 8  # A toy limit; real model context windows count tokens.
+answer = "The workshop begins at 9 AM in Room 5."
+context_window_words = 7
 context = " ".join(source.split()[:context_window_words])
-prompt = (
-    "Answer using only the context. If missing, say Not found.
-"
-    f"Context: {context}
-Question: When does the workshop begin?
-"
-    "Format: one short sentence."
-)
-source_words = set(context.lower().replace(".", "").split())
-answer_words = set(answer.lower().replace(".", "").split()) - {"the", "at"}
-unsupported = answer_words - source_words
+prompt = f"Answer using only this context: {context}"
 
-print("Prompt:
-" + prompt)
-if unsupported:
-    print("Check this answer; unsupported words:", sorted(unsupported))
-else:
-    print("The key words are supported by the source.")
+def words(text):
+    return {word.strip(".,!? ").lower() for word in text.split()}
+
+missing = words(answer) - words(context) - {"the", "at", "in"}
+print("prompt:", prompt)
+print("unsupported words:", sorted(missing))
 ```
 
-Expected output:
+Output:
 
 ```text
-Prompt:
-Answer using only the context. If missing, say Not found.
-Context: The workshop begins at 9 AM in Room
-Question: When does the workshop begin?
-Format: one short sentence.
-The key words are supported by the source.
+prompt: Answer using only this context: The workshop begins at 9 AM in
+unsupported words: ['5', 'room']
 ```
 
-Word matching cannot confirm meaning. “Room 5” would be caught here, but many incorrect paraphrases would not be. Human review and source citations remain important.
+The context limit cuts off `Room 4`, so the checker flags both `room` and `5`. Real verification must check meaning, not just word overlap.
+
+**Try:** Change the answer to `The workshop begins at 9 AM.`
+
+## Day 1: how the pieces connect
+
+```mermaid
+flowchart LR
+  Text --> Tokens[Tokenization]
+  Tokens --> Model[Transformer and attention]
+  Model --> Next[Next-token generation]
+  Docs[Source documents] --> Chunks[Chunks and index]
+  Question --> Search[Retrieve passages]
+  Chunks --> Search
+  Search --> Context[Question plus evidence]
+  Context --> Model
+```
 
 ## Day 1 recap
 
-Preprocessing and tokenization prepare language. BoW and TF-IDF count words; embeddings represent meaning. Transformers use attention; generative LLMs predict tokens. RAG retrieves source passages before generation, and answers must be checked against those sources.
-
+Tokenization splits text into model-readable pieces. BoW and TF-IDF count words; embeddings compare learned representations. Transformers use attention, and GPT-style models generate tokens. RAG retrieves source passages to provide context. Check generated answers against their evidence.
 
